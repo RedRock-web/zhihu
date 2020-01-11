@@ -1,0 +1,89 @@
+*{
+    text-decoration: none;
+}
+body{
+    background-color: #b8e5f8;
+    background-image: url(../image/sign_bg.db29b0fb.png);
+    background-size: 100%;
+}
+.head_photo{
+    width: 128px;
+    height: 81px;
+    position: relative;
+    left: 45%;
+    margin-top: 25px;
+    margin-bottom: 24px;
+}
+.center{
+    width: 400px;
+    height: 375px;
+    background-color: white;
+    margin: 0 auto;
+    border-radius: 4px;
+}
+.center_bottom{
+    width: 400px;
+    height: 60px;
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 24px;
+    border-radius: 4px;
+}
+.buttom{
+    width: 400px;
+    height: 42px;
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 24px;
+    border-radius: 4px;
+}
+.word{
+    display: flex;
+    position: relative;
+    left: 35%;
+}
+.sign{
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+.link{
+    margin-left: 15px;
+    margin-top: 10px;
+    color: #0084ff;
+}
+.method{
+    color: #8590a6;
+}
+.login{
+    float: left;
+    padding-top: 20px;
+    color: #8590a6;
+    margin-left: 30px;
+}
+.other_mothod{
+   padding-top: 20px;
+   position: relative;
+   left: 50px;
+}
+.log_in{
+    padding-top: 20px;
+}
+.h1{
+    color: #8590a6;
+    margin-left: 30px;
+}
+.password{
+    margin-left: 20px;
+    font-size: 16px;
+    color: #444;
+}
+.code{
+    position: relative;
+    left: 348px;
+    bottom: 40px;
+    width: 52px;
+    height: 52px;
+    border-radius: 4px;
+}
