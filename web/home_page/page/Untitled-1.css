@@ -1,0 +1,137 @@
+*{
+    text-decoration: none;
+}
+.head{
+    position:fixed;
+    height: 52px;
+    width: 3000px;
+    border-bottom: #f6f6f6 solid;
+}
+.content{
+    padding-left: 16px; 
+    position: absolute;
+    left: 300px;
+}
+.zhihu{
+    font-size: 30px;
+    color: #0084ff;
+}
+.home_page{
+    color: #8590a6;
+    font-size: 15px;
+    padding-left: 30px;
+}
+.find{
+    color: #8590a6;
+    font-size: 15px;
+    padding-left: 30px;
+}
+.answer{
+    color: #8590a6;
+    font-size: 15px;
+    padding-left: 30px;
+}
+#search{
+    height: 34px;
+    width: 326px;
+    padding-left: 16px;
+    margin-left: 30px;
+    outline: none;
+}
+#commit{
+    background-color: #0084ff;
+    color: aliceblue;
+    border: none;
+    width: 58px;
+    height: 34px;
+    margin-left: 16px;
+}
+.ask{
+    background-color: #0084ff;
+    color: aliceblue;
+    border: none;
+    width: 58px;
+    height: 34px;
+    margin-left: 16px;
+}
+.middle{
+   width: 1100px;
+   margin: auto;
+}
+.left{
+    width: 694px;
+    height: 1000px;
+    border: solid #f6f6f6 2px;
+    margin-top: 64px;
+    float: left;
+}
+.left_head{
+    font-size: large;
+}
+.link{
+    margin-left: 30px;
+    color: #1a1a1a;
+}
+.right_head{
+    width: 296px;
+    height: 188px;
+    margin-top: 64px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border: solid #f6f6f6 2px;
+    float: left;
+    color: #444444;
+    font-size: 16px;
+}
+.line1{
+    margin-top: 40px;
+}
+.line2{
+    margin-top: 30px;
+}
+.line1>span{
+    margin-left: 35px;
+}
+.line2>span{
+    margin-left: 35px;
+}
+.right_middle{
+    float: left;
+    width: 296px;
+    height: 188px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border: solid #f6f6f6 2px;
+    color: #444444;
+    font-size: 16px;
+}
+.line3{
+    margin-top: 40px;
+}
+.line4{
+    margin-top: 30px;
+}
+.line3>span{
+    margin-left: 35px;
+}
+.line4>span{
+    margin-left: 35px;
+}
+.right_buttom{
+    float: left;
+    width: 296px;
+    height: 216px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border: solid #f6f6f6 2px;
+    color: #444444;
+    font-size: 16px;
+}
+.right_buttom>div{
+    color: #8590a6;
+    margin-top: 20px;
+    margin-left: 30px;
+    font-size: 14px;
+}
