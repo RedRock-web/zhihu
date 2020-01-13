@@ -170,3 +170,7 @@ body{
     color: #ffffff;
     font-size: 12px;
 }
+hr{
+    width: 350px;
+    color: #f6f6f6;
+}
