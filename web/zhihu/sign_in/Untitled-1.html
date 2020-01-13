@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>知乎 - 有问题，上知乎</title>
     <link href="../image/apple-touch-icon-152.67c7b278.png" rel="shortcut icon" type="photo" sizes="any">
-    <link rel="stylesheet" type="text/css" href="./Untitled-1.css"> 
-    
-</head> 
+    <link rel="stylesheet" type="text/css" href="./Untitled-1.css">
+
+</head>
+
 <body>
     <div>
         <img class="head_photo" src="../image/v2-a47051e92cf74930bedd7469978e6c08_hd.png">
@@ -20,33 +21,86 @@
             <a class="password">密码登录</a>
         </div>
         <img src="../image/image.png" class="code">
-        <div class="number">
-
-        </div>
-        <div class="security_code">
-
-        </div>
-        <span>接受语音验证码</span>
+        <form>
+            <div class="number1">
+                <input name="number" value="" placeholder="手机号或邮箱" id="number">
+            </div>
+            <hr>
+            <div class="security_code">
+                <input name="note" type="" id="note" placeholder="密码">
+            </div>
+            <hr>
+            <input placeholder="验证码" class="code1">
+            <hr>
+        <span class="overseas">海外手机号登录</span>
+        <a href="https://www.zhihu.com/account/password_reset" class="forget">忘记密码？</a>
         <div class="button_in">
-            <button type="button" class="button"><span class="button1">注册/登录</span></button>
+            <input type="submit" class="button" value="登录/注册" onclick="check()">
+        </div>
+    </form>
+        <div class="explain">
+            <div class="explain_left">
+                <span>未注册手机验证后自动登录</span>
+                <br>
+                <span>注册即代表同意</span>
+                <a href="https://www.zhihu.com/terms">《知乎协议》</a>
+                <a href="https://www.zhihu.com/term/privacy">《隐私保护指引》</a>
+
+            </div>
+            <a class="explain_right" href="https://www.zhihu.com/org/signup">注册机构号</a>
         </div>
     </div>
     <div class="center_bottom">
         <div class="method">
             <span class="login">社交账号登陆</span>
             <div class="other_mothod">
-                    <a href="" class="h1">微信</a>
-                    <a href="" class="h1">QQ</a>
-                    <a href="" class="h1">微博</a>
+                <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx268fcfe924dcb171&redirect_uri=https%3A%2F%2Fwww.zhihu.com%2Foauth%2Fcallback%2Fwechat%3Faction%3Dlogin%26from%3D&response_type=code&scope=snsapi_login&state=636f646d32765348436158496a764c4368766a394b78657a43344a536d646e54#wechat"
+                    class="h1">微信</a>
+                <a href="https://graph.qq.com/oauth2.0/show?which=Login&display=pc&scope=get_user_info%2Cget_info%2Cadd_t%2Cadd_pic_t%2Cget_other_info%2Cget_fanslist%2Cget_idollist%2Cadd_idol%2Cadd_share&state=636f646d32765348436158496a764c4368766a394b78657a43344a536d646e54&redirect_uri=https%3A%2F%2Fwww.zhihu.com%2Foauth%2Fcallback%2Fqqconn%3Faction%3Dlogin%26from%3D&response_type=code&client_id=100490701"
+                    class="h1">QQ</a>
+                <a href="636f646d32765348436158496a764c4368766a394b78657a43344a536d646e54" class="h1">微博</a>
             </div>
         </div>
     </div>
     <div class="buttom">
         <div class="word">
             <a href=""><img src="../image/favicon.png" class="sign"></a>
-            <a href="" class="link" >下载知乎APP</a>
+            <a href="" class="link">下载知乎APP</a>
         </div>
     </div>
+    <div class="buttom1">
+        <a href="https://zhuanlan.zhihu.com/">知乎专栏</a>
+        <a href="https://www.zhihu.com/roundtable">圆桌</a>
+        <a href="https://www.zhihu.com/explore">发现</a>
+        <a href="https://www.zhihu.com/app">移动应用</a>
+        <a href="https://www.zhihu.com/contact">联系我们</a>
+        <a href="https://app.mokahr.com/apply/zhihu">来知乎工作</a>
+        <a href="https://www.zhihu.com/org/signup">注册机构号</a><br>
+        <span>@2020知乎</span>
+        <a href="https://tsm.miit.gov.cn/dxxzsp/">京ICP证110745号</a>
+        <img src="../image/v2-d0289dc0a46fc5b15b3363ffa78cf6c7.png" class="badge">
+        <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802020088">京公网安备 11010802010035 号</a>
+        <a href="https://zhstatic.zhihu.com/assets/zhihu/publish-license.jpg">出版物经营许可证</a><br>
+        <a href="https://zhuanlan.zhihu.com/p/51068775">侵权举报</a>
+        <a href="http://www.12377.cn/">网上有害信息举报专区</a>
+        <a href="https://www.zhihu.com/jubao">儿童色情信息举报专区</a>
+        <span>违法和不良信息举报：010-82716601</span>
+    </div>
+    <script>
+        function check() {
+            var user = document.getElementById("number")
+            var pwd = document.getElementById("note")
+            if(user.value==""){
+                alert("用户名不能为空")
+            }else if(pwd.value==""){
+                alert("密码不能为空")
+            }else if(pwd.value.length<6){
+                alert("密码不能小于六位")
+            }
+        }
+
+        
+    </script>
 </body>
 
 </html>
