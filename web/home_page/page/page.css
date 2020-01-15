@@ -54,6 +54,13 @@
     height: 34px;
     margin-left: 16px;
 }
+.pic{
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    position: relative;
+    top: 8px;
+}
 .middle{
    width: 1100px;
    margin: auto;
