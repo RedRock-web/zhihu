@@ -1,0 +1,59 @@
+*{
+    text-decoration: none;
+}
+.head{
+    position:fixed;
+    height: 52px;
+    width: 3000px;
+    border-bottom: #f6f6f6 solid;
+    z-index:1000;
+}
+.content{
+    padding-left: 16px; 
+    position: absolute;
+    left: 300px;
+}
+.zhihu{
+    font-size: 30px;
+    color: #0084ff;
+}
+.write{
+    color: #1a1a1a;
+    font-size: 16px;
+    font-weight: 600;
+    margin-left: 20px;
+}
+.middle{
+    width: 660px;
+    margin: auto;
+    position: relative;
+    top: 94px;
+}
+.back{
+    background-color: #f6f6f6;
+    width: 660px;
+    height: 192px;
+}
+.word{
+    width: 660px;
+    height: 45px;
+    margin-top: 20px;
+    font-size: 32px;
+    border: none;
+    outline: none;
+    font-weight: 600;
+}
+.func{
+    width: 660px;
+    height: 36px;
+    border-top: solid #ebebeb 1px;
+    border-bottom: solid #ebebeb 1px;
+    margin-top: 30px;
+}
+.import{
+    width: 660px;
+    font-size: 16px;
+    border: none;
+    margin-top: 30px;
+    outline: none;
+}
