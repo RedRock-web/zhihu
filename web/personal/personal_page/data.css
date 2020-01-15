@@ -108,3 +108,42 @@
     position: relative;
     left: -100px;
 }
+#select{
+    margin-left: 130px;
+    display: none;
+}
+.preservation{
+    width: 62px;
+    height: 34px;
+    outline: none;
+    color: #fff;
+    background-color: #0084ff;
+    border: none;
+    margin-top: 10px;
+}
+.cancel{
+    width: 62px;
+    height: 34px;
+    outline: none;
+    color: #8590a6;
+    background:none;
+    border: #8590a6 1px solid;
+    margin-top: 10px;
+}
+#introduce{
+    margin-left: 130px;
+    display: none;
+}
+.introduce_import{
+    width: 540px;
+    height: 30px;
+    font-size: 16px;
+}
+#nickname{
+    display: none;
+}
+.name_input{
+    width: 540px;
+    height: 30px;
+    font-size: 16px;
+}
