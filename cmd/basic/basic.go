@@ -9,6 +9,12 @@ func CheckError(err error)  {
 }
 
 
+
+
+
+
+
+
 func HaveCookie(c *gin.Context, username string) bool {
 	_, err := c.Cookie(username)
 	return err == nil
