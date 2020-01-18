@@ -13,7 +13,7 @@ func RegisteOrLogin(db *sql.DB, c *gin.Context, tableName string) string {
 	password := c.PostForm("password")
 
 	if IsPasswdMoreSixDigit(password) {
-		if IsRegiste(db, "user_information", username) {
+		if IsRegiste(db, tableName, username) {
 			Login(db, c, username, password)
 		} else {
 			Registe(db, c, username, password)
@@ -65,31 +65,14 @@ func Login(db *sql.DB, c *gin.Context, username string, password string) {
 }
 
 func PasswdIsOk(db *sql.DB, c *gin.Context, username string, password string) bool {
-	_, passwd := database.DatabaseSearch(db, "user_information", username)
-	return passwd == password
+	user := database.DatabaseSearch(db, "user_information", "username", username)
+	return user.Password == password
 }
 
 func IsRegiste(db *sql.DB, tableName string, username string) bool {
-	var (
-		id     string
-		name   string
-		passwd string
-		judge  bool
-	)
+	user := database.DatabaseSearch(db, tableName, "username", username)
 
-	selectOder := "select * from " + tableName + " where username= \"" + username + "\""
-	stmt, err := db.Query(selectOder)
-	basic.CheckError(err)
-	for stmt.Next() {
-		stmt.Scan(&id, &name, &passwd)
-	}
-	if name != "" {
-		judge = true
-	} else {
-		judge = false
-	}
-
-	return judge
+	return user.Username != ""
 }
 
 //暂时出了点问题，无法删除cookie

@@ -1,22 +1,28 @@
 package basic
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
+)
 
-func CheckError(err error)  {
+func CheckError(err error, errorMsg string) {
 	if err != nil {
-		panic(err)
+		fmt.Println(errors.New(errorMsg))
 	}
 }
 
-
-
-
-
-
-
+type USER struct {
+	Id           string
+	Username     string
+	Password     string
+	Gender       string
+	Nickname     string
+	Introduction string
+	Avatar       string
+}
 
 func HaveCookie(c *gin.Context, username string) bool {
 	_, err := c.Cookie(username)
 	return err == nil
 }
-
