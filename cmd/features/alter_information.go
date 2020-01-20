@@ -7,19 +7,25 @@ import (
 	"zhihu/cmd/database"
 )
 
-func AlterInformation(c *gin.Context, db *sql.DB, username string) {
+//更改个人信息
+func AlterInformation(c *gin.Context, db *sql.DB) {
+	username, _ := c.Cookie("userID")
 	targe := c.Query("targe")
 	content := c.Query(("content"))
-	if TargeIsCompliance(targe) {
-		database.DatabaseUpdate(db, "user_information", "username", username, targe, content)
-		userInformation := database.DatabaseSearch(db, "user_information", "username", username)
-		c.JSON(http.StatusOK, gin.H{
-			"id":          userInformation.Id,
-			"nickname":    userInformation.Nickname,
-			"introdution": userInformation.Introduction,
-			"gender":      userInformation.Gender,
-			"avatar":      userInformation.Avatar,
-		})
+	if IsTargeCompliance(targe) {
+		if nil == database.DatabaseUpdate(db, "user_information", "username", username, targe, content) {
+			userInformation, err := database.DatabaseSearch(db, "user_information", "username", username)
+			if err == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"id":          userInformation.Id,
+					"nickname":    userInformation.Nickname,
+					"introdution": userInformation.Introduction,
+					"gender":      userInformation.Gender,
+					"avatar":      userInformation.Avatar,
+				})
+			}
+
+		}
 	} else {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": gin.H{
@@ -29,6 +35,6 @@ func AlterInformation(c *gin.Context, db *sql.DB, username string) {
 	}
 }
 
-func TargeIsCompliance(include string) bool {
+func IsTargeCompliance(include string) bool {
 	return include == "gender" || include == "information" || include == "nickname" || include == "avatar"
 }

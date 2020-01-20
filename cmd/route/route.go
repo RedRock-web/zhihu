@@ -3,6 +3,7 @@ package route
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"zhihu/cmd/features"
 )
 
@@ -10,39 +11,58 @@ func RoutePrepare(db *sql.DB) {
 	r := gin.Default()
 
 	LoginPage(db, r)
-	Homepage(db, r)
-	PersonalPage(db, r)
-	IssueDetailsPage(db, r)
+
+	auth := r.Group("")
+	auth.Use(AuthRequired())
+	{
+		Homepage(db, auth)
+		PersonalPage(db, auth)
+		IssueDetailsPage(db, auth)
+	}
 
 	r.Run()
 }
 
-func Homepage(db *sql.DB, r *gin.Engine) {
+//使用cookie检测是否登录的中间件
+func AuthRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		cookie, _ := c.Request.Cookie("userID")
+		if cookie == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"msg": "请先登录！"})
+			c.Abort()
+		} else {
+			c.Next()
+			//c.JSON(200, "have cookie")
+		}
+	}
+}
+
+func Homepage(db *sql.DB, auth *gin.RouterGroup) {
 	//主页
-	r.GET("/", func(c *gin.Context) {
+	auth.GET("/", func(c *gin.Context) {
 
 	})
 	//搜索
-	r.GET("search", func(c *gin.Context) {
+	auth.GET("/search", func(c *gin.Context) {
 
 	})
 	//推荐
-	r.GET("feed/topstory/recommend", func(c *gin.Context) {
+	auth.GET("/feed/topstory/recommend", func(c *gin.Context) {
 
 	})
 	//关注
-	r.GET("feed/topstory/follow_wonderful", func(c *gin.Context) {
+	auth.GET("/feed/topstory/follow_wonderful", func(c *gin.Context) {
 
 	})
 	//热榜
-	r.GET("feed/topstory/hot", func(c *gin.Context) {
+	auth.GET("/feed/topstory/hot", func(c *gin.Context) {
 
 	})
 	//提问
-	r.POST("/questions", func(c *gin.Context) {
+	auth.POST("/questions", func(c *gin.Context) {
 
 	})
-	r.GET("/logout", func(c *gin.Context) {
+	auth.GET("/logout", func(c *gin.Context) {
 		features.Logout(db, c)
 	})
 }
@@ -58,12 +78,12 @@ func LoginPage(db *sql.DB, r *gin.Engine) {
 	return
 }
 
-func PersonalPage(db *sql.DB, r *gin.Engine, username string) {
-	r.PUT("/me", func(c *gin.Context) {
-		features.AlterInformation(c, db, username)
+func PersonalPage(db *sql.DB, auth *gin.RouterGroup) {
+	auth.PUT("/me", func(c *gin.Context) {
+		features.AlterInformation(c, db)
 	})
 }
 
-func IssueDetailsPage(db *sql.DB, r *gin.Engine, username string) {
+func IssueDetailsPage(db *sql.DB, auth *gin.RouterGroup) {
 
 }

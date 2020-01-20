@@ -22,7 +22,7 @@ type USER struct {
 	Avatar       string
 }
 
-func HaveCookie(c *gin.Context, username string) bool {
-	_, err := c.Cookie(username)
+func HaveCookie(c *gin.Context, key string) bool {
+	_, err := c.Cookie(key)
 	return err == nil
 }
