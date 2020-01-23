@@ -1,4 +1,4 @@
-package features
+package login_page
 
 import (
 	"database/sql"

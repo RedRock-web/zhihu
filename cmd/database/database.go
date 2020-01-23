@@ -16,7 +16,7 @@ func DatabasePrepare() (db *sql.DB) {
 	//user_information存放用户基本信息
 	//TODO:字段推荐不使用NULL， 但是不使用NULL又不设置默认值，后续都无法对数据库操作，需要改进
 	//gender 0代表女， 1代表男
-	CreateTable(db, "user_information", "username varchar(20), password varchar(20),gender varchar(2), nickname varchar(20), introduction varchar(200), avatar varchar(40)")
+	CreateTable(db, "user_information", "username varchar(20), password varchar(20),gender varchar(2), nickname varchar(20), introduction varchar(200), avatar varchar(40), question")
 
 	return db
 }

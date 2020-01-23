@@ -1,0 +1,83 @@
+
+```mermaid
+graph LR;
+数据库-->user表
+数据库-->question表
+数据库-->reply表
+数据库-->comment表
+数据库-->reply_attitude表
+数据库-->comment_attitude表
+```
+
+
+```mermaid
+graph LR
+用户-->id
+用户-->帐号
+帐号-->username
+帐号-->password
+用户-->信息
+信息 -- 时间戳/s -->uid
+信息 -- 性别/1男0女 -->gender
+信息 -- 昵称 -->nickname
+信息 -- 个人介绍 -->introduction
+信息 -- 头像 -->avatar
+
+用户-->状态
+状态 -- 提问 -->quesion
+状态 -- 回答 -->reply
+状态 -- 收藏 -->favorite
+状态 -- 关注人 -->followers
+状态 -- 关注问题 -->concern
+状态 -- 文章 -->article
+
+```
+
+
+
+
+
+
+
+```mermaid
+graph LR;
+question表-->id
+question表 -- 提问人 -->uid
+question表 --提问时间 -->time
+question表 -- 问题标题 -->title
+question表 -- 问题补充 -->complement
+question表 -- 评论 -->comment
+question表 -- 回答 -->reply
+```
+
+
+
+```mermaid
+graph LR;
+reply表-->id
+reply表 -- 回答的用户 -->uid
+reply表 -- 回答的提问对象/存queston表的id-->question_id
+reply表 -- 回答的时间 -->time
+reply表 -- 其他用户对此回答的评论 -->comment_id
+reply表 -- 其他用户对此回答的态度/存attitudei表中的reply_id -->attitude_reply_id
+
+```
+
+```mermaid
+graph LR;
+reply_attitude表-->id
+reply_attitude表-->reply_id
+reply_attitude表-->uid
+reply_attitude表 --1赞成/0反对-->attitude
+```
+
+```mermaid
+graph LR;
+comment表-->id
+comment表 -- 用户 -->uid
+comment表 -- 0提问/1回答 -->targe
+comment表 -- 存question/reply表的id -->targe_id
+comment表 -- 存id,意味者该评论是对id的评论的回复,默认为0 -->pid
+comment表-->time
+```
+

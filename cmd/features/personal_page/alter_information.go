@@ -1,4 +1,4 @@
-package features
+package personal_page
 
 import (
 	"database/sql"

@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"zhihu/cmd/features"
+	"zhihu/cmd/features/login_page"
+	"zhihu/cmd/features/personal_page"
 )
 
 func RoutePrepare(db *sql.DB) {
@@ -60,17 +61,17 @@ func Homepage(db *sql.DB, auth *gin.RouterGroup) {
 	})
 	//提问
 	auth.POST("/questions", func(c *gin.Context) {
-
+        
 	})
 	auth.GET("/logout", func(c *gin.Context) {
-		features.Logout(db, c)
+		login_page.Logout(db, c)
 	})
 }
 
 //TODO:帐号重置密码
 func LoginPage(db *sql.DB, r *gin.Engine) {
 	r.POST("/sign_in", func(c *gin.Context) {
-		features.RegisteOrLogin(db, c, "user_information")
+		login_page.RegisteOrLogin(db, c, "user_information")
 	})
 	r.GET("/account/password_reset", func(c *gin.Context) {
 
@@ -80,7 +81,7 @@ func LoginPage(db *sql.DB, r *gin.Engine) {
 
 func PersonalPage(db *sql.DB, auth *gin.RouterGroup) {
 	auth.PUT("/me", func(c *gin.Context) {
-		features.AlterInformation(c, db)
+		personal_page.AlterInformation(c, db)
 	})
 }
 
