@@ -1,0 +1,220 @@
+*{
+    text-decoration: none;
+}
+body{
+    background-color: #b8e5f8;
+    background-image: url(../image/sign_bg.db29b0fb.png);
+    background-size: 100%;
+}
+.head_photo{
+    width: 128px;
+    height: 81px;
+    position: relative;
+    left: 45%;
+    margin-top: 25px;
+    margin-bottom: 24px;
+}
+#center{
+    width: 400px;
+    height: 436px;
+    background-color: white;
+    margin: 0 auto;
+    border-radius: 4px;
+    display: block;
+}
+.center_bottom{
+    width: 400px;
+    height: 60px;
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 24px;
+    border-radius: 4px;
+}
+.buttom{
+    width: 400px;
+    height: 42px;
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 24px;
+    border-radius: 4px;
+}
+.word{
+    display: flex;
+    position: relative;
+    left: 35%;
+}
+.sign{
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+.link{
+    margin-left: 15px;
+    margin-top: 10px;
+    color: #0084ff;
+}
+.method{
+    color: #8590a6;
+}
+.login{
+    float: left;
+    padding-top: 20px;
+    color: #8590a6;
+    margin-left: 30px;
+}
+.number1{
+   
+    margin-left: 20px;
+}
+#number{
+    width: 234px;
+    height: 31.2px;
+    border: none;
+    outline: none;
+}
+#note{
+    width: 140px;
+    height: 43.2px;
+    border: none;
+    margin-left: 20px;
+    outline: none;
+}
+.code1{
+     width: 140px;
+    height: 43.2px;
+    border: none;
+    margin-left: 20px;
+    outline: none;
+}
+.overseas{
+    font-size: 14px;
+    color: #175199;
+    margin-left: 20px;
+}
+.forget{
+    font-size: 14px;
+    margin-left: 200px;
+    color: #8590a6;
+}
+.other_mothod{
+   padding-top: 20px;
+   position: relative;
+   left: 30px;
+}
+.log_in{
+    padding-top: 20px;
+}
+.h1{
+    color: #8590a6;
+    margin-left: 30px;
+}
+.password{
+    margin-left: 20px;
+    font-size: 16px;
+    color: #444;
+}
+.button_in{
+    margin-top: 30px;
+}
+.button{
+    width: 375px;
+    height: 36px;
+    background-color: #0084ff;
+    border: none;
+    position: relative;
+    left: 12.5px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 14px;
+}
+.explain{
+    width: 400px;
+    height: 57.6px;
+    background-color: #F6F6F6;
+    position: relative;
+    top: 18px;
+}
+.explain_left{
+    color: #808080;
+    font-size: 13px;
+    padding-top: 10px;
+    margin-left: 20px;
+}
+.explain_left>a{
+    color: #808080;
+    font-size: 13px;
+}
+.explain_right{
+   color: #175199;
+   position: relative;
+   left: 320px;
+   bottom: 25px;
+   font-size: 13px;
+}
+.code{
+    position: relative;
+    left: 348px;
+    bottom: 40px;
+    width: 52px;
+    height: 52px;
+    border-radius: 4px;
+}
+.buttom1{
+    text-align: center;
+}
+.buttom1>a{
+    color: #ffffff;
+    font-size: 12px;
+}
+.buttom1>span{
+    color: #ffffff;
+    font-size: 12px;
+}
+hr{
+    width: 350px;
+    color: #f6f6f6;
+}
+#container{
+    width: 400px;
+    height: 436px;
+    background-color: white;
+    margin: 0 auto;
+    border-radius: 4px;
+}
+.return{
+    font-size: 14px;
+    color: #8590a6;
+    margin-left: 20px;
+    padding-top: 20px;
+}
+.set{
+    font-size: 24px;
+    color: #1a1a1a;
+    text-align: center;
+}
+.user{
+    width: 352px;
+    height: 43.2px;
+    margin-left: 20px;
+    margin-top: 20px;
+    outline: none;
+    border: none;
+}
+.password{
+     width: 352px;
+    height: 43.2px;
+    margin-left: 20px;
+    margin-top: 20px;
+    outline: none;
+    border: none;
+}
+.into{
+    width: 352px;
+    height: 36px;
+    color: aliceblue;
+    background-color: #0084ff;
+    border: none;
+    margin-left: 20px;
+    margin-top: 30px;
+}
