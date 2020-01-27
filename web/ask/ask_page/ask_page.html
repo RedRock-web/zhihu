@@ -28,10 +28,15 @@
 
         </div>
         <div class="middle_buttom">
-
+            <button type="button" class="follow">关注问题</button>
+            <button type="button" class="write" onclick="send()">回答问题</button>
         </div>
     </div>
     <div class="buttom">
+        <div id="input_box">
+            <textarea type="text" name="import" class="import" placeholder="请回答..."></textarea>
+            <button type="submit" class="sum">提交回答</button>
+        </div>
         <div class="left_top">
             <span>查看全部回答</span>
         </div>
@@ -50,5 +55,13 @@
         <span>收藏</span>
         <span>喜欢</span>
     </div>
+    <script>
+        function send(){
+            var Input = document.getElementById('input_box')
+            if(Input.style.display ='none'){
+                Input.style.display='block'
+            }
+        }
+    </script>
 </body>
 </html>

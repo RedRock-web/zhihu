@@ -59,11 +59,56 @@
     position: relative;
     top: 54px;
     border: solid #f6f6f6 2px;
-    height: 307.6px;
+    height: 200px;
+    width: 100%x;
+}
+.middle_buttom{
+    width: 1000px;
+    margin: auto;
+    position: relative;
+    top: 150px;
+}
+.follow{
+    width: 96px;
+    height: 34px;
+    background-color: #0084ff;
+    color: #f6f6f6;
+    border: none;
+}
+.write{
+    width: 96px;
+    height: 34px;
+    background:none;
+    color: #0084ff;
+    border: solid 1px #0084ff;
+    margin-left: 50px;
 }
 .buttom{
     width: 1100px;
     margin: auto;
+}
+#input_box{
+    width: 694px;
+    height: 200px;
+    border: solid #f6f6f6 2px;
+    margin-top: 60px;
+    display: none;
+}
+.import{
+    width: 690px;
+    height: 142px;
+    font-size: 16px;
+    border: none;
+    margin-top: 10px;
+    outline: none;
+}
+.sum{
+    width: 96px;
+    height: 34px;
+    background-color: #0084ff;
+    color: #f6f6f6;
+    border: none;
+    float: right;
 }
 .left_top{
    margin-top: 60px;
