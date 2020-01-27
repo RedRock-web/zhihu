@@ -71,7 +71,7 @@ func Homepage(db *sql.DB, auth *gin.RouterGroup) {
 //TODO:帐号重置密码
 func LoginPage(db *sql.DB, r *gin.Engine) {
 	r.POST("/sign_in", func(c *gin.Context) {
-		login_page.RegisteOrLogin(db, c, "user_information")
+		login_page.RegisteOrLogin(db, c, "user")
 	})
 	r.GET("/account/password_reset", func(c *gin.Context) {
 

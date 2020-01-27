@@ -3,69 +3,145 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"zhihu/cmd/basic"
+	"github.com/pkg/errors"
 )
 
-func DatabasePrepare() (db *sql.DB) {
-	db1 := OpenDatabase("root", "root", "mysql")
-	defer db1.Close()
-	//zhihu即项目数据库
-	CreateDatabase(db1, "zhihu")
-	db = OpenDatabase("root", "root", "zhihu")
-	//defer db.Close()
-	//user_information存放用户基本信息
-	//TODO:字段推荐不使用NULL， 但是不使用NULL又不设置默认值，后续都无法对数据库操作，需要改进
-	//gender 0代表女， 1代表男
-	CreateTable(db, "user_information", "username varchar(20), password varchar(20),gender varchar(2), nickname varchar(20), introduction varchar(200), avatar varchar(40), question")
-
-	return db
+//数据库结构体，内置表格结构体，分别为数据库和结构体增加增删改查方法
+type Database struct {
+	UserName string //登录数据库的帐号和密码
+	Password string
+	DbName   string
+	Db       *sql.DB //数据库
+	table    Table
 }
 
-func CreateDatabase(db *sql.DB, NewDataBaseName string) error {
-	stmt, err := db.Prepare("create database " + NewDataBaseName)
-	basic.CheckError(err, "数据库创建失败！")
+type Table struct {
+	Db *sql.DB //表格所属的数据库
+}
+
+type AlterData struct {
+	newKey     string
+	newValue   string
+	targeKey   string
+	targeValue string
+}
+type InserData struct {
+	username string
+	password string
+	uid      string
+}
+type FindData struct {
+	targeKey   string
+	targeValue string
+}
+
+//创建数据库
+func (d *Database) Create(NewDbName string) error {
+	stmt, err := d.Db.Prepare("create database " + NewDbName)
 	stmt.Exec()
 	return err
 }
-func InsertField(db *sql.DB, tableName string, username string, password string) error {
-	stmt, err := db.Prepare("insert into " + tableName +
-		"(username, password) values(?,?)")
-	fmt.Println("insert into " + tableName +
-		"(username, password) values(?,?)")
-	basic.CheckError(err, "数据库插入出错！")
-	stmt.Exec(username, password)
+
+//打开数据库
+func (d *Database) Open() error {
+	command := d.UserName + ":" + d.Password + "@tcp(127.0.0.1:3306)/" + d.DbName + "?charset=utf8"
+	db, err := sql.Open("mysql", command)
+	d.Db = db
+	d.table.Db = db
 	return err
 }
-func CreateTable(db *sql.DB, tableName string, keysAndValues string) error {
-	stmt, err := db.Prepare("create table " + tableName + " (id int NOT NULL auto_increment," +
-		keysAndValues + ", primary key(id)) character set = utf8")
-	basic.CheckError(err, "数据库表格创建失败！")
+
+//删除数据库
+func (d *Database) Drop(DbName string) error {
+	stmt, err := d.Db.Prepare("drop database " + DbName)
 	stmt.Exec()
 	return err
 }
 
-func OpenDatabase(dbUsername string, dbPassword string, databaseName string) (db *sql.DB) {
-	db, err := sql.Open("mysql", dbUsername+":"+dbPassword+"@tcp(127.0.0.1:3306)/"+databaseName+"?charset=utf8")
-	basic.CheckError(err, "打开数据库失败！")
+//关闭数据库
+func (d *Database) Close() {
+	d.Db.Close()
+}
+
+//创建表格
+func (t *Table) Create(tableName string, kAndV string) error {
+	command := "create table " + tableName + " (id int NOT NULL auto_increment," +
+		kAndV + ", primary key(id)) character set = utf8"
+	stmt, err := t.Db.Prepare(command)
+	stmt.Exec()
+	return err
+}
+
+//删除表格
+func (t *Table) Drop(tableName string) error {
+	command := "drop table " + tableName
+	stmt, err := t.Db.Prepare(command)
+	stmt.Exec()
+	return err
+}
+
+//插入记录
+//TODO:改为通用的insert
+func (t *Table) Insert(tableName string, data InserData) error {
+	command := "insert into " + tableName +
+		"(username, password, uid) values(?,?,?)"
+	stmt, err := t.Db.Prepare(command)
+	stmt.Exec(data.username, data.password, data.uid)
+	return err
+}
+
+//更改记录
+func (t *Table) Alter(tableName string, data AlterData) error {
+	command := "update " + tableName + " set " +
+		data.newKey + " = \"" + data.newValue + "\" where " + data.targeKey + " = \"" + data.targeValue + "\""
+	stmt, err := t.Db.Prepare(command)
+	stmt.Exec()
+	return err
+}
+
+//查找记录
+func (t *Table) Find(tableName string, data FindData) (userImformation USER, err error) {
+	command := "select * from " + tableName + " where " + data.targeKey + " = " + "\"" + data.targeValue + "\""
+	stmt, err := t.Db.Query(command)
+	for stmt.Next() {
+		stmt.Scan(
+			&userImformation.Id,
+			&userImformation.Username,
+			&userImformation.Password,
+			&userImformation.Uid,
+			&userImformation.Gender,
+			&userImformation.Nickname,
+			&userImformation.Introduction,
+			&userImformation.Avatar,
+			&userImformation.Question_id,
+			&userImformation.Reply_id,
+			&userImformation.Favorite_id,
+			&userImformation.Followers_id,
+			&userImformation.Concern_id,
+			&userImformation.Article_id)
+	}
 	return
 }
 
-func DatabaseSearch(db *sql.DB, tableName string, targeKey string, targeValue string) (userImformation basic.USER, err error) {
-	selectOder := "select * from " + tableName + " where " + targeKey + " = " + "\"" + targeValue + "\""
-	stmt, err := db.Query(selectOder)
-	basic.CheckError(err, "数据库查找失败！")
-	for stmt.Next() {
-		stmt.Scan(&userImformation.Id, &userImformation.Username, &userImformation.Password, &userImformation.Gender, &userImformation.Nickname, &userImformation.Introduction, &userImformation.Avatar)
-	}
-	return userImformation, err
+type USER struct {
+	Id           string
+	Username     string
+	Password     string
+	Uid          string
+	Gender       string
+	Nickname     string
+	Introduction string
+	Avatar       string
+	Question_id  string
+	Reply_id     string
+	Favorite_id  string
+	Followers_id string
+	Concern_id   string
+	Article_id   string
 }
 
-func DatabaseUpdate(db *sql.DB, tableName string, targeKey string, targeValue string, newKey string, newValue string) (error){
-	oder := "update " + tableName + " set " +
-		newKey + " = \"" + newValue + "\" where " + targeKey + " = \"" + targeValue + "\""
-	fmt.Println(oder)
-	stmt, err := db.Prepare(oder)
-	basic.CheckError(err, "数据库修改失败！")
-	stmt.Exec()
-	return err
+func CheckError(err error, errorMsg string) {
+	if err != nil {
+		fmt.Println(errors.New(errorMsg))
+	}
 }

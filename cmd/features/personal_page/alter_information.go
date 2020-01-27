@@ -9,12 +9,12 @@ import (
 
 //更改个人信息
 func AlterInformation(c *gin.Context, db *sql.DB) {
-	username, _ := c.Cookie("userID")
+	uid, _ := c.Cookie("userID")
 	targe := c.Query("targe")
 	content := c.Query(("content"))
 	if IsTargeCompliance(targe) {
-		if nil == database.DatabaseUpdate(db, "user_information", "username", username, targe, content) {
-			userInformation, err := database.DatabaseSearch(db, "user_information", "username", username)
+		if nil == database.DatabaseUpdate(db, "user_information", "username", uid, targe, content) {
+			userInformation, err := database.DatabaseSearch(db, "user_information", "username", uid)
 			if err == nil {
 				c.JSON(http.StatusOK, gin.H{
 					"id":          userInformation.Id,
