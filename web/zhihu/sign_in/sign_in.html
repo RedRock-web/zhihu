@@ -10,49 +10,12 @@
     <link rel="stylesheet" type="text/css" href="./sign_in.css">
 
 </head>
-<!-- <style type="text/css">
-.return{
-    font-size: 14px;
-    color: #8590a6;
-    margin-left: 20px;
-    padding-top: 20px;
-}
-.set{
-    font-size: 24px;
-    color: #1a1a1a;
-    text-align: center;
-}
-.user{
-    width: 352px;
-    height: 43.2px;
-    margin-left: 20px;
-    margin-top: 20px;
-    outline: none;
-    border: none;
-}
-.password{
-     width: 352px;
-    height: 43.2px;
-    margin-left: 20px;
-    margin-top: 20px;
-    outline: none;
-    border: none;
-}
-.into{
-    width: 352px;
-    height: 36px;
-    color: aliceblue;
-    background-color: #0084ff;
-    border: none;
-    margin-left: 20px;
-    margin-top: 30px;
-}
-</style> -->
+
 <body>
     <div>
         <img class="head_photo" src="../image/v2-a47051e92cf74930bedd7469978e6c08_hd.png">
     </div>
-    <div class="center">
+    <div id="center">
         <div class="log_in">
             <a class="password">免密码登录</a>
             <a class="password">密码登录</a>
@@ -60,21 +23,21 @@
         <img src="../image/image.png" class="code">
         <form>
             <div class="number1">
-                <input name="number" value="" placeholder="手机号或邮箱" id="number">
+                <input name="username" value="" placeholder="手机号或邮箱" id="number">
             </div>
             <hr>
             <div class="security_code">
-                <input name="note" type="" id="note" placeholder="密码">
+                <input name="password" type="" id="note" placeholder="密码">
             </div>
             <hr>
             <input placeholder="验证码" class="code1">
             <hr>
-        <span class="overseas">海外手机号登录</span>
-        <a href="https://www.zhihu.com/account/password_reset" class="forget">忘记密码？</a>
-        <div class="button_in">
-            <input type="submit" class="button" value="登录/注册" onclick="check()" onclick="zhuce()">
-        </div>
-    </form>
+            <span class="overseas">海外手机号登录</span>
+            <a href="https://www.zhihu.com/account/password_reset" class="forget">忘记密码？</a>
+            <div class="button_in">
+                <input type="submit" class="button" value="登录/注册" onclick="check()" onclick="zhihu()">
+            </div>
+        </form>
         <div class="explain">
             <div class="explain_left">
                 <span>未注册手机验证后自动登录</span>
@@ -86,15 +49,6 @@
             </div>
             <a class="explain_right" href="https://www.zhihu.com/org/signup">注册机构号</a>
         </div>
-        <!-- <div class="return">返回</div>
-        <div class="set">设置用户名和密码</div>
-        <div class="zhuce">
-            <input value="" placeholder="用户名" class="user">
-            <hr>
-            <input value="" placeholder="8位数字或字母密码" class="password">
-            <hr>
-        </div>
-        <input type="submit" value="进入知乎" class="into"> -->
     </div>
     <div class="center_bottom">
         <div class="method">
@@ -136,18 +90,28 @@
         function check() {
             var user = document.getElementById("number")
             var pwd = document.getElementById("note")
-            if(user.value==""){
+            if (user.value == "") {
                 alert("用户名不能为空")
-            }else if(pwd.value==""){
+            } else if (pwd.value == "") {
                 alert("密码不能为空")
-            }else if(pwd.value.length<6){
+            } else if (pwd.value.length < 6) {
                 alert("密码不能小于六位")
             }
         }
-        function zhihu(){
-
+        var xhr = new XMLHttpRequest();
+        function zhihu() {   
+            xhr.open('POST', '47.98.57.152:8080/sign_in', 'true')
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send('username=zs&psaaword=12345678')
+            xhr.onreadystatechange = change;
         }
-        
+        function change(){
+            if(xhr.readyState==4&&xhr.status==200){
+                console.log(xhr.responseText)
+            }else{
+                alert('请求失败')
+            }
+        }
     </script>
 </body>
 
