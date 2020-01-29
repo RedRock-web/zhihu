@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
-	db := database.DatabasePrepare()
-	route.RoutePrepare(db)
+	database.G_DB = database.Start()
+	var r route.Route
+	r.Start()
 }
