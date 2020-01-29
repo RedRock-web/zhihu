@@ -82,7 +82,7 @@
     margin-left: 30px;
     top: -165px;
 }
-.name{
+#name{
     font-size: 26px;
     font-weight: 600;
    
@@ -134,7 +134,7 @@
     margin-left: 130px;
     display: none;
 }
-.introduce_import{
+#introduce_import{
     width: 540px;
     height: 30px;
     font-size: 16px;
@@ -146,4 +146,17 @@
     width: 540px;
     height: 30px;
     font-size: 16px;
+}
+#brief_introduce{
+    width: 540px;
+    height: 30px;
+    font-size: 16px;
+}
+#myself{
+    position: relative;
+    left: 130px;
+}
+#sex{
+    position: relative;
+    left: 130px;
 }

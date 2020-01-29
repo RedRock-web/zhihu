@@ -28,102 +28,126 @@
             <img src="../image/da8e974dc_xl.jpg" class="me">
         </div>
         <div class="set">
-            <span class="name" onclick="name()">dai</span>
+            <span id="name" onclick="name()">dai</span>
             <div id="nickname">
-                    <input type="text" name="name_input" class="introduce_import">
-                    <br>
-                    <input class="preservation" name="preservation" type="submit" value="保存">
-                    <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel3()">
+                <input type="text" name="name_input" id="introduce_import">
+                <br>
+                <input class="preservation" name="preservation" type="submit" value="保存" onclick="nickName()">
+                <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel3()">
             </div>
             <div>
                 <p class="gender">性别<p>
-                <button type="submit" class="button1" onclick="func()">修改</button>
-                <div id="select">
-                    <form class="but">
-                        <input type="radio" name="sex" value="male">男
-                        <input type="radio" name="sex" value="female">女
-                    </form>
-                    <input class="preservation" name="preservation" type="submit" value="保存" onclick="">
-                    <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel()">
-                </div>
+                        <span id="sex"></span>
+                        <button type="submit" class="button1" onclick="func()">修改</button>
+                        <div id="select">
+                            <form class="but">
+                                <input type="radio" name="sex" value="男" id="isMale">男
+                                <input type="radio" name="sex" value="女" id="isFemale">女
+                            </form>
+                            <input class="preservation" name="preservation" type="submit" value="保存"
+                                onclick="my_gender()">
+                            <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel()">
+                        </div>
             </div>
             <hr>
             <div>
                 <p class="gender">一句话介绍<p>
-                <button type="button" class="button1" onclick="input()">填写</button>
-                <div id="introduce">
-                    <input type="text" name="introduce_import" class="introduce_import">
-                    <br>
-                    <input class="preservation" name="preservation" type="submit" value="保存">
-                    <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel1()">
-                </div>
+                        <div>
+                            <span id="myself"></span>
+                            <button type="button" class="button1" onclick="input()">填写</button>
+                        </div>
+                        <div id="introduce">
+                            <input type="text" name="introduce_import" id="brief_introduce">
+                            <br>
+                            <input class="preservation" name="preservation" type="submit" value="保存" onclick="brief()">
+                            <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel1()">
+                        </div>
             </div>
             <hr>
             <div>
                 <p class="gender">居住地<p>
-                <button type="button" class="button1">添加居住地</button>
+                        <button type="button" class="button1">添加居住地</button>
             </div>
             <hr>
             <div>
                 <p class="gender">所在行业<p>
-                <button type="button" class="button1">请填写行业信息</button>
+                        <button type="button" class="button1">请填写行业信息</button>
             </div>
             <hr>
             <div>
                 <p class="gender">职业经历<p>
-                <button type="button" class="button1">添加职业经历</button>
+                        <button type="button" class="button1">添加职业经历</button>
             </div>
             <hr>
             <div>
                 <p class="gender">教育经历<p>
-                <button type="button" class="button1">添加教育经历</button>
+                        <button type="button" class="button1">添加教育经历</button>
             </div>
             <hr>
             <div>
                 <p class="gender">个人认证<p>
-                <button type="button" class="button1">申请个人认证</button>
+                        <button type="button" class="button1">申请个人认证</button>
             </div>
             <hr>
             <div>
                 <p class="gender">个人简介<p>
-                <button type="button" class="button1">填写</button>
+                        <button type="button" class="button1">填写</button>
             </div>
             <hr>
         </div>
     </div>
     <script>
-        var but=document.getElementById("select");
-        var int=document.getElementById("introduce");
-        var Nickname=document.getElementById("nickname")
-        function name(){
-            if(Nickname.style.display="none"){
-                Nickname.style.display="block";
+        var but = document.getElementById("select");
+        var int = document.getElementById("introduce");
+        var Nickname = document.getElementById("nickname")
+        function name() {
+            if (Nickname.style.display = "none") {
+                Nickname.style.display = "block";
             }
         }
-        function cancel3(){
-             if(Nickname.style.display="block"){
-                Nickname.style.display="none";
+        function cancel3() {
+            if (Nickname.style.display = "block") {
+                Nickname.style.display = "none";
             }
         }
-        function func(){
-            if(but.style.display="none"){
-                but.style.display="block";
+        function func() {
+            if (but.style.display = "none") {
+                but.style.display = "block";
             }
         }
-        function cancel(){
-             if(but.style.display="block"){
-                but.style.display="none";
+        function cancel() {
+            if (but.style.display = "block") {
+                but.style.display = "none";
             }
         }
-        function input(){
-             if(int.style.display="none"){
-                int.style.display="block";
+        function input() {
+            if (int.style.display = "none") {
+                int.style.display = "block";
             }
         }
-        function cancel1(){
-            if(int.style.display="block"){
-                int.style.display="none";
+        function cancel1() {
+            if (int.style.display = "block") {
+                int.style.display = "none";
             }
+        }
+        function nickName() {
+            var Name = document.getElementById('name')
+            var nick = document.getElementById('introduce_import')
+            Name.innerHTML = nick.value
+        }
+        function my_gender() {
+            var sex = document.getElementsByName('sex')
+            var gender = document.getElementById('sex')
+            for(var i=0;i<sex.length;i++){
+                if(sex[i].checked){
+                    gender.innerHTML = sex[i].value
+                }            
+                }
+        }
+        function brief() {
+            var bri = document.getElementById('brief_introduce')
+            var my = document.getElementById('myself')
+            my.innerHTML = bri.value
         }
     </script>
 </body>
