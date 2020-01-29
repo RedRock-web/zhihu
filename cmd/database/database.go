@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 //数据库结构体，内置表格结构体，分别为数据库和结构体增加增删改查方法
@@ -25,11 +26,6 @@ type AlterData struct {
 	targeKey   string
 	targeValue string
 }
-type InserData struct {
-	username string
-	password string
-	uid      string
-}
 type FindData struct {
 	targeKey   string
 	targeValue string
@@ -44,7 +40,7 @@ func (d *Database) Create(NewDbName string) error {
 
 //打开数据库
 func (d *Database) Open() error {
-	command := d.UserName + ":" + d.Password + "@tcp(127.0.0.1:3306)/" + d.DbName + "?charset=utf8"
+	command := strings.Join([]string{d.UserName, ":", d.Password, "@tcp(127.0.0.1:3306)/", d.DbName, "?charset=utf8"}, "")
 	db, err := sql.Open("mysql", command)
 	d.Db = db
 	d.table.Db = db
@@ -65,8 +61,7 @@ func (d *Database) Close() {
 
 //创建表格
 func (t *Table) Create(tableName string, kAndV string) error {
-	command := "create table " + tableName + " (id int NOT NULL auto_increment," +
-		kAndV + ", primary key(id)) character set = utf8"
+	command := strings.Join([]string{"create table ", tableName, " (id int NOT NULL auto_increment,", kAndV, ", primary key(id)) character set = utf8"}, "")
 	stmt, err := t.Db.Prepare(command)
 	stmt.Exec()
 	return err
@@ -81,46 +76,65 @@ func (t *Table) Drop(tableName string) error {
 }
 
 //插入记录
-//TODO:改为通用的insert
-func (t *Table) Insert(tableName string, data InserData) error {
-	command := "insert into " + tableName +
-		"(username, password, uid) values(?,?,?)"
+func (t *Table) Insert(tableName string, targeKey []string, targeValue []string) error {
+	command := strings.Join([]string{"insert into ", tableName, "( ", strings.Join(targeKey, ""), " ) values", ObtainDbStr(targeValue)}, "")
 	stmt, err := t.Db.Prepare(command)
-	stmt.Exec(data.username, data.password, data.uid)
+	stmt.Exec(StrToInterface(targeValue)...)
 	return err
+}
+
+//传入数组，返回一个特定string
+func ObtainDbStr(data []string) string {
+	str := "("
+	for i := 0; i < len(data); i++ {
+		str += "?,"
+	}
+	str = str[:len(str)-1]
+	str += ")"
+	return str
+}
+
+//字符串数组转空接口数组
+func StrToInterface(data []string) []interface{} {
+	data1 := make([]interface{}, len(data))
+	for k, v := range data {
+		data1[k] = v
+	}
+	return data1
 }
 
 //更改记录
 func (t *Table) Alter(tableName string, data AlterData) error {
-	command := "update " + tableName + " set " +
-		data.newKey + " = \"" + data.newValue + "\" where " + data.targeKey + " = \"" + data.targeValue + "\""
+	command := strings.Join([]string{"update ", tableName, " set ", data.newKey, " = \"", data.newValue, "\" where ", data.targeKey + " = \"", data.targeValue, "\""}, "")
 	stmt, err := t.Db.Prepare(command)
 	stmt.Exec()
 	return err
 }
 
 //查找记录
-func (t *Table) Find(tableName string, data FindData) (userImformation USER, err error) {
-	command := "select * from " + tableName + " where " + data.targeKey + " = " + "\"" + data.targeValue + "\""
+func (t *Table) Find(tableName string, limit string, targeKey string, targeValue string) ([]map[string]interface{}, error) {
+	command := strings.Join([]string{"select ", limit, " from ", tableName, " where ", targeKey, " ='", targeValue, "'"}, "")
 	stmt, err := t.Db.Query(command)
-	for stmt.Next() {
-		stmt.Scan(
-			&userImformation.Id,
-			&userImformation.Username,
-			&userImformation.Password,
-			&userImformation.Uid,
-			&userImformation.Gender,
-			&userImformation.Nickname,
-			&userImformation.Introduction,
-			&userImformation.Avatar,
-			&userImformation.Question_id,
-			&userImformation.Reply_id,
-			&userImformation.Favorite_id,
-			&userImformation.Followers_id,
-			&userImformation.Concern_id,
-			&userImformation.Article_id)
+	columns, _ := stmt.Columns()
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength) //临时存储每行数据
+	for index, _ := range cache {              //为每一列初始化一个指针
+		var a interface{}
+		cache[index] = &a
 	}
-	return
+	var list []map[string]interface{} //返回的切片
+	for stmt.Next() {
+		_ = stmt.Scan(cache...)
+
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{}) //取实际类型
+		}
+		list = append(list, item)
+	}
+	_ = stmt.Close()
+
+	return list, err
 }
 
 type USER struct {
