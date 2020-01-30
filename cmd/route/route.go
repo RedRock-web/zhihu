@@ -3,8 +3,10 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"zhihu/cmd/api/login_page"
-	"zhihu/cmd/api/personal_page"
+	"zhihu/cmd/features/home_page"
+	"zhihu/cmd/features/login_page"
+	"zhihu/cmd/features/personal_page"
+	"zhihu/cmd/features/question_details_page"
 )
 
 //使用route结构体，把站点各个页面模块作为方法
@@ -20,7 +22,7 @@ func (route Route) Start() {
 	{
 		route.HomePage()
 		route.PersonalPage()
-		route.IssueDetailsPage()
+		route.QuestionDetailsPage()
 	}
 	r.Run()
 }
@@ -52,8 +54,9 @@ func (route Route) HomePage() {
 	//热榜
 	route.auth.GET("/feed/topstory/hot",)
 	//提问
-	route.auth.POST("/questions", )
-	route.auth.GET("/logout", login_page.Logout)
+	route.auth.POST("/questions", home_page.Start)
+	//注销
+	route.auth.GET("/logout", home_page.Logout)
 }
 
 //TODO:帐号重置密码
@@ -70,4 +73,8 @@ func (route Route) PersonalPage() {
 	route.auth.POST("/chat", personal_page.Chat)
 }
 
-func (route Route) IssueDetailsPage() {}
+func (route Route) QuestionDetailsPage() {
+	route.auth.GET("/question/:questionId/:targe",)
+	route.auth.POST("/question/:questionId/:targe",question_details_page.Start)
+	route.auth.DELETE("/question/:questionId/:targe",question_details_page.Start)
+}
