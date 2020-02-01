@@ -1,8 +1,10 @@
 package route
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"zhihu/cmd/basic"
 	"zhihu/cmd/features"
 )
 
@@ -62,25 +64,19 @@ func (route Route) HomePage() {
 
 //登录注册页
 func (route Route) LoginPage(r *gin.Engine) {
-	//r.GET("/sign_in", func(c *gin.Context) {
-	//	//已登录,直接跳转主页
-	//	if features.IsLogin(c, "userID") {
-	//		basic.Redirect(c, "/")
-	//	} else { //没有登录，跳转到登录注册页
-	//		c.JSON(200, gin.H{
-	//			"msg": "成功来到登录注册页，现在可以登录，注册，找回密码了！",
-	//		})
-	//		fmt.Println("ewg")
-	//		r.POST("/sign_in", features.RegisteOrLogin)
-	//		r.GET("/account/password_reset", features.PasswdReset)
-	//	}
-	//})
 	r.GET("/sign_in", func(c *gin.Context) {
-		c.JSON(200,gin.H{
-			"msg": "sdf",
-		})
+		//已登录,直接跳转主页
+		if features.IsLogin(c, "userID") {
+			basic.Redirect(c, "/")
+		} else { //没有登录，跳转到登录注册页
+			c.JSON(200, gin.H{
+				"msg": "成功来到登录注册页，现在可以登录，注册，找回密码了！",
+			})
+			fmt.Println("ewg")
+			r.POST("/sign_in", features.RegisteOrLogin)
+			r.GET("/account/password_reset", features.PasswdReset)
+		}
 	})
-	r.POST("/sign_in", features.RegisteOrLogin)
 }
 
 //用户详情页
