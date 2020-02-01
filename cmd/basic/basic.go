@@ -4,18 +4,15 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"net/http"
 	"strconv"
 	"time"
 )
 
-//用户存储当前用户的uid和昵称
-var G_UserID string
-var G_NickName string
-
 //检查error
 func CheckError(err error, errorMsg string) {
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		fmt.Println(errors.New(errorMsg))
 	}
 }
@@ -51,4 +48,9 @@ func GetAAnserId() string {
 //根据时间戳获取评论id
 func GetACommentId() string {
 	return strconv.FormatInt(time.Now().Unix()-2951392, 10)
+}
+
+//重定向
+func Redirect(c *gin.Context, url string) {
+	c.Redirect(http.StatusMovedPermanently, url)
 }
