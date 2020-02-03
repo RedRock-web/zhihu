@@ -117,7 +117,7 @@ body{
 .button_in{
     margin-top: 30px;
 }
-.button{
+#button{
     width: 375px;
     height: 36px;
     background-color: #0084ff;
