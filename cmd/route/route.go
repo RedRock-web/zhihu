@@ -1,31 +1,33 @@
 package route
 
 import (
-	"database/sql"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"zhihu/cmd/features/login_page"
-	"zhihu/cmd/features/personal_page"
+	"zhihu/cmd/basic"
+	"zhihu/cmd/features"
 )
 
-func RoutePrepare(db *sql.DB) {
+//使用route结构体，把站点各个页面模块作为方法
+type Route struct {
+	auth *gin.RouterGroup
+}
+
+func (route Route) Start() {
 	r := gin.Default()
-
-	LoginPage(db, r)
-
-	auth := r.Group("")
-	auth.Use(AuthRequired())
+	route.LoginPage(r)
+	route.auth = r.Group("")
+	route.auth.Use(route.AuthRequired())
 	{
-		Homepage(db, auth)
-		PersonalPage(db, auth)
-		IssueDetailsPage(db, auth)
+		route.HomePage()
+		route.PersonalPage()
+		route.QuestionDetailsPage()
 	}
-
 	r.Run()
 }
 
 //使用cookie检测是否登录的中间件
-func AuthRequired() gin.HandlerFunc {
+func (route Route) AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, _ := c.Request.Cookie("userID")
 		if cookie == nil {
@@ -38,53 +40,59 @@ func AuthRequired() gin.HandlerFunc {
 	}
 }
 
-func Homepage(db *sql.DB, auth *gin.RouterGroup) {
+//主页
+func (route Route) HomePage() {
 	//主页
-	auth.GET("/", func(c *gin.Context) {
-
+	route.auth.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"msg": "这里是主页！",
+		})
 	})
 	//搜索
-	auth.GET("/search", func(c *gin.Context) {
-
-	})
+	route.auth.GET("/search", )
 	//推荐
-	auth.GET("/feed/topstory/recommend", func(c *gin.Context) {
-
-	})
+	route.auth.GET("/feed/topstory/recommend", )
 	//关注
-	auth.GET("/feed/topstory/follow_wonderful", func(c *gin.Context) {
-
-	})
+	route.auth.GET("/feed/topstory/follow_wonderful", )
 	//热榜
-	auth.GET("/feed/topstory/hot", func(c *gin.Context) {
-
-	})
+	route.auth.GET("/feed/topstory/hot", )
 	//提问
-	auth.POST("/questions", func(c *gin.Context) {
-        
-	})
-	auth.GET("/logout", func(c *gin.Context) {
-		login_page.Logout(db, c)
+	route.auth.POST("/questions", )
+	//注销
+	route.auth.GET("/logout", features.Logout)
+}
+
+//登录注册页
+func (route Route) LoginPage(r *gin.Engine) {
+	r.GET("/sign_in", func(c *gin.Context) {
+		//已登录,直接跳转主页
+		if features.IsLogin(c, "userID") {
+			basic.Redirect(c, "/")
+		} else { //没有登录，跳转到登录注册页
+			c.JSON(200, gin.H{
+				"msg": "成功来到登录注册页，现在可以登录，注册，找回密码了！",
+			})
+			fmt.Println("ewg")
+			r.POST("/sign_in", features.RegisteOrLogin)
+			r.GET("/account/password_reset", features.PasswdReset)
+		}
 	})
 }
 
-//TODO:帐号重置密码
-func LoginPage(db *sql.DB, r *gin.Engine) {
-	r.POST("/sign_in", func(c *gin.Context) {
-		login_page.RegisteOrLogin(db, c, "user")
+//用户详情页
+func (route Route) PersonalPage() {
+	//编辑个人资料
+	route.auth.GET("/edit", func(c *gin.Context) {
+		route.auth.PUT("/me", features.Edit)
 	})
-	r.GET("/account/password_reset", func(c *gin.Context) {
-
-	})
-	return
+	//查看用户状态
+	route.auth.GET("/members/:nickname/:targe/:followingValus", )
+	route.auth.POST("/chat", )
 }
 
-func PersonalPage(db *sql.DB, auth *gin.RouterGroup) {
-	auth.PUT("/me", func(c *gin.Context) {
-		personal_page.AlterInformation(c, db)
-	})
-}
-
-func IssueDetailsPage(db *sql.DB, auth *gin.RouterGroup) {
-
+//问题详情页
+func (route Route) QuestionDetailsPage() {
+	route.auth.GET("/question/:questionId/:targe", )
+	route.auth.POST("/question/:questionId/:targe", )
+	route.auth.DELETE("/question/:questionId/:targe", )
 }
