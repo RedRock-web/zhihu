@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="../image/logo.f6eef033.png" rel="shortcut icon" type="photo" sizes="any">
     <link href="./ask_page.css" type="text/css" rel="stylesheet">
 </head>
+
 <body>
     <div class="head">
         <div class="content">
@@ -48,20 +50,42 @@
         </div>
     </div>
     <div class="lowest">
-        <input type="submit" value="赞同" class="agree">
-        <input type="submit" value="不赞同" class="disagree">
+        <input type="button" value="赞同" id="agree" onclick="doAgree()">
+        <input type="button" value="不赞同" id="disagree" onclick="doDisagree()">
         <span>评论</span>
         <span>分享</span>
         <span>收藏</span>
         <span>喜欢</span>
     </div>
     <script>
-        function send(){
+        function send() {
             var Input = document.getElementById('input_box')
-            if(Input.style.display ='none'){
-                Input.style.display='block'
+            if (Input.style.display = 'none') {
+                Input.style.display = 'block'
+            }
+        }
+        var agr = document.getElementById('agree')
+        var times = 0;
+        var dis = document.getElementById('disagree')
+        function doAgree() {
+            if(times++%2==0){
+                agr.style.backgroundColor = '#0084ff'
+                agr.style.color = '#fff'
+            }else{
+                agr.style.backgroundColor = 'rgba(0,132,255,.1)'
+                agr.style.color = '#0084ff'
+            }
+        }
+        function doDisagree(){
+            if(times++%2==0){
+                dis.style.backgroundColor = '#0084ff'
+                dis.style.color = '#fff'
+            }else{
+                dis.style.backgroundColor = 'rgba(0,132,255,.1)'
+                dis.style.color = '#0084ff'
             }
         }
     </script>
 </body>
+
 </html>

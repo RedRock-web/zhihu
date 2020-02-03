@@ -35,7 +35,7 @@
             <span class="overseas">海外手机号登录</span>
             <a href="https://www.zhihu.com/account/password_reset" class="forget">忘记密码？</a>
             <div class="button_in">
-                <input type="submit" class="button" value="登录/注册" onclick="check()" onclick="zhihu()">
+                <input type="submit" id="button" value="登录/注册" onclick="check()">
             </div>
         </form>
         <div class="explain">
@@ -98,20 +98,55 @@
                 alert("密码不能小于六位")
             }
         }
+        // var xmlHttp;
+        // function doAjax(){
+        //     if(window.XMLHttpRequest){
+        //         xmlHttp = new XMLHttpRequest();
+        //     }else if(window.ActiveXObject){
+        //         xmlHttp = new ActiveXObject('Microsoft XMLHTTP');
+        //     }
+
+        //     if(xmlHttp != null){
+        //         var userName = document.getElementById('number').value;
+        //         var password = document.getElementById('note').value;
+        //         var url ='http://47.98.57.152:8080/sign_in'
+        //         //url = encodeURI(encodeURI(url)); 
+        //         xmlHttp.open('post',url,true);
+        //         xmlHttp.onreadystatechange = processRequset;
+        //         xmlHttp.send(null);
+        //     }else{
+        //         alert('无法创建XMLHttpRequset对象！')
+        //     }
+        //     function processRequset(){
+        //         if(xmlHttp.readyState == 4){
+        //             if(xmlHttp.status == 200){
+        //                 var str = xmlHttp.responseText;
+        //                 if(str != 0){
+
+        //                 }else{
+
+        //                 }
+        //             }else{
+        //                 alert(xmlHttp.status);
+        //             }
+        //         }
+        //     }
+        // }
         var xhr = new XMLHttpRequest();
-        function zhihu() {   
-            xhr.open('POST', '47.98.57.152:8080/sign_in', 'true')
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhr.send('username=zs&psaaword=12345678')
-            xhr.onreadystatechange = change;
-        }
-        function change(){
-            if(xhr.readyState==4&&xhr.status==200){
-                console.log(xhr.responseText)
-            }else{
-                alert('请求失败')
+        var Num = document.getElementById('number').value;
+        var Note = document.getElementById('note').value;
+        xhr.open('post', 'http://47.98.57.152:8080/sign_in', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200 || xhr.status == 304) {
+                    console.log(xhr.responseText)
+                }
+            } else {
+                console.log('请求失败')
             }
         }
+        xhr.send();
     </script>
 </body>
 

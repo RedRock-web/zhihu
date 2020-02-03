@@ -23,6 +23,14 @@
     font-weight: 600;
     margin-left: 20px;
 }
+#issue{
+    width:82px;
+    height: 32px;
+    background: none;
+    border: solid 1px;
+    margin-left: 550px;
+    color: #0084ff;
+}
 .middle{
     width: 660px;
     margin: auto;
