@@ -58,6 +58,7 @@ func Start() Database {
 	basic.CheckError(err, "answer创建失败！")
 
 	//question_comment表用于存储问题的评论
+	//comment_id    --        评论的id
 	//uid           --        评论的用户
 	//question_id   --        评论的问题
 	//time          --        评论的时间
@@ -65,10 +66,11 @@ func Start() Database {
 	//pid存储表中的主键id，默认为0
 	//若为0,则表示回复提问
 	//若不为0,则表示向id为pid的值的评论的回复
-	err = db1.Table.Create("question_comment", "uid int,question_id int, pid int, time varchar(30), content varchar(200)")
+	err = db1.Table.Create("question_comment", "uid int, comment_id int, question_id int, pid int not null DEFAULT 0, time varchar(30), content varchar(200)")
 	basic.CheckError(err, "question_comment创建失败！")
 
 	//answer_comment表用于存储回答的评论
+	//comment_id    --        评论的id
 	//uid           --        评论的用户
 	//answer_id     --        评论的回答
 	//time          --        评论的时间
@@ -77,7 +79,7 @@ func Start() Database {
 	//pid存储表中的主键id，默认为0
 	//若为0,则表示回复回答
 	//若不为0,则表示向id为pid的值的评论的回复
-	err = db1.Table.Create("answer_comment", "uid int, answer_id int, pid int, time varchar(30),content varchar(200)")
+	err = db1.Table.Create("answer_comment", "uid int, comment_id int, answer_id int, pid int not null DEFAULT 0, time varchar(30),content varchar(200)")
 	basic.CheckError(err, "answer_comment创建失败！")
 
 	//question_follow存用户对问题的关注
