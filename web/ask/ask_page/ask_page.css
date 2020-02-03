@@ -154,7 +154,7 @@
     bottom: 0;
     left: 210px;
 }
-.agree{
+#agree{
     background-color: rgba(0,132,255,.1);
     color: #0084ff;
     width: 97.83px;
@@ -165,7 +165,7 @@
     border-radius: 4px;
     outline: none;
 }
-.disagree{
+#disagree{
     background-color: rgba(0,132,255,.1);
     color: #0084ff;
     width: 97.83px;
