@@ -7,6 +7,7 @@ import (
 	"zhihu/cmd/database"
 )
 
+
 // Question表示一个问题
 type Question struct {
 	C          *gin.Context
@@ -143,6 +144,6 @@ func (q Question) IsQuestion() bool {
 }
 
 //删除问题
-func (q Question) Delete()  {
+func (q Question) Delete() {
 
 }

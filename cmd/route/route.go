@@ -101,6 +101,7 @@ func (route Route) QuestionDetailsPage() {
 
 	//进入问题详情页，获取问题信息
 	route.auth.GET("/questions/:questionId/", func(c *gin.Context) {
+		questionId := c.Param("questionId")
 
 		//关注问题
 		route.auth.POST("/questions/:questionId/followers", features.Follow)
@@ -117,12 +118,17 @@ func (route Route) QuestionDetailsPage() {
 		//删除评论
 		route.auth.DELETE("/comments/:commentId", features.DeleteComment)
 
-		//查看回答
-		route.auth.GET("/questions/:answerId")
-
-		//写回答
-		route.auth.POST("/questions/:questionId/draft")
-		//删除回答
+		//判断是否写了回答
+		if features.HaveAnswer(questionId) {
+			answerId := features.GetAnswerId()
+			//查看自己的回答
+			route.auth.GET("/questions/:questionId/"+answerId, features.ViewAnswer)
+			//删除自己的回答
+			route.auth.DELETE("/answers/" + answerId, features.DeleteAnswer)
+		} else {
+			//写回答
+			route.auth.POST("/questions/:questionId/draft", features.PostAnswer)
+		}
 
 		//查看回答评论
 
