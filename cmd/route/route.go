@@ -14,13 +14,6 @@ type Route struct {
 
 func (route Route) Start() {
 	r := gin.Default()
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"msg":  "sdf",
-			"test": "sdfewtsf",
-		})
-	})
-
 	route.LoginPage(r)
 	route.auth = r.Group("")
 	route.auth.Use(route.AuthRequired())
@@ -72,7 +65,6 @@ func (route Route) HomePage() {
 func (route Route) LoginPage(r *gin.Engine) {
 	r.GET("/sign_in", func(c *gin.Context) {
 		//已登录,直接跳转主页
-		c.String(200, "sdf")
 		if features.IsLogin(c, "userID") {
 			basic.Redirect(c, "/")
 		} else { //没有登录，跳转到登录注册页
@@ -101,7 +93,7 @@ func (route Route) QuestionDetailsPage() {
 
 	//进入问题详情页，获取问题信息
 	route.auth.GET("/questions/:questionId/", func(c *gin.Context) {
-		questionId := c.Param("questionId")
+		features.G_question_id = c.Param("questionId")
 
 		//关注问题
 		route.auth.POST("/questions/:questionId/followers", features.Follow)
@@ -109,8 +101,11 @@ func (route Route) QuestionDetailsPage() {
 		//取消关注问题
 		route.auth.DELETE("/questions/:questionId/followers", features.CancelFollow)
 
-		//查看问题评论
-		route.auth.GET("/questions/:questionId/comments")
+		//查看评论
+		route.auth.GET("/comments/:commentId", )
+
+		//查看子评论
+		route.auth.GET("/comments/:commentId/child_comments", )
 
 		//对问题发表评论
 		route.auth.POST("/questions/:questionId/comments", features.PostQuestionComments)
@@ -118,22 +113,28 @@ func (route Route) QuestionDetailsPage() {
 		//删除评论
 		route.auth.DELETE("/comments/:commentId", features.DeleteComment)
 
+		//点赞或反对评论
+		route.auth.POST("comments/:commentId/actions/like")
+		route.auth.DELETE("comments/:commentId/actions/like")
+		route.auth.POST("comments/:commentId/actions/dislike")
+		route.auth.DELETE("comments/:commentId/actions/dislike")
+
 		//判断是否写了回答
-		if features.HaveAnswer(questionId) {
-			answerId := features.GetAnswerId()
+		if features.HaveAnswer(features.G_question_id) {
+			answerId := features.GetAnswerId(features.G_question_id)
 			//查看自己的回答
-			route.auth.GET("/questions/:questionId/"+answerId, features.ViewAnswer)
+			route.auth.GET("/questions/"+features.G_question_id+"/"+answerId, features.ViewAnswer)
 			//删除自己的回答
-			route.auth.DELETE("/answers/" + answerId, features.DeleteAnswer)
+			route.auth.DELETE("/answers/"+answerId, features.DeleteAnswer)
 		} else {
 			//写回答
 			route.auth.POST("/questions/:questionId/draft", features.PostAnswer)
 		}
 
-		//查看回答评论
-
 		//对回答发表评论
 		route.auth.POST("/questions/:questionId/answers/:answerId/comments", features.PostAnswerComments)
-	})
 
+		//对回答的点赞
+		route.auth.POST("/answers/:answerId/voters")
+	})
 }

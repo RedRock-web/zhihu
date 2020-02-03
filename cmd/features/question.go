@@ -7,6 +7,7 @@ import (
 	"zhihu/cmd/database"
 )
 
+var G_question_id string
 
 // Question表示一个问题
 type Question struct {

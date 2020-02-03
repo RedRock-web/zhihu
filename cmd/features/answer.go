@@ -55,8 +55,8 @@ func (a Answer) HaveAnswer() bool {
 }
 
 //获取本问题，登录用户的回答id
-func GetAnswerId() string {
-	data, err := database.G_DB.Table.HighFind("answer", "id", "uid = "+a.uid+" and question_id = "+a.question_id)
+func GetAnswerId(questionId string) string {
+	data, err := database.G_DB.Table.HighFind("answer", "id", "uid = "+G_user.Info.Uid+" and question_id = "+questionId)
 	basic.CheckError(err, "获取回答id失败！")
 	return string(data[0]["id"].([]uint8))
 }
@@ -94,7 +94,7 @@ func (a Answer) View() error {
 
 func DeleteAnswer(c *gin.Context) {
 	a := NewAnswer()
-	a.id = GetAnswerId()
+	a.id = GetAnswerId(G_question_id)
 	err := a.Delete()
 	basic.CheckError(err, "删除回答失败！")
 	if err == nil {

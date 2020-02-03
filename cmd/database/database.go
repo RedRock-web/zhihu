@@ -63,9 +63,9 @@ func Start() Database {
 	//question_id   --        评论的问题
 	//time          --        评论的时间
 	//content       --        评论的内容
-	//pid存储表中的主键id，默认为0
+	//pid存储comment_id，默认为0
 	//若为0,则表示回复提问
-	//若不为0,则表示向id为pid的值的评论的回复
+	//若不为0,则表示向comment_id的评论回复
 	err = db1.Table.Create("question_comment", "uid int, comment_id int, question_id int, pid int not null DEFAULT 0, time varchar(30), content varchar(200)")
 	basic.CheckError(err, "question_comment创建失败！")
 
@@ -76,9 +76,9 @@ func Start() Database {
 	//time          --        评论的时间
 	//content       --        评论的内容
 	//pid           --        评论的对象
-	//pid存储表中的主键id，默认为0
+	//pid存储表中的主键comment_id，默认为0
 	//若为0,则表示回复回答
-	//若不为0,则表示向id为pid的值的评论的回复
+	//若不为0,则表示向comment_id评论的回复
 	err = db1.Table.Create("answer_comment", "uid int, comment_id int, answer_id int, pid int not null DEFAULT 0, time varchar(30),content varchar(200)")
 	basic.CheckError(err, "answer_comment创建失败！")
 
@@ -100,18 +100,20 @@ func Start() Database {
 
 	//answer_attitude存用户对答案的态度
 	//uid           --      用户
+	//time          --      时间
 	//answer_id     --		回答
 	//attitude      --      态度，默认为0
 	//0表示不关心，1表示赞同，2表示反对
-	err = db1.Table.Create("answer_attitude", "uid int,answer_id int, attitude int not null DEFAULT 0 ")
+	err = db1.Table.Create("answer_attitude", "uid int,time varchar(30), answer_id int, attitude int not null DEFAULT 0 ")
 	basic.CheckError(err, "answer_attitude表创建失败！")
 
 	//comment_attitude存用户对评论的态度
 	//uid           --      用户
-	//comment_id     --		回答
+	//time          --      时间
+	//comment_id    --		回答
 	//attitude      --      态度，默认为0
 	//0表示不关心，1表示赞同，2表示反对
-	err = db1.Table.Create("comment_attitude", "uid int, comment_id int, attitude int not null DEFAULT 0 ")
+	err = db1.Table.Create("comment_attitude", "uid int, time varchar(30), comment_id int, attitude int not null DEFAULT 0 ")
 	basic.CheckError(err, "comment_attitude表创建失败！")
 
 	//todo:增加收藏夹，文章，想法，专栏
@@ -191,7 +193,7 @@ func (t *Table) Drop(tableName string) error {
 //插入记录
 func (t *Table) Insert(tableName string, targeKey []string, targeValue []string) error {
 	command := strings.Join([]string{"insert into ", tableName, "( ", strings.Join(targeKey, ","), " ) values ", ObtainDbStr(targeValue)}, "")
-	fmt.Println(command,targeValue)
+	fmt.Println(command, targeValue)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -222,7 +224,7 @@ func StrToInterface(data []string) []interface{} {
 
 //删除记录
 func (t *Table) Delete(tableName string, limitInfo string) error {
-	command := strings.Join([]string{"delete from ",tableName, "where ",limitInfo}," ")
+	command := strings.Join([]string{"delete from ", tableName, "where ", limitInfo}, " ")
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -230,6 +232,7 @@ func (t *Table) Delete(tableName string, limitInfo string) error {
 	_, err = stmt.Exec()
 	return err
 }
+
 //更改记录
 func (t *Table) Alter(tableName string, newKey string, newValue string, limitKey string, limitValue string) error {
 	command := strings.Join([]string{"update ", tableName, " set ", newKey, " = '", newValue, "' where ", limitKey + " = '", limitValue, "'"}, "")

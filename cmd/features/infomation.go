@@ -72,7 +72,7 @@ func (info Info) View() error {
 
 //判断targe是否合理
 func IsTargeCompliance(targe string) bool {
-	return targe == "gender" || targe == "information" || targe == "nickname" || targe == "avatar"
+	return targe == "gender" || targe == "introduction" || targe == "nickname" || targe == "avatar"
 }
 
 //查看信息，分别查看个人和他人信息

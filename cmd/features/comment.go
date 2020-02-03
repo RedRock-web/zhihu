@@ -122,3 +122,4 @@ func (c Comment) IsAnswerComment() bool {
 	basic.CheckError(err, "判断评论是否是回答的评论失败！")
 	return data[0]["id"].([]uint8) == nil
 }
+
