@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+var (
+	NowTimeUinx string         //用于记录当前时间戳
+)
+
 //检查error
 func CheckError(err error, errorMsg string) {
 	if err != nil {
@@ -51,6 +55,11 @@ func GetACommentId() string {
 }
 
 //重定向
-func Redirect(c *gin.Context, url string) {
+func RediRect(c *gin.Context, url string) {
 	c.Redirect(http.StatusMovedPermanently, url)
+}
+
+//获取十位时间戳
+func GetTimeUinx() string {
+	return strconv.FormatInt(time.Now().Unix(), 10)
 }

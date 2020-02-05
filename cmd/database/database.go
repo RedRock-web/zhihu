@@ -98,23 +98,23 @@ func Start() Database {
 	err = db1.Table.Create("user_follow", "uid int, follow_uid int")
 	basic.CheckError(err, "user_follow表创建失败！")
 
-	//answer_attitude存用户对答案的态度
+	//answer_vote存用户对答案的表态
 	//uid           --      用户
 	//time          --      时间
 	//answer_id     --		回答
 	//attitude      --      态度，默认为0
 	//0表示不关心，1表示赞同，2表示反对
-	err = db1.Table.Create("answer_attitude", "uid int,time varchar(30), answer_id int, attitude int not null DEFAULT 0 ")
-	basic.CheckError(err, "answer_attitude表创建失败！")
+	err = db1.Table.Create("answer_vote", "uid int,time varchar(30), answer_id int, attitude int not null DEFAULT 0 ")
+	basic.CheckError(err, "answer_vote表创建失败！")
 
-	//comment_attitude存用户对评论的态度
+	//comment_vote存用户对评论的态度
 	//uid           --      用户
 	//time          --      时间
 	//comment_id    --		回答
 	//attitude      --      态度，默认为0
 	//0表示不关心，1表示赞同，2表示反对
-	err = db1.Table.Create("comment_attitude", "uid int, time varchar(30), comment_id int, attitude int not null DEFAULT 0 ")
-	basic.CheckError(err, "comment_attitude表创建失败！")
+	err = db1.Table.Create("comment_vote", "uid int, time varchar(30), comment_id int, attitude int not null DEFAULT 0 ")
+	basic.CheckError(err, "comment_vote表创建失败！")
 
 	//todo:增加收藏夹，文章，想法，专栏
 

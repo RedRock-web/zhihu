@@ -22,7 +22,17 @@ func (route Route) Start() {
 		route.PersonalPage()
 		route.QuestionDetailsPage()
 	}
-	r.Run()
+	err := r.Run()
+	basic.CheckError(err, "run失败！")
+}
+
+func LoginPageAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetCookie("login_page", basic.NowTimeUinx, 100, "/sign_in", "127.0.0.1", false, true)
+		k, _ := c.Cookie("login_page")
+		if k != "" {
+		}
+	}
 }
 
 //使用cookie检测是否登录的中间件
@@ -64,17 +74,22 @@ func (route Route) HomePage() {
 //登录注册页
 func (route Route) LoginPage(r *gin.Engine) {
 	r.GET("/sign_in", func(c *gin.Context) {
-		//已登录,直接跳转主页
+		//首先判断是否已经登录，如果是，则直接重定向至主页
 		if features.IsLogin(c, "userID") {
-			basic.Redirect(c, "/")
-		} else { //没有登录，跳转到登录注册页
+			basic.RediRect(c, "/")
+			c.SetCookie("login_page", basic.NowTimeUinx, -1, "/sign_in", "127.0.0.1", false, true)
+		} else { //否则进入登录注册页
+			//使用cookie来记住用户进入登录注册页的状态
+			basic.NowTimeUinx = basic.GetTimeUinx()
 			c.JSON(200, gin.H{
 				"msg": "成功来到登录注册页，现在可以登录，注册，找回密码了！",
 			})
 			r.POST("/sign_in", features.RegisteOrLogin)
 			r.GET("/account/password_reset", features.PasswdReset)
+			return
 		}
-	})
+	}
+})
 }
 
 //用户详情页
