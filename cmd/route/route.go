@@ -1,7 +1,6 @@
 package route
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"zhihu/cmd/basic"
@@ -23,7 +22,17 @@ func (route Route) Start() {
 		route.PersonalPage()
 		route.QuestionDetailsPage()
 	}
-	r.Run()
+	err := r.Run()
+	basic.CheckError(err, "run失败！")
+}
+
+func LoginPageAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.SetCookie("login_page", basic.NowTimeUinx, 100, "/sign_in", "127.0.0.1", false, true)
+		k, _ := c.Cookie("login_page")
+		if k != "" {
+		}
+	}
 }
 
 //使用cookie检测是否登录的中间件
@@ -57,7 +66,7 @@ func (route Route) HomePage() {
 	//热榜
 	route.auth.GET("/feed/topstory/hot", )
 	//提问
-	route.auth.POST("/questions", )
+	route.auth.POST("/questions", features.Quiz)
 	//注销
 	route.auth.GET("/logout", features.Logout)
 }
@@ -65,18 +74,22 @@ func (route Route) HomePage() {
 //登录注册页
 func (route Route) LoginPage(r *gin.Engine) {
 	r.GET("/sign_in", func(c *gin.Context) {
-		//已登录,直接跳转主页
+		//首先判断是否已经登录，如果是，则直接重定向至主页
 		if features.IsLogin(c, "userID") {
-			basic.Redirect(c, "/")
-		} else { //没有登录，跳转到登录注册页
+			basic.RediRect(c, "/")
+			c.SetCookie("login_page", basic.NowTimeUinx, -1, "/sign_in", "127.0.0.1", false, true)
+		} else { //否则进入登录注册页
+			//使用cookie来记住用户进入登录注册页的状态
+			basic.NowTimeUinx = basic.GetTimeUinx()
 			c.JSON(200, gin.H{
 				"msg": "成功来到登录注册页，现在可以登录，注册，找回密码了！",
 			})
-			fmt.Println("ewg")
 			r.POST("/sign_in", features.RegisteOrLogin)
 			r.GET("/account/password_reset", features.PasswdReset)
+			return
 		}
-	})
+	}
+})
 }
 
 //用户详情页
@@ -90,9 +103,53 @@ func (route Route) PersonalPage() {
 	route.auth.POST("/chat", )
 }
 
-//问题详情页
+// 问题详情页
 func (route Route) QuestionDetailsPage() {
-	route.auth.GET("/question/:questionId/:targe", )
-	route.auth.POST("/question/:questionId/:targe", )
-	route.auth.DELETE("/question/:questionId/:targe", )
+
+	//进入问题详情页，获取问题信息
+	route.auth.GET("/questions/:questionId/", func(c *gin.Context) {
+		features.G_question_id = c.Param("questionId")
+
+		//关注问题
+		route.auth.POST("/questions/:questionId/followers", features.Follow)
+
+		//取消关注问题
+		route.auth.DELETE("/questions/:questionId/followers", features.CancelFollow)
+
+		//查看评论
+		route.auth.GET("/comments/:commentId", )
+
+		//查看子评论
+		route.auth.GET("/comments/:commentId/child_comments", )
+
+		//对问题发表评论
+		route.auth.POST("/questions/:questionId/comments", features.PostQuestionComments)
+
+		//删除评论
+		route.auth.DELETE("/comments/:commentId", features.DeleteComment)
+
+		//点赞或反对评论
+		route.auth.POST("comments/:commentId/actions/like")
+		route.auth.DELETE("comments/:commentId/actions/like")
+		route.auth.POST("comments/:commentId/actions/dislike")
+		route.auth.DELETE("comments/:commentId/actions/dislike")
+
+		//判断是否写了回答
+		if features.HaveAnswer(features.G_question_id) {
+			answerId := features.GetAnswerId(features.G_question_id)
+			//查看自己的回答
+			route.auth.GET("/questions/"+features.G_question_id+"/"+answerId, features.ViewAnswer)
+			//删除自己的回答
+			route.auth.DELETE("/answers/"+answerId, features.DeleteAnswer)
+		} else {
+			//写回答
+			route.auth.POST("/questions/:questionId/draft", features.PostAnswer)
+		}
+
+		//对回答发表评论
+		route.auth.POST("/questions/:questionId/answers/:answerId/comments", features.PostAnswerComments)
+
+		//对回答的点赞
+		route.auth.POST("/answers/:answerId/voters")
+	})
 }

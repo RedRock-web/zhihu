@@ -1,8 +1,8 @@
 package features
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"net/http"
 	"zhihu/cmd/basic"
 	"zhihu/cmd/database"
@@ -30,11 +30,14 @@ func RegisteOrLogin(c *gin.Context) {
 	a.C = c
 	if a.IsRegiste("user") {
 		if a.Login() == nil {
-			basic.Redirect(c, "/")
+			c.SetCookie("login_page", basic.NowTimeUinx, -1, "/sign_in", "127.0.0.1", false, true)
+			basic.RediRect(c, "/")
 		}
 	} else {
 		if a.Registe() == nil {
-			basic.Redirect(c, "/")
+			a.Login()
+			c.SetCookie("login_page", basic.NowTimeUinx, -1, "/sign_in", "127.0.0.1", false, true)
+			basic.RediRect(c, "/")
 		}
 	}
 }
@@ -48,14 +51,26 @@ func (a Account) IsPasswdExceedSix() bool {
 func (a Account) Registe() (err error) {
 	G_user.Info.Uid = basic.GetAUid()
 	G_user.Info.Nickname = "知乎用户"
-	err = database.G_DB.Table.Insert("user", []string{"username", "password", "uid"}, []string{a.Username, a.Password, G_user.Info.Uid})
-	basic.CheckError(err, "注册失败！")
-	if err != nil {
-		a.C.JSON(500, gin.H{
-			"error": "注册失败！",
+	if a.IsPasswdExceedSix() {
+		err = database.G_DB.Table.Insert("user", []string{"username", "password", "uid"}, []string{a.Username, a.Password, G_user.Info.Uid})
+		basic.CheckError(err, "注册失败！")
+		if err != nil {
+			a.C.JSON(500, gin.H{
+				"error": "注册失败！",
+			})
+			return err
+		}
+	} else {
+		a.C.JSON(http.StatusUnauthorized, gin.H{
+			"error": gin.H{
+				"message": "密码长度不足",
+				"code":    100004,
+				"name":    "ERR_BAD_PASSWORD_FORMAT"},
 		})
+		return errors.New("密码长度不足")
 	}
-	return err
+
+	return
 }
 
 // 登录
@@ -117,8 +132,6 @@ func (a Account) IsLogin(key string) bool {
 //判断是否已经登录
 func IsLogin(c *gin.Context, key string) bool {
 	k, _ := c.Cookie(key)
-	fmt.Println("###")
-	fmt.Println(k != "")
 	return k != ""
 }
 
