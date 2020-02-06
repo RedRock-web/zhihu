@@ -78,7 +78,6 @@ func CancelFollow(c *gin.Context) {
 			"error": "取消关注问题失败！",
 		})
 	}
-
 }
 
 //关注问题

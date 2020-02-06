@@ -28,8 +28,8 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
-//通过cookie判断是否进入登录注册页的middleWare
-func LoginPageJudgeAuth() gin.HandlerFunc {
+//点击登录注册时,用cookie判断是否已经登录,如果已经登录,则重定向到主页,无法再次登录注册
+func Unauthorized2LoginPage() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if features.IsLogin(c, "userID") {
 			basic.RediRect(c, "/")
@@ -40,12 +40,11 @@ func LoginPageJudgeAuth() gin.HandlerFunc {
 	}
 }
 
-//使用cookie检测是否登录的middleWare
-func AuthRequired() gin.HandlerFunc {
+//点击登录后才能点的url,用cookie判断是否已经登录,否则重定向到登录注册页
+func Authorized2Some() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cookie, _ := c.Request.Cookie("userID")
-		if cookie == nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"msg": "请先登录！"})
+		if features.IsLogin(c,"userID") {
+			basic.RediRect(c, "/sign_in")
 			c.Abort()
 		} else {
 			c.Next()
@@ -74,5 +73,29 @@ func RefreshCookie() gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{"msg": "请先登录！"})
 			c.Abort()
 		}
+	}
+}
+//判断是否回答了问题
+func JudgeIfReply() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+	}
+}
+//判断是否关注了问题
+func JudgeIfFollowQuestion() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+	}
+}
+//判断是否评论是该回答的评论
+func JudgeIfCommentInAnswer() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+	}
+}
+//判断是否评论是该问题的评论
+func JudgeIfCommentInQuestion() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
 	}
 }

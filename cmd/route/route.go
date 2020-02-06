@@ -33,11 +33,13 @@ func (e Engine) MiddleWare() {
 func (e Engine) Page() {
 	e.LoginPage()
 	e.PersonalPage()
+	e.QuestionPage()
+	e.HomePage()
 }
 
 //登录注册页feature
 func (e Engine) LoginPage() {
-	loginPage := e.r.Group("", LoginPageJudgeAuth())
+	loginPage := e.r.Group("", Unauthorized2LoginPage())
 	{
 		loginPage.POST("/sign_in", features.RegisteOrLogin)
 		loginPage.GET("/sign_in")
@@ -47,7 +49,7 @@ func (e Engine) LoginPage() {
 
 //用户详情页
 func (e Engine) PersonalPage() {
-	personalPage := e.r.Group("", AuthRequired())
+	personalPage := e.r.Group("", Authorized2Some())
 	{
 		//编辑个人资料
 		personalPage.GET("/edit")
@@ -56,77 +58,86 @@ func (e Engine) PersonalPage() {
 	}
 }
 
-/*
+//问题详情页
+func (e Engine) QuestionPage() {
+	e.Question()
+	e.Answer()
+	e.Comment()
+}
+
 //主页
-func (route Route) HomePage() {
+func (e Engine) HomePage() {
 	//主页
-	route.auth.GET("/", func(c *gin.Context) {
+	e.r.GET("/", Authorized2Some(), func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"msg": "这里是主页！",
 		})
 	})
-	//搜索
-	route.auth.GET("/search", )
-	//推荐
-	route.auth.GET("/feed/topstory/recommend", )
-	//关注
-	route.auth.GET("/feed/topstory/follow_wonderful", )
-	//热榜
-	route.auth.GET("/feed/topstory/hot", )
-	//提问
-	route.auth.POST("/questions", features.Quiz)
 	//注销
-	route.auth.GET("/logout", features.Logout)
+	e.r.GET("/logout", Authorized2Some(), features.Logout)
+	//提问
+	e.r.POST("/questions", Authorized2Some(), features.Quiz)
+
+	/*
+		//搜索
+		route.auth.GET("/search", )
+		//推荐
+		route.auth.GET("/feed/topstory/recommend", )
+		//关注
+		route.auth.GET("/feed/topstory/follow_wonderful", )
+		//热榜
+		route.auth.GET("/feed/topstory/hot", )
+	*/
+
 }
 
-// 问题详情页
-func (route Route) QuestionDetailsPage() {
-
-	//进入问题详情页，获取问题信息
-	route.auth.GET("/questions/:questionId/", func(c *gin.Context) {
-		features.G_question_id = c.Param("questionId")
-
-		//关注问题
-		route.auth.POST("/questions/:questionId/followers", features.Follow)
-
-		//取消关注问题
-		route.auth.DELETE("/questions/:questionId/followers", features.CancelFollow)
-
-		//查看评论
-		route.auth.GET("/comments/:commentId", )
-
-		//查看子评论
-		route.auth.GET("/comments/:commentId/child_comments", )
-
-		//对问题发表评论
-		route.auth.POST("/questions/:questionId/comments", features.PostQuestionComments)
-
+//问题详情页-评论
+func (e Engine) Comment() {
+	c := e.r.Group("/comments")
+	{
 		//删除评论
-		route.auth.DELETE("/comments/:commentId", features.DeleteComment)
-
+		c.DELETE("/:commentId", features.DeleteComment)
 		//点赞或反对评论
-		route.auth.POST("comments/:commentId/actions/like")
-		route.auth.DELETE("comments/:commentId/actions/like")
-		route.auth.POST("comments/:commentId/actions/dislike")
-		route.auth.DELETE("comments/:commentId/actions/dislike")
-
-		//判断是否写了回答
-		if features.HaveAnswer(features.G_question_id) {
-			answerId := features.GetAnswerId(features.G_question_id)
-			//查看自己的回答
-			route.auth.GET("/questions/"+features.G_question_id+"/"+answerId, features.ViewAnswer)
-			//删除自己的回答
-			route.auth.DELETE("/answers/"+answerId, features.DeleteAnswer)
-		} else {
-			//写回答
-			route.auth.POST("/questions/:questionId/draft", features.PostAnswer)
-		}
-
-		//对回答发表评论
-		route.auth.POST("/questions/:questionId/answers/:answerId/comments", features.PostAnswerComments)
-
-		//对回答的点赞
-		route.auth.POST("/answers/:answerId/voters")
-	})
+		c.POST("/:commentId/voters")
+	}
 }
-*/
+
+//问题详情页-回答
+func (e Engine) Answer() {
+	a := e.r.Group("/answers")
+	{
+		//对回答的点赞
+		a.POST("/:answerId/voters")
+		//对回答发表评论
+		a.POST("/:answerId/comments", features.PostAnswerComments)
+		//查看回答评论
+		a.GET("/:answerId/comments")
+		//查看回答子评论
+		a.GET("/:answerId/child_comments/commentId", JudgeIfCommentInAnswer())
+	}
+}
+
+//问题详情页-问题
+func (e Engine) Question() {
+	q := e.r.Group("/questions", Authorized2Some())
+	{
+		//进入问题详情页，获取问题信息
+		q.GET("/:questionId/")
+		//关注问题
+		q.POST("/:questionId/followers", JudgeIfFollowQuestion(), features.Follow)
+		//取消关注问题
+		q.DELETE("/:questionId/followers", JudgeIfFollowQuestion(), features.CancelFollow)
+		//对问题发表评论
+		q.POST("/:questionId/comments", features.PostQuestionComments)
+		//查看问题评论
+		q.GET("/:questionId/comments")
+		//查看问题子评论
+		q.GET("/:questionId/child_comments/commentId", JudgeIfCommentInQuestion())
+		//写回答
+		q.POST("/:questionId/draft", JudgeIfReply(), features.PostAnswer)
+		//查看自己的回答
+		q.GET("/:questionId/answer", JudgeIfReply(), features.ViewAnswer)
+		//删除自己的回答
+		q.DELETE("/:questionId/answer", JudgeIfReply(), features.DeleteAnswer)
+	}
+}

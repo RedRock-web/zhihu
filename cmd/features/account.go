@@ -1,7 +1,6 @@
 package features
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"net/http"
@@ -123,7 +122,6 @@ func (a Account) IsLogin(key string) bool {
 //判断是否已经登录
 func IsLogin(c *gin.Context, key string) bool {
 	k, _ := c.Cookie(key)
-	fmt.Println(k!="")
 	return k != ""
 }
 
