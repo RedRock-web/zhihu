@@ -27,6 +27,7 @@ func RegisteOrLogin(c *gin.Context) {
 	a.Username = c.PostForm("username")
 	//TODO:考虑用户安全，加密传输和存储用户密码
 	a.Password = c.PostForm("password")
+	a.Password = basic.Get32Md5(a.Password)
 	a.C = c
 	if a.IsRegiste("user") {
 		if a.Login() == nil {

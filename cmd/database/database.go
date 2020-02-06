@@ -36,7 +36,7 @@ func Start() Database {
 	//nickname    --  用户名，默认‘知乎用户’
 	//introdution --  个人介绍
 	//avatar      --  头像链接
-	err = db1.Table.Create("user", "username varchar(15), password varchar(15), uid int,gender char(2) not null DEFAULT '0',nickname varchar(20) not null DEFAULT '知乎用户', introduction varchar(200), avatar varchar(50)")
+	err = db1.Table.Create("user", "username varchar(15), password varchar(40), uid int,gender char(2) not null DEFAULT '0',nickname varchar(20) not null DEFAULT '知乎用户', introduction varchar(200), avatar varchar(50)")
 	basic.CheckError(err, "user表格创建失败！")
 
 	//question表，用于存储问题基本信息

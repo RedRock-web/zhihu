@@ -14,23 +14,40 @@ type Route struct {
 
 func (route Route) Start() {
 	r := gin.Default()
-	route.LoginPage(r)
-	route.auth = r.Group("")
-	route.auth.Use(route.AuthRequired())
-	{
-		route.HomePage()
-		route.PersonalPage()
-		route.QuestionDetailsPage()
-	}
+	LoginPage(r)
+	//route.auth = r.Group("")
+	//route.auth.Use(route.AuthRequired())
+	//{
+	//	route.HomePage()
+	//	route.PersonalPage()
+	//	route.QuestionDetailsPage()
+	//}
 	err := r.Run()
 	basic.CheckError(err, "run失败！")
 }
 
+//通过cookie判断是否进入登录注册页
+func LoginPageJudgeAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if features.IsLogin(c, "userID") {
+			basic.RediRect(c, "/")
+			c.Next()
+		} else {
+			c.Next()
+		}
+	}
+}
+
+//登录注册页中间件
 func LoginPageAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		basic.NowTimeUinx = basic.GetTimeUinx()
 		c.SetCookie("login_page", basic.NowTimeUinx, 100, "/sign_in", "127.0.0.1", false, true)
 		k, _ := c.Cookie("login_page")
 		if k != "" {
+			c.Next()
+		} else {
+			c.Abort()
 		}
 	}
 }
@@ -46,6 +63,17 @@ func (route Route) AuthRequired() gin.HandlerFunc {
 			c.Next()
 			//c.JSON(200, "have cookie")
 		}
+	}
+}
+
+//登录注册页feature
+func LoginPage(r *gin.Engine) {
+	loginGroup := r.Group("")
+	loginGroup.Use(LoginPageJudgeAuth())
+	{
+		r.POST("/sign_in", LoginPageJudgeAuth(), features.RegisteOrLogin)
+		r.GET("/sign_in", LoginPageJudgeAuth())
+		r.GET("/account/password_reset", LoginPageJudgeAuth(), features.PasswdReset)
 	}
 }
 
@@ -69,27 +97,6 @@ func (route Route) HomePage() {
 	route.auth.POST("/questions", features.Quiz)
 	//注销
 	route.auth.GET("/logout", features.Logout)
-}
-
-//登录注册页
-func (route Route) LoginPage(r *gin.Engine) {
-	r.GET("/sign_in", func(c *gin.Context) {
-		//首先判断是否已经登录，如果是，则直接重定向至主页
-		if features.IsLogin(c, "userID") {
-			basic.RediRect(c, "/")
-			c.SetCookie("login_page", basic.NowTimeUinx, -1, "/sign_in", "127.0.0.1", false, true)
-		} else { //否则进入登录注册页
-			//使用cookie来记住用户进入登录注册页的状态
-			basic.NowTimeUinx = basic.GetTimeUinx()
-			c.JSON(200, gin.H{
-				"msg": "成功来到登录注册页，现在可以登录，注册，找回密码了！",
-			})
-			r.POST("/sign_in", features.RegisteOrLogin)
-			r.GET("/account/password_reset", features.PasswdReset)
-			return
-		}
-	}
-})
 }
 
 //用户详情页
