@@ -11,62 +11,105 @@
 </head>
 
 <body>
-    <div class="head">
-        <div class="content">
-            <span class="zhihu">知乎</span>
-            <a class="home_page" href="D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
-            <a class="find" href="">发现</a>
-            <a class="answer" href="">等你来答</a>
-            <input type="text" value="" id="search">
-            <input type="submit" value="搜索" id="commit">
-            <input type="submit" value="提问" class="ask">
-            <img src="../image/da8e974dc_xl.jpg" class="pic" onclick="window.location.href='D:/GIT2/RedRock-web/web/personal/personal_page/personal_page.html'">
+    <div id="all">
+        <div class="head">
+            <div class="content">
+                <span class="zhihu">知乎</span>
+                <a class="home_page" href="D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
+                <a class="find" href="">发现</a>
+                <a class="answer" href="">等你来答</a>
+                <input type="text" value="" id="search">
+                <input type="submit" value="搜索" id="commit">
+                <input type="submit" value="提问" class="ask" onclick="Ask()">
+                <img src="../image/da8e974dc_xl.jpg" class="pic"
+                    onclick="window.location.href='D:/GIT2/RedRock-web/web/personal/personal_page/personal_page.html'">
+            </div>
+        </div>
+        <div class="middle">
+            <div class="left">
+                <div class="left_head">
+                    <a href="" class="link">推荐</a>
+                    <a href="" class="link">关注</a>
+                    <a href="" class="link">热榜</a>
+                </div>
+            </div>
+            <div class="right">
+                <div class="right_head">
+                    <div class="line1">
+                        <span>写回答</span>
+                       <span> <a href="./write.html" >写文章</a></span>
+                        <span>写想法</span>
+                    </div>
+                    </br>
+                    <div class="line2">
+                        <span>发视频</span>
+                        <span>稍后答</span>
+                        <span>草稿箱</span>
+                    </div>
+                </div>
+                <div class="right_middle">
+                    <div class="line3">
+                        <span>Live</span>
+                        <span>书店</span>
+                        <span>圆桌</span>
+                    </div>
+                    </br>
+                    <div class="line4">
+                        <span>专栏</span>
+                        <span>付费咨询</span>
+                        <span>百科</span>
+                    </div>
+                </div>
+                <div class="right_buttom">
+                    <div>我的收藏</div>
+                    <div>我关注的问题</div>
+                    <div>我的邀请</div>
+                    <div>站务中心</div>
+                    <div>版权服务中心</div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="middle">
-        <div class="left">
-            <div class="left_head">
-                <a href="" class="link">推荐</a>
-                <a href="" class="link">关注</a>
-                <a href="" class="link">热榜</a>
-            </div>
-        </div>
-        <div class="right">
-            <div class="right_head">
-                <div class="line1">
-                    <span>写回答</span>
-                    <span onclick="window.location.href='write.html'">写文章</span>
-                    <span>写想法</span>
+    <div id="hole">
+        <div id="hole_in">
+            <div id="modal">
+                <div class="modal_in">
+                    <img class="avatar" src="../image/da8e974dc_xl.jpg">
+                    <div class="text">
+                        <textarea placeholder="写下你的问题，准确地描述问题更容易得到解答" class="Input"></textarea>
+                    </div>
+                    <div class="modal_middle">
+                        <textarea placeholder="输入问题背景、条件等详细信息(选填)" class="describe"></textarea>
+                    </div>
+                    <button type="button" id="add" onclick="Add()">+ 添加话题 (至少添加一个话题) </button>
+                    <input id="topic" type="text">
+                    <input type="submit" id="release" value="发布问题">
                 </div>
-                </br>
-                <div class="line2">
-                    <span>发视频</span>
-                    <span>稍后答</span>
-                    <span>草稿箱</span>
-                </div>
-            </div>
-            <div class="right_middle">
-                <div class="line3">
-                    <span>Live</span>
-                    <span>书店</span>
-                    <span>圆桌</span>
-                </div>
-                </br>
-                <div class="line4">
-                    <span>专栏</span>
-                    <span>付费咨询</span>
-                    <span>百科</span>
-                </div>
-            </div>
-            <div class="right_buttom">
-                <div>我的收藏</div>
-                <div>我关注的问题</div>
-                <div>我的邀请</div>
-                <div>站务中心</div>
-                <div>版权服务中心</div>
+                <span id="back" onclick="hide()">X</span>
             </div>
         </div>
     </div>
+    <script>
+        var add = document.getElementById('add')
+        var Topic = document.getElementById('topic')
+        var Hole = document.getElementById('hole_in')
+        function Add() {
+            if (add.style.display = 'block') {
+                if (Topic.style.display = 'none') {
+                    add.style.display = 'none';
+                    Topic.style.display = 'block';
+                }
+            }
+
+        }
+        function Ask(){
+            Hole.style.display='block'
+           Hole.style.position = 'fixed'
+        }
+        function hide(){
+            Hole.style.display='none'
+        }
+    </script>
 </body>
 
 </html>

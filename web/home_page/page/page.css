@@ -10,7 +10,7 @@
 }
 .content{
     padding-left: 16px; 
-    position: absolute;
+    position: relative;
     left: 300px;
 }
 .zhihu{
@@ -142,4 +142,108 @@
     margin-top: 20px;
     margin-left: 30px;
     font-size: 14px;
+}
+#hole{
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+}
+#hole_in{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(26,26,26,.65);
+    display: none;
+}
+#modal{    
+    width: 536px;
+    display: flex;
+    position: absolute;
+    top: 30%;
+    left: 33%;
+}
+.modal_in{
+    overflow: auto;
+    background: #fff;
+    border-radius: 2px;
+    width: 536px;
+    height: 336px;
+}
+.avatar{
+    width: 40px;
+    height: 40px;
+    margin-left: 20px;
+    margin-top: 30px;
+    border-radius: 4px;
+    float: left;
+}
+.Input{
+    font-size: 20px;
+    width: 432px;
+    height: 80px;
+    color: #1a1a1a;
+    border: none;
+    resize: none;
+    outline:none;
+    line-height: 24px;
+    margin-top: 30px;
+    margin-left: 10px;
+}
+.describe{
+    font-size: 18px;
+    width: 486px;
+    height: 90px;
+    resize: none;
+    outline: none;
+    padding-left: 5px;
+    margin-left: 20px;
+    margin-top: 15Px;
+}
+#back{
+    color: #f6f6f6;
+    font-size: 20px;
+    position: relative;
+    left: 20px;
+    top: 15px;
+}
+#add{
+    font-size: 14px;
+    color: #0084ff;
+    border: none;
+    outline: none;
+    background-color: #fff;
+    margin-top: 15px;
+    margin-left: 10px;
+    display: block;
+}
+#topic{
+    width: 180px;
+    height: 30px;
+    border: #0084ff solid 1.5px;
+    border-radius: 20px;    
+    padding-left: 10px;
+    outline: none;
+    font-size: 15px;
+    margin-left: 20px;
+    margin-top: 15px;
+    display: none;
+}
+#release{
+    width: 90px;
+    height: 34px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #0084ff;
+    border-color: #0084ff;
+    display: inline-block;
+    border: 1px solid;
+    text-align: center;
+    line-height: 32px;
+    border-radius: 4px;
+    position: relative;
+    left: 75%;
 }
