@@ -2,81 +2,61 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"zhihu/cmd/basic"
 	"zhihu/cmd/features"
 )
 
-//使用route结构体，把站点各个页面模块作为方法
-type Route struct {
-	auth *gin.RouterGroup
+//Engine 表示一个路由
+type Engine struct {
+	r *gin.Engine
 }
 
-func (route Route) Start() {
-	r := gin.Default()
-	LoginPage(r)
-	//route.auth = r.Group("")
-	//route.auth.Use(route.AuthRequired())
-	//{
-	//	route.HomePage()
-	//	route.PersonalPage()
-	//	route.QuestionDetailsPage()
-	//}
-	err := r.Run()
-	basic.CheckError(err, "run失败！")
+//NewEngine 返回一个包含logger和recovery middleWare的路由
+func NewEngine() *Engine {
+	return &Engine{gin.Default()}
 }
 
-//通过cookie判断是否进入登录注册页
-func LoginPageJudgeAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if features.IsLogin(c, "userID") {
-			basic.RediRect(c, "/")
-			c.Next()
-		} else {
-			c.Next()
-		}
-	}
+//main函数路由准备
+func Start() {
+	e := NewEngine()
+	e.MiddleWare()
+	e.Page()
+	e.r.Run()
 }
 
-//登录注册页中间件
-func LoginPageAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		basic.NowTimeUinx = basic.GetTimeUinx()
-		c.SetCookie("login_page", basic.NowTimeUinx, 100, "/sign_in", "127.0.0.1", false, true)
-		k, _ := c.Cookie("login_page")
-		if k != "" {
-			c.Next()
-		} else {
-			c.Abort()
-		}
-	}
+//设置全局路由middleWare
+func (e Engine) MiddleWare() {
+	e.r.Use(Cors())           //解决跨域问题
+	e.r.NoRoute(NoResponse()) //解决404页面问题
 }
 
-//使用cookie检测是否登录的中间件
-func (route Route) AuthRequired() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		cookie, _ := c.Request.Cookie("userID")
-		if cookie == nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"msg": "请先登录！"})
-			c.Abort()
-		} else {
-			c.Next()
-			//c.JSON(200, "have cookie")
-		}
-	}
+//路由开启各项page feature
+func (e Engine) Page() {
+	e.LoginPage()
+	e.PersonalPage()
 }
 
 //登录注册页feature
-func LoginPage(r *gin.Engine) {
-	loginGroup := r.Group("")
-	loginGroup.Use(LoginPageJudgeAuth())
+func (e Engine) LoginPage() {
+	loginPage := e.r.Group("", LoginPageJudgeAuth())
 	{
-		r.POST("/sign_in", LoginPageJudgeAuth(), features.RegisteOrLogin)
-		r.GET("/sign_in", LoginPageJudgeAuth())
-		r.GET("/account/password_reset", LoginPageJudgeAuth(), features.PasswdReset)
+		loginPage.POST("/sign_in", features.RegisteOrLogin)
+		loginPage.GET("/sign_in")
+		loginPage.GET("/account/password_reset", features.PasswdReset)
 	}
 }
 
+//用户详情页
+func (e Engine) PersonalPage() {
+	personalPage := e.r.Group("", AuthRequired())
+	{
+		//编辑个人资料
+		personalPage.GET("/edit")
+		personalPage.PUT("/me", features.Edit)
+		personalPage.POST("/chat", )
+	}
+}
+
+/*
 //主页
 func (route Route) HomePage() {
 	//主页
@@ -97,17 +77,6 @@ func (route Route) HomePage() {
 	route.auth.POST("/questions", features.Quiz)
 	//注销
 	route.auth.GET("/logout", features.Logout)
-}
-
-//用户详情页
-func (route Route) PersonalPage() {
-	//编辑个人资料
-	route.auth.GET("/edit", func(c *gin.Context) {
-		route.auth.PUT("/me", features.Edit)
-	})
-	//查看用户状态
-	route.auth.GET("/members/:nickname/:targe/:followingValus", )
-	route.auth.POST("/chat", )
 }
 
 // 问题详情页
@@ -160,3 +129,4 @@ func (route Route) QuestionDetailsPage() {
 		route.auth.POST("/answers/:answerId/voters")
 	})
 }
+*/

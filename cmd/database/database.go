@@ -10,7 +10,7 @@ import (
 var G_DB Database
 
 //项目数据库相关准备
-func Start() Database {
+func Start(){
 	db := Database{
 		UserName: "root",
 		Password: "root",
@@ -118,7 +118,7 @@ func Start() Database {
 
 	//todo:增加收藏夹，文章，想法，专栏
 
-	return db1
+	G_DB = db1
 }
 
 //数据库结构体，内置表格结构体，分别为数据库和结构体增加增删改查方法
