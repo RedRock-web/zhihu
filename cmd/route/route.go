@@ -119,14 +119,17 @@ func (e Engine) Answer() {
 
 //问题详情页-问题
 func (e Engine) Question() {
-	q := e.r.Group("/questions", Authorized2Some())
+	q := e.r.Group("/questions", RefreshCookie(),Authorized2Some())
 	{
 		//进入问题详情页，获取问题信息
 		q.GET("/:questionId/")
+
 		//关注问题
-		q.POST("/:questionId/followers", JudgeIfFollowQuestion(), features.Follow)
+		q.POST("/:questionId/followers", JudgeIfFollowQuestion())
+
 		//取消关注问题
-		q.DELETE("/:questionId/followers", JudgeIfFollowQuestion(), features.CancelFollow)
+		q.DELETE("/:questionId/followers", JudgeIfFollowQuestion())
+
 		//对问题发表评论
 		q.POST("/:questionId/comments", features.PostQuestionComments)
 		//查看问题评论

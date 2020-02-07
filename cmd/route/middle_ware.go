@@ -7,7 +7,6 @@ import (
 	"zhihu/cmd/features"
 )
 
-
 // 处理跨域请求,支持options访问的全局middleWare
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -43,11 +42,12 @@ func Unauthorized2LoginPage() gin.HandlerFunc {
 //点击登录后才能点的url,用cookie判断是否已经登录,否则重定向到登录注册页
 func Authorized2Some() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if features.IsLogin(c,"userID") {
+		if features.IsLogin(c, "userID") {
+			features.G_user.Info.Uid, _ = c.Cookie("userID")
+			c.Next()
+		} else {
 			basic.RediRect(c, "/sign_in")
 			c.Abort()
-		} else {
-			c.Next()
 		}
 	}
 }
@@ -75,24 +75,42 @@ func RefreshCookie() gin.HandlerFunc {
 		}
 	}
 }
+
 //判断是否回答了问题
 func JudgeIfReply() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 	}
 }
+
 //判断是否关注了问题
 func JudgeIfFollowQuestion() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
+		q := features.NewQuestion()
+		q.Id = c.Param("questionId")
+		if q.IsFollow() && basic.MethodIsOk(c, "DELETE") {
+			if q.CancelFollow() == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"isFollow": "no",
+				})
+			}
+		} else if !q.IsFollow() && basic.MethodIsOk(c, "POST") {
+			if q.Follow() == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"isFollow": "yes",
+				})
+			}
+		}
 	}
 }
+
 //判断是否评论是该回答的评论
 func JudgeIfCommentInAnswer() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 	}
 }
+
 //判断是否评论是该问题的评论
 func JudgeIfCommentInQuestion() gin.HandlerFunc {
 	return func(c *gin.Context) {

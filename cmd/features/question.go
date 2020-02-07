@@ -45,50 +45,16 @@ func NewQuestion() *Question {
 //	}
 //}
 
-//关注问题接口
-func Follow(c *gin.Context) {
-	q := NewQuestion()
-	q.C = c
-	q.Id = c.Param("questionId")
-	err := q.Follow()
-	if err != nil {
-		q.C.JSON(http.StatusOK, gin.H{
-			"isFollow": "yes",
-		})
-	} else {
-		q.C.JSON(500, gin.H{
-			"error": "关注问题失败！",
-		})
-	}
 
-}
-
-//取消关注问题接口
-func CancelFollow(c *gin.Context) {
-	q := NewQuestion()
-	q.C = c
-	q.Id = c.Param("questionId")
-	err := q.CancelFollow()
-	if err != nil {
-		q.C.JSON(http.StatusOK, gin.H{
-			"isFollow": "yes",
-		})
-	} else {
-		q.C.JSON(500, gin.H{
-			"error": "取消关注问题失败！",
-		})
-	}
-}
-
-//关注问题
-func (q Question) Follow() (err error) {
+//取消关注问题
+func (q Question) CancelFollow() (err error) {
 	err = database.G_DB.Table.Delete("question_follow", "uid = "+G_user.Info.Uid+" and question_id = "+q.Id)
 	basic.CheckError(err, "取消关注问题失败！")
 	return err
 }
 
-// 取消关注问题
-func (q Question) CancelFollow() (err error) {
+//关注问题
+func (q Question) Follow() (err error) {
 	err = database.G_DB.Table.Insert("question_follow", []string{"uid", "question_id"}, []string{G_user.Info.Uid, q.Id})
 	basic.CheckError(err, "关注问题失败！")
 	return err
@@ -98,7 +64,7 @@ func (q Question) CancelFollow() (err error) {
 func (q Question) IsFollow() bool {
 	data, err := database.G_DB.Table.HighFind("question_follow", "id", "uid = "+G_user.Info.Uid+" and "+"question_id = "+q.Id)
 	basic.CheckError(err, "查询是否关注问题失败！")
-	return data[0]["id"].([]uint8) == nil
+	return data != nil
 }
 
 // 提问接口
@@ -120,11 +86,14 @@ func (q Question) Quiz() {
 		basic.CheckError(err, "提问失败！")
 		if err == nil {
 			q.C.JSON(http.StatusOK, gin.H{
-				"question_id": q.Id,
-				"time":        q.Time,
-				"uid":         q.Uid,
-				"title":       q.Title,
-				"complement":  q.Complement,
+				"status": 0,
+				"data": gin.H{
+					"question_id": q.Id,
+					"time":        q.Time,
+					"uid":         q.Uid,
+					"title":       q.Title,
+					"complement":  q.Complement,
+				},
 			})
 		} else {
 			q.C.JSON(500, gin.H{

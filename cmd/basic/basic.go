@@ -18,7 +18,7 @@ var (
 //检查error
 func CheckError(err error, errorMsg string) {
 	if err != nil {
-		//fmt.Println(err)
+		fmt.Println(err)
 		fmt.Println(errors.New(errorMsg))
 	}
 }
@@ -75,4 +75,9 @@ func Get32Md5(s string) string {
 //返回16位经过md5加密后的字符串
 func Get16Md5(s string) string {
 	return Get32Md5(s)[8:24]
+}
+
+//判断请求方法是否一致
+func MethodIsOk(c *gin.Context, method string) bool {
+	return c.Request.Method == method
 }
