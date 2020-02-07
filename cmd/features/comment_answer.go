@@ -28,3 +28,11 @@ func (ac AnswerComment) Post() error {
 	basic.CheckError(err, "发表问题评论失败！")
 	return err
 }
+
+//删除回答评论
+func (ac AnswerComment) Delete() error {
+	err := database.G_DB.Table.Delete("answer_comment", "comment_id = "+ac.Id)
+	basic.CheckError(err, "删除回答评论失败!")
+	return err
+}
+

@@ -1,7 +1,8 @@
 package features
 
 import (
-	"github.com/gin-gonic/gin"
+	"zhihu/cmd/basic"
+	"zhihu/cmd/database"
 )
 
 //CommentVote 表示一次用户对评论的态度
@@ -17,39 +18,42 @@ func NewCommentVote() *CommentVote {
 	return &CommentVote{}
 }
 
-func (cv CommentVote) Start(c *gin.Context) {
-	targe := c.PostForm("type")
+//点赞评论
+func (cv CommentVote) Agree() error {
+	err := database.G_DB.Table.Insert("comment_vote", []string{"uid", "time", "comment_id", "attitude"}, []string{cv.Uid, cv.Time, cv.Id, cv.Attitude})
+	basic.CheckError(err, "点赞评论失败!")
+	return err
+}
 
-	if cv.IsAgree() {
-		cv.Against() //如果已经点赞，那么无论点击赞同还是反对都是反对
-	} else if cv.IsAgainst() {
-		cv.Agree() //如果已经反对，那么无论点击反对还是赞同都是赞同
-	} else { //没有表明态度
-		if targe == "up" {
-			cv.Agree()
-		} else if targe == "down" {
-			cv.Against()
+//取消点赞评论
+func (cv CommentVote) CancelAgree() error {
+	err := database.G_DB.Table.Delete("comment_vote", "comment_id = "+cv.Id)
+	basic.CheckError(err, "取消点赞失败!")
+	return err
+}
+
+//反对评论
+func (cv CommentVote) Against() error {
+	err := database.G_DB.Table.Insert("comment_vote", []string{"uid", "time", "comment_id", "attitude"}, []string{cv.Uid, cv.Time, cv.Id, cv.Attitude})
+	basic.CheckError(err, "点赞评论失败!")
+	return err
+}
+
+//取消反对评论
+func (cv CommentVote) CancelAgainst() error {
+	err := database.G_DB.Table.Delete("comment_vote", "comment_id = "+cv.Id)
+	basic.CheckError(err, "取消点赞失败!")
+	return err
+}
+
+//获取态度,nil表不关心,1表赞同,0表反对
+func (cv CommentVote) GetAttitude() string {
+	data, err := database.G_DB.Table.HighFind("comment_vote", "attitude", "comment_id = "+cv.Id)
+	basic.CheckError(err, "获取态度失败!")
+		if data == nil {
+			return ""
+		} else {
+			return string(data[0]["attitude"].([]uint8))
 		}
-	}
-}
 
-//取消点赞
-func (cv CommentVote) Against() {
-
-}
-
-//点赞
-func (cv CommentVote) Agree() {
-
-}
-
-//判断是否反对
-func (cv CommentVote) IsAgainst() bool {
-	//data, err := database.G_DB.Table.Find("", "id", "comment_id", "")
-	return true
-}
-
-//判断是否赞同
-func (cv CommentVote) IsAgree() bool {
-	return true
 }

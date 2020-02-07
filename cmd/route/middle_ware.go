@@ -181,6 +181,68 @@ func PostAnswerComments() gin.HandlerFunc {
 	}
 }
 
+//删除问题评论
+func DeteleQuestionComment() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		qc := features.NewQuestionComment()
+		qc.Id = c.Param("commentId")
+		if qc.Delete() == nil {
+			//
+		}
+		c.Abort()
+	}
+}
+
+//删除回答评论
+func DeteleAnswerComment() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ac := features.NewAnswerComment()
+		ac.Id = c.Param("commentId")
+		if ac.Delete() == nil {
+			//
+		}
+		c.Abort()
+	}
+}
+
+//对评论表态
+func VoteComment() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		cv := features.NewCommentVote()
+		cv.Time = basic.GetTimeNow()
+		cv.Id = c.Param("commentId")
+		cv.Uid = features.G_user.Info.Uid
+		vote := c.PostForm("vote")
+		if vote == "up" {
+			cv.Attitude = "1"
+		} else if vote == "down" {
+			cv.Attitude = "0"
+		}
+		attitude := cv.GetAttitude()
+		if attitude == "" { //原来的态度:不关心
+			if vote == "up" { //原来是不关心,现在赞成就直接赞成
+				cv.Agree()
+			} else if vote == "down" { //原来是不关心,现在反对就直接反对
+				cv.Against()
+			}
+		} else if attitude == "0" { //原来的态度:反对
+			if vote == "up" { //原来是反对,现在要赞成,就先取消反对再赞成
+				cv.CancelAgainst()
+				cv.Agree()
+			} else if vote == "down" { //原来的态度:反对
+				cv.CancelAgainst() //原来是反对,现在要反对,就是双击取消反对,变成不关心
+			}
+		} else if attitude == "1" { //原来的态度:赞成
+			if vote == "up" { //原来是赞成,现在要赞成,就是双击取消赞成,变成不关心
+				cv.CancelAgree()
+			} else if vote == "down" { //原来是赞成,现在要反对,就先取消赞成再反对
+				cv.CancelAgree()
+				cv.Against()
+			}
+		}
+	}
+}
+
 //判断是否评论是该回答的评论
 func JudgeIfCommentInAnswer() gin.HandlerFunc {
 	return func(c *gin.Context) {

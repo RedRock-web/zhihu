@@ -62,7 +62,6 @@ func (e Engine) PersonalPage() {
 func (e Engine) QuestionPage() {
 	e.Question()
 	e.Answer()
-	e.Comment()
 }
 
 //主页
@@ -91,17 +90,6 @@ func (e Engine) HomePage() {
 
 }
 
-//问题详情页-评论
-func (e Engine) Comment() {
-	c := e.r.Group("/comments")
-	{
-		//删除评论
-		c.DELETE("/:commentId", )
-		//点赞或反对评论
-		c.POST("/:commentId/voters")
-	}
-}
-
 //问题详情页-回答
 func (e Engine) Answer() {
 	//需要登录
@@ -112,6 +100,13 @@ func (e Engine) Answer() {
 
 		//对回答发表评论
 		RequiredLogin.POST("/:answerId/comments", PostAnswerComments())
+
+		//删除回答评论
+		RequiredLogin.DELETE("/:answerId/comments/:commentId", DeteleAnswerComment())
+
+		//赞成或反对评论
+		RequiredLogin.POST("/:answerId/comments/:commentId/voters", VoteComment())
+
 	}
 	//无需登录
 	Nologin := e.r.Group("/answer")
@@ -150,6 +145,12 @@ func (e Engine) Question() {
 
 		//对问题发表评论
 		q.POST("/:questionId/comments", PostQuestionComments())
+
+		//删除问题评论
+		q.DELETE("/:questionId/comments/:commentId", DeteleQuestionComment())
+
+		//点赞或反对评论
+		q.POST("/:questionId/comments/:commentId/voters", VoteComment())
 
 		//写回答
 		q.POST("/:questionId/draft", ReplyAnswer())
