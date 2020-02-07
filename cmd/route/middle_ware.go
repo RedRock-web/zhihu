@@ -71,36 +71,113 @@ func RefreshCookie() gin.HandlerFunc {
 			c.Next()
 		} else {
 			c.JSON(http.StatusUnauthorized, gin.H{"msg": "请先登录！"})
-			c.Abort()
 		}
 	}
 }
 
-//判断是否回答了问题
-func JudgeIfReply() gin.HandlerFunc {
+//写回答中间件
+func ReplyAnswer() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
+		a := features.NewAnswer()
+		a.Uid = features.G_user.Info.Uid
+		a.Time = basic.GetTimeNow()
+		a.Id = basic.GetAQuestionId()
+		a.Content = c.PostForm("content")
+		a.QuestionId = c.Param("questionId")
+		if !a.HaveAnswer() && basic.MethodIsOk(c, "POST") && a.Post() == nil {
+			//
+		}
+		c.Abort()
 	}
 }
 
-//判断是否关注了问题
-func JudgeIfFollowQuestion() gin.HandlerFunc {
+//删回答中间件
+func DeleteAnswer() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		a := features.NewAnswer()
+		a.Uid = features.G_user.Info.Uid
+		a.QuestionId = c.Param("questionId")
+		if a.HaveAnswer() && basic.MethodIsOk(c, "DELETE") && a.Delete() == nil {
+			//
+		}
+		c.Abort()
+	}
+}
+
+//查看回答中间件
+func ViewAnswer() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		a := features.NewAnswer()
+		a.Uid = features.G_user.Info.Uid
+		a.QuestionId = c.Param("questionId")
+		if a.HaveAnswer() && basic.MethodIsOk(c, "GET") {
+			a.Id = a.GetId()
+			a.Content = a.GetContent()
+			a.Time = a.GetTime()
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data": gin.H{
+					"uid":         a.Uid,
+					"question_id": a.QuestionId,
+					"answer_id":   a.Id,
+					"time":        a.Time,
+					"content":     a.Content,
+				},
+			})
+		}
+		c.Abort()
+	}
+}
+
+//关注问题
+func FollowQuestion() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		q := features.NewQuestion()
 		q.Id = c.Param("questionId")
-		if q.IsFollow() && basic.MethodIsOk(c, "DELETE") {
-			if q.CancelFollow() == nil {
-				c.JSON(http.StatusOK, gin.H{
-					"isFollow": "no",
-				})
-			}
-		} else if !q.IsFollow() && basic.MethodIsOk(c, "POST") {
-			if q.Follow() == nil {
-				c.JSON(http.StatusOK, gin.H{
-					"isFollow": "yes",
-				})
-			}
+		if q.IsFollow() && basic.MethodIsOk(c, "DELETE") && q.CancelFollow() == nil {
+			c.JSON(http.StatusOK, gin.H{
+				"isFollow": "no",
+			})
+		} else if !q.IsFollow() && basic.MethodIsOk(c, "POST") && q.Follow() == nil {
+			c.JSON(http.StatusOK, gin.H{
+				"isFollow": "yes",
+			})
 		}
+		c.Abort()
+	}
+}
+
+//发表问题评论
+func PostQuestionComments() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		qc := features.NewQuestionComment()
+		qc.QuestionId = c.Param("questionId")
+		qc.Time = basic.GetTimeNow()
+		qc.Pid = c.DefaultPostForm("pid", "0")
+		qc.Content = c.PostForm("content")
+		qc.Id = basic.GetACommentId()
+		qc.Uid = features.G_user.Info.Uid
+		if basic.MethodIsOk(c, "POST") && qc.Post() == nil {
+			//
+		}
+		c.Abort()
+	}
+}
+
+//发表回答评论
+func PostAnswerComments() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ac := features.NewAnswerComment()
+		ac.AnswerId = c.Param("answerId")
+		ac.Time = basic.GetTimeNow()
+		ac.Pid = c.DefaultPostForm("pid", "0")
+		ac.Content = c.PostForm("content")
+		ac.Id = basic.GetACommentId()
+		ac.Uid = features.G_user.Info.Uid
+		if basic.MethodIsOk(c, "POST") && ac.Post() == nil {
+			//
+		}
+		c.Abort()
 	}
 }
 

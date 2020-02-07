@@ -96,7 +96,7 @@ func (e Engine) Comment() {
 	c := e.r.Group("/comments")
 	{
 		//删除评论
-		c.DELETE("/:commentId", features.DeleteComment)
+		c.DELETE("/:commentId", )
 		//点赞或反对评论
 		c.POST("/:commentId/voters")
 	}
@@ -104,43 +104,60 @@ func (e Engine) Comment() {
 
 //问题详情页-回答
 func (e Engine) Answer() {
-	a := e.r.Group("/answers")
+	//需要登录
+	RequiredLogin := e.r.Group("/answers", RefreshCookie(), Authorized2Some())
 	{
 		//对回答的点赞
-		a.POST("/:answerId/voters")
+		RequiredLogin.POST("/:answerId/voters")
+
 		//对回答发表评论
-		a.POST("/:answerId/comments", features.PostAnswerComments)
+		RequiredLogin.POST("/:answerId/comments", PostAnswerComments())
+	}
+	//无需登录
+	Nologin := e.r.Group("/answer")
+	{
 		//查看回答评论
-		a.GET("/:answerId/comments")
+		Nologin.GET("/:answerId/comments")
+
 		//查看回答子评论
-		a.GET("/:answerId/child_comments/commentId", JudgeIfCommentInAnswer())
+		Nologin.GET("/:answerId/child_comments/commentId", JudgeIfCommentInAnswer())
 	}
 }
 
 //问题详情页-问题
 func (e Engine) Question() {
-	q := e.r.Group("/questions", RefreshCookie(),Authorized2Some())
+	//无需登录
+	NoLogin := e.r.Group("/questions")
 	{
 		//进入问题详情页，获取问题信息
-		q.GET("/:questionId/")
+		NoLogin.GET("/:questionId/")
 
+		//查看问题评论
+		NoLogin.GET("/:questionId/comments")
+
+		//查看问题子评论
+		NoLogin.GET("/:questionId/child_comments/commentId", JudgeIfCommentInQuestion())
+	}
+
+	//需登录
+	q := e.r.Group("/questions", RefreshCookie(), Authorized2Some())
+	{
 		//关注问题
-		q.POST("/:questionId/followers", JudgeIfFollowQuestion())
+		q.POST("/:questionId/followers", FollowQuestion())
 
 		//取消关注问题
-		q.DELETE("/:questionId/followers", JudgeIfFollowQuestion())
+		q.DELETE("/:questionId/followers", FollowQuestion())
 
 		//对问题发表评论
-		q.POST("/:questionId/comments", features.PostQuestionComments)
-		//查看问题评论
-		q.GET("/:questionId/comments")
-		//查看问题子评论
-		q.GET("/:questionId/child_comments/commentId", JudgeIfCommentInQuestion())
+		q.POST("/:questionId/comments", PostQuestionComments())
+
 		//写回答
-		q.POST("/:questionId/draft", JudgeIfReply(), features.PostAnswer)
+		q.POST("/:questionId/draft", ReplyAnswer())
+
 		//查看自己的回答
-		q.GET("/:questionId/answer", JudgeIfReply(), features.ViewAnswer)
+		q.GET("/:questionId/answer", ViewAnswer())
+
 		//删除自己的回答
-		q.DELETE("/:questionId/answer", JudgeIfReply(), features.DeleteAnswer)
+		q.DELETE("/:questionId/answer", DeleteAnswer())
 	}
 }

@@ -9,6 +9,8 @@ import (
 
 var G_DB Database
 
+
+//TODO:将time改为datatime格式
 //项目数据库相关准备
 func Start(){
 	db := Database{
@@ -225,6 +227,7 @@ func StrToInterface(data []string) []interface{} {
 //删除记录
 func (t *Table) Delete(tableName string, limitInfo string) error {
 	command := strings.Join([]string{"delete from ", tableName, "where ", limitInfo}, " ")
+	fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
