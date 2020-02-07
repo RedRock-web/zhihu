@@ -95,8 +95,8 @@ func (e Engine) Answer() {
 	//需要登录
 	RequiredLogin := e.r.Group("/answers", RefreshCookie(), Authorized2Some())
 	{
-		//对回答的点赞
-		RequiredLogin.POST("/:answerId/voters")
+		//对回答的表态
+		RequiredLogin.POST("/:answerId/voters", VoteAnswer())
 
 		//对回答发表评论
 		RequiredLogin.POST("/:answerId/comments", PostAnswerComments())

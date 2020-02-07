@@ -243,6 +243,44 @@ func VoteComment() gin.HandlerFunc {
 	}
 }
 
+//对回答表态
+func VoteAnswer() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		av := features.NewAnswerVote()
+		av.Time = basic.GetTimeNow()
+		av.Id = c.Param("answerId")
+		av.Uid = features.G_user.Info.Uid
+		vote := c.PostForm("vote")
+		if vote == "up" {
+			av.Attitude = "1"
+		} else if vote == "down" {
+			av.Attitude = "0"
+		}
+		attitude := av.GetAttitude()
+		if attitude == "" { //原来的态度:不关心
+			if vote == "up" { //原来是不关心,现在赞成就直接赞成
+				av.Agree()
+			} else if vote == "down" { //原来是不关心,现在反对就直接反对
+				av.Against()
+			}
+		} else if attitude == "0" { //原来的态度:反对
+			if vote == "up" { //原来是反对,现在要赞成,就先取消反对再赞成
+				av.CancelAgainst()
+				av.Agree()
+			} else if vote == "down" { //原来的态度:反对
+				av.CancelAgainst() //原来是反对,现在要反对,就是双击取消反对,变成不关心
+			}
+		} else if attitude == "1" { //原来的态度:赞成
+			if vote == "up" { //原来是赞成,现在要赞成,就是双击取消赞成,变成不关心
+				av.CancelAgree()
+			} else if vote == "down" { //原来是赞成,现在要反对,就先取消赞成再反对
+				av.CancelAgree()
+				av.Against()
+			}
+		}
+	}
+}
+
 //判断是否评论是该回答的评论
 func JudgeIfCommentInAnswer() gin.HandlerFunc {
 	return func(c *gin.Context) {

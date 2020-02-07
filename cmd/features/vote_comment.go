@@ -50,10 +50,9 @@ func (cv CommentVote) CancelAgainst() error {
 func (cv CommentVote) GetAttitude() string {
 	data, err := database.G_DB.Table.HighFind("comment_vote", "attitude", "comment_id = "+cv.Id)
 	basic.CheckError(err, "获取态度失败!")
-		if data == nil {
-			return ""
-		} else {
-			return string(data[0]["attitude"].([]uint8))
-		}
-
+	if data == nil {
+		return ""
+	} else {
+		return string(data[0]["attitude"].([]uint8))
+	}
 }
