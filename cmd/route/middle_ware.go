@@ -75,6 +75,35 @@ func RefreshCookie() gin.HandlerFunc {
 	}
 }
 
+//登录注册
+func RegisteOrLogin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		a := features.NewAccount()
+		a.Username = c.PostForm("username")
+		a.OriginalPasswd = c.PostForm("password")
+		//密码加密
+		a.Password = basic.Get32Md5(a.OriginalPasswd)
+		a.C = c
+		if a.IsRegiste("user") && a.Login() == nil {
+			basic.RediRect(c, "/")
+		} else if !a.IsRegiste("user") && a.Registe() == nil && a.Login() == nil {
+			basic.RediRect(c, "/")
+		}
+	}
+}
+
+//注销帐号
+func LogOut() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := c.Cookie("userID")
+		basic.CheckError(err, "注销失败！")
+		c.SetCookie("userID", result, -1, "/", "127.0.0.1", false, true)
+		c.JSON(http.StatusFound, gin.H{
+			"message": "账号已注销！",
+		})
+	}
+}
+
 //写回答中间件
 func ReplyAnswer() gin.HandlerFunc {
 	return func(c *gin.Context) {

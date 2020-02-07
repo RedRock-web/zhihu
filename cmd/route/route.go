@@ -41,9 +41,9 @@ func (e Engine) Page() {
 func (e Engine) LoginPage() {
 	loginPage := e.r.Group("", Unauthorized2LoginPage())
 	{
-		loginPage.POST("/sign_in", features.RegisteOrLogin)
+		loginPage.POST("/sign_in", RegisteOrLogin())
 		loginPage.GET("/sign_in")
-		loginPage.GET("/account/password_reset", features.PasswdReset)
+		loginPage.GET("/account/password_reset",)
 	}
 }
 
@@ -73,7 +73,7 @@ func (e Engine) HomePage() {
 		})
 	})
 	//注销
-	e.r.GET("/logout", Authorized2Some(), features.Logout)
+	e.r.GET("/logout", Authorized2Some(), LogOut())
 	//提问
 	e.r.POST("/questions", Authorized2Some(), features.Quiz)
 

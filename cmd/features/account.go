@@ -22,25 +22,6 @@ func NewAccount() *Account {
 	return &Account{}
 }
 
-//登录注册接口
-func RegisteOrLogin(c *gin.Context) {
-	a := NewAccount()
-	a.Username = c.PostForm("username")
-	a.OriginalPasswd = c.PostForm("password")
-	//密码加密
-	a.Password = basic.Get32Md5(a.OriginalPasswd)
-	a.C = c
-	if a.IsRegiste("user") {
-		if a.Login() == nil {
-			basic.RediRect(c, "/")
-		}
-	} else {
-		if a.Registe() == nil && a.Login() == nil {
-			basic.RediRect(c, "/")
-		}
-	}
-}
-
 //判断密码是否大于六位
 func (a Account) IsPasswdExceedSix() bool {
 	return len(a.OriginalPasswd) >= 6
@@ -63,8 +44,7 @@ func (a Account) Registe() (err error) {
 		})
 		return errors.New("密码长度不足")
 	}
-
-	return
+	return nil
 }
 
 // 登录
@@ -126,16 +106,6 @@ func IsLogin(c *gin.Context, key string) bool {
 }
 
 //注销帐号
-func Logout(c *gin.Context) {
-	result, err := c.Cookie("userID")
-	basic.CheckError(err, "注销失败！")
-	c.SetCookie("userID", result, -1, "/", "127.0.0.1", false, true)
-	c.JSON(http.StatusFound, gin.H{
-		"message": "账号已注销！",
-	})
-}
-
-//注销帐号
 func (a Account) Logout() error {
 	result, err := a.C.Cookie("userID")
 	basic.CheckError(err, "注销失败！")
@@ -147,6 +117,6 @@ func (a Account) Logout() error {
 }
 
 //TODO:重置密码
-func PasswdReset(c *gin.Context) {
+func (a Account) PasswdReset(c *gin.Context) {
 
 }
