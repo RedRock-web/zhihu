@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"strings"
 	"zhihu/cmd/basic"
 )
@@ -195,7 +194,7 @@ func (t *Table) Drop(tableName string) error {
 //插入记录
 func (t *Table) Insert(tableName string, targeKey []string, targeValue []string) error {
 	command := strings.Join([]string{"insert into ", tableName, "( ", strings.Join(targeKey, ","), " ) values ", ObtainDbStr(targeValue)}, "")
-	fmt.Println(command, targeValue)
+	//fmt.Println(command, targeValue)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -227,7 +226,7 @@ func StrToInterface(data []string) []interface{} {
 //删除记录
 func (t *Table) Delete(tableName string, limitInfo string) error {
 	command := strings.Join([]string{"delete from ", tableName, "where ", limitInfo}, " ")
-	fmt.Println(command)
+	//fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -239,6 +238,7 @@ func (t *Table) Delete(tableName string, limitInfo string) error {
 //更改记录
 func (t *Table) Alter(tableName string, newKey string, newValue string, limitKey string, limitValue string) error {
 	command := strings.Join([]string{"update ", tableName, " set ", newKey, " = '", newValue, "' where ", limitKey + " = '", limitValue, "'"}, "")
+	//fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -250,6 +250,7 @@ func (t *Table) Alter(tableName string, newKey string, newValue string, limitKey
 //查找记录,只能有一个限定条件
 func (t *Table) Find(tableName string, limit string, targeKey string, targeValue string) ([]map[string]interface{}, error) {
 	command := strings.Join([]string{"select ", limit, " from ", tableName, " where ", targeKey, " ='", targeValue, "'"}, "")
+	//fmt.Println(command)
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return nil, err

@@ -43,7 +43,7 @@ func (e Engine) LoginPage() {
 	{
 		loginPage.POST("/sign_in", RegisteOrLogin())
 		loginPage.GET("/sign_in")
-		loginPage.GET("/account/password_reset",)
+		loginPage.GET("/account/password_reset", )
 	}
 }
 
@@ -67,7 +67,7 @@ func (e Engine) QuestionPage() {
 //主页
 func (e Engine) HomePage() {
 	//主页
-	e.r.GET("/", Authorized2Some(), func(c *gin.Context) {
+	e.r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"msg": "这里是主页！",
 		})

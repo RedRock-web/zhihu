@@ -63,7 +63,7 @@ func (a Account) Login() (err error) {
 			if err != nil {
 				return err
 			}
-			a.C.SetCookie("userID", G_user.Info.Uid, 1000, "/", "127.0.0.1", false, true)
+			a.C.SetCookie("userID", G_user.Info.Uid, 3000, "/", "127.0.0.1:8080", false, true)
 		} else {
 			a.C.JSON(http.StatusUnauthorized, gin.H{
 				"status":     12,
@@ -109,7 +109,7 @@ func IsLogin(c *gin.Context, key string) bool {
 func (a Account) Logout() error {
 	result, err := a.C.Cookie("userID")
 	basic.CheckError(err, "注销失败！")
-	a.C.SetCookie("userID", result, -1, "/", "127.0.0.1", false, true)
+	a.C.SetCookie("userID", result, -1, "/", "127.0.0.1:8080", false, true)
 	a.C.JSON(http.StatusFound, gin.H{
 		"message": "账号已注销！",
 	})
