@@ -7,8 +7,6 @@ import (
 	"zhihu/cmd/database"
 )
 
-var G_question_id string
-
 // Question表示一个问题
 type Question struct {
 	C          *gin.Context
@@ -24,27 +22,6 @@ type Question struct {
 func NewQuestion() *Question {
 	return &Question{}
 }
-
-//
-//func Start(c *gin.Context) {
-//	targe := c.Param("targe")
-//	switch targe {
-//	case "followers":
-//		{
-//			q.Follow()
-//		}
-//	case "comments":
-//		{
-//
-//		}
-//	case "answers":
-//		{
-//
-//		}
-//
-//	}
-//}
-
 
 //取消关注问题
 func (q Question) CancelFollow() (err error) {

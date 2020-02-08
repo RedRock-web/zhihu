@@ -46,7 +46,7 @@ func Start(){
 	//time        --       问题创建时间
 	//title       --       问题的标题
 	//complement  --       问题的补充
-	err = db1.Table.Create("question", "uid int, question_id int, time varchar(30), title varchar(30), complement varchar(300)")
+	err = db1.Table.Create("question", "uid int, question_id int, time datetime, title varchar(30), complement varchar(300)")
 	basic.CheckError(err, "question创建失败！")
 
 	//answer表，用于存储回答基本信息
@@ -55,7 +55,7 @@ func Start(){
 	//answer_id      --         回答id
 	//time           --         回答的时间
 	//content        --         回答的内容
-	err = db1.Table.Create("answer", "uid int, question_id int, answer_id int, time varchar(30),content varchar(4000)")
+	err = db1.Table.Create("answer", "uid int, question_id int, answer_id int, time datetime,content varchar(4000)")
 	basic.CheckError(err, "answer创建失败！")
 
 	//question_comment表用于存储问题的评论
@@ -67,7 +67,7 @@ func Start(){
 	//pid存储comment_id，默认为0
 	//若为0,则表示回复提问
 	//若不为0,则表示向comment_id的评论回复
-	err = db1.Table.Create("question_comment", "uid int, comment_id int, question_id int, pid int not null DEFAULT 0, time varchar(30), content varchar(200)")
+	err = db1.Table.Create("question_comment", "uid int, comment_id int, question_id int, pid int not null DEFAULT 0, time datetime, content varchar(200)")
 	basic.CheckError(err, "question_comment创建失败！")
 
 	//answer_comment表用于存储回答的评论
@@ -80,7 +80,7 @@ func Start(){
 	//pid存储表中的主键comment_id，默认为0
 	//若为0,则表示回复回答
 	//若不为0,则表示向comment_id评论的回复
-	err = db1.Table.Create("answer_comment", "uid int, comment_id int, answer_id int, pid int not null DEFAULT 0, time varchar(30),content varchar(200)")
+	err = db1.Table.Create("answer_comment", "uid int, comment_id int, answer_id int, pid int not null DEFAULT 0, time datetime,content varchar(200)")
 	basic.CheckError(err, "answer_comment创建失败！")
 
 	//question_follow存用户对问题的关注
@@ -105,7 +105,7 @@ func Start(){
 	//answer_id     --		回答
 	//attitude      --      态度
 	//没有表示不关心，1表示赞同，0表示反对
-	err = db1.Table.Create("answer_vote", "uid int,time varchar(30), answer_id int, attitude int")
+	err = db1.Table.Create("answer_vote", "uid int,time datetime, answer_id int, attitude int")
 	basic.CheckError(err, "answer_vote表创建失败！")
 
 	//comment_vote存用户对评论的态度
@@ -114,7 +114,7 @@ func Start(){
 	//comment_id    --		回答
 	//attitude      --      态度
 	//没有表示不关心，1表示赞同，0表示反对
-	err = db1.Table.Create("comment_vote", "uid int, time varchar(30), comment_id int, attitude int")
+	err = db1.Table.Create("comment_vote", "uid int, time datetime, comment_id int, attitude int")
 	basic.CheckError(err, "comment_vote表创建失败！")
 
 	//todo:增加收藏夹，文章，想法，专栏
