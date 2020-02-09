@@ -1,11 +1,9 @@
 package route
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
 	"zhihu/cmd/features"
 )
 
@@ -271,6 +269,7 @@ func VoteComment() gin.HandlerFunc {
 				cv.Against()
 			}
 		}
+		c.Abort()
 	}
 }
 
@@ -309,6 +308,7 @@ func VoteAnswer() gin.HandlerFunc {
 				av.Against()
 			}
 		}
+		c.Abort()
 	}
 }
 
@@ -342,16 +342,109 @@ func ViewQuestionComment() gin.HandlerFunc {
 			"status": 0,
 			"data":   data,
 		})
+		c.Abort()
 	}
 }
 
 //查看问题子评论
 func ViewChildQuestionComment() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		questionId := c.Param("questionId")
-		commentId := c.PostForm("commentId")
-		counts, err := database.G_DB.Table.HignCount("question_comment", "id", "comment_id = "+commentId)
-		basic.CheckError(err, "对问题评论计数失败!")
-		fmt.Println(questionId, counts)
+		qc := features.NewQuestionComment()   //获取新评论
+		qc.QuestionId = c.Param("questionId") //记住该问题id
+		qc.Pid = c.Param("commentId")
+		counts := qc.GetChildCount()
+		comments := qc.GetChildComment()
+		var data []gin.H
+		data = append(data, gin.H{"commet_counts": counts})
+		for i := 0; i < counts; i++ {
+			qc.Id = string(comments[i]["comment_id"].([]uint8))
+			upCounts := qc.GetUpCounts()
+			downCounts := qc.GetDownCounts()
+
+			data = append(data, gin.H{
+				"id":         i + 1,
+				"uid":        string(comments[i]["uid"].([]uint8)),
+				"comment_id": qc.Id,
+				"pid":        string(comments[i]["pid"].([]uint8)),
+				"content":    string(comments[i]["content"].([]uint8)),
+				"time":       string(comments[i]["time"].([]uint8)),
+				"vote_up":    upCounts,
+				"vote_down":  downCounts,
+			})
+		}
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data":   data,
+		})
+		c.Abort()
+	}
+}
+
+//查看回答评论
+func ViewAnswerComment() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ac := features.NewAnswerComment()   //获取新评论
+		ac.AnswerId = c.Param("answerId") //记住该问题id
+		counts := ac.GetCount()
+		comments := ac.GetAllComment()
+
+		var data []gin.H
+		data = append(data, gin.H{"commet_counts": counts})
+		for i := 0; i < counts; i++ {
+			ac.Id = string(comments[i]["comment_id"].([]uint8))
+			upCounts := ac.GetUpCounts()
+			downCounts := ac.GetDownCounts()
+
+			data = append(data, gin.H{
+				"id":         i + 1,
+				"uid":        string(comments[i]["uid"].([]uint8)),
+				"comment_id": ac.Id,
+				"pid":        string(comments[i]["pid"].([]uint8)),
+				"content":    string(comments[i]["content"].([]uint8)),
+				"time":       string(comments[i]["time"].([]uint8)),
+				"vote_up":    upCounts,
+				"vote_down":  downCounts,
+			})
+		}
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data":   data,
+		})
+		c.Abort()
+	}
+}
+
+//查看回答子评论
+func ViewChildAnswerComment() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ac := features.NewAnswerComment()   //获取新评论
+		ac.AnswerId = c.Param("answerId") //记住该问题id
+		ac.Pid = c.Param("commentId")
+		counts := ac.GetChildCount()
+		comments := ac.GetChildComment()
+
+		var data []gin.H
+		data = append(data, gin.H{"commet_counts": counts})
+		for i := 0; i < counts; i++ {
+			ac.Id = string(comments[i]["comment_id"].([]uint8))
+			upCounts := ac.GetUpCounts()
+			downCounts := ac.GetDownCounts()
+
+			data = append(data, gin.H{
+				"id":         i + 1,
+				"uid":        string(comments[i]["uid"].([]uint8)),
+				"comment_id": ac.Id,
+				"pid":        string(comments[i]["pid"].([]uint8)),
+				"content":    string(comments[i]["content"].([]uint8)),
+				"time":       string(comments[i]["time"].([]uint8)),
+				"vote_up":    upCounts,
+				"vote_down":  downCounts,
+			})
+		}
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data":   data,
+		})
+		c.Abort()
 	}
 }

@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 	"strings"
 	"zhihu/cmd/basic"
@@ -340,7 +341,7 @@ func (t *Table) HignCount(tableName, targe, limitInfo string) (count int, err er
 	var temp string
 
 	command := strings.Join([]string{"select count(", targe, " ) from ", tableName, "where ", limitInfo}, "")
-	//fmt.Println(command)
+	fmt.Println(command)
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return 0, nil

@@ -112,10 +112,10 @@ func (e Engine) Answer() {
 	Nologin := e.r.Group("/answer")
 	{
 		//查看回答评论
-		Nologin.GET("/:answerId/comments")
+		Nologin.GET("/:answerId/comments", ViewAnswerComment())
 
 		//查看回答子评论
-		Nologin.GET("/:answerId/child_comments/commentId", )
+		Nologin.GET("/:answerId/child_comments/commentId", ViewChildAnswerComment())
 	}
 }
 
@@ -128,10 +128,10 @@ func (e Engine) Question() {
 		NoLogin.GET("/:questionId/")
 
 		//查看问题评论
-		NoLogin.GET("/:questionId/comments",ViewQuestionComment())
+		NoLogin.GET("/:questionId/comments", ViewQuestionComment())
 
 		//查看问题子评论
-		NoLogin.GET("/:questionId/child_comments/commentId", )
+		NoLogin.GET("/:questionId/child_comments/:commentId", ViewChildQuestionComment())
 	}
 
 	//需登录

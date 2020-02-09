@@ -49,3 +49,39 @@ func (ac AnswerComment) GetAllComment() []map[string]interface{} {
 	basic.CheckError(err, "查看回答评论失败!")
 	return comment
 }
+
+//查看某评论的up数
+func (ac AnswerComment) GetUpCounts() int {
+	counts, err := database.G_DB.Table.HignCount("comment_vote ", "id", "comment_id = "+ac.Id+" and attitude = 1")
+	basic.CheckError(err, "查看某评论的up数失败!")
+	if err != nil {
+		return 0
+	} else {
+		return counts
+	}
+}
+
+//查看某评论的down数
+func (ac AnswerComment) GetDownCounts() int {
+	counts, err := database.G_DB.Table.HignCount("comment_vote ", "id", "comment_id = "+ac.Id+" and attitude = 0")
+	basic.CheckError(err, "查看某评论的up数失败!")
+	if err != nil {
+		return 0
+	} else {
+		return counts
+	}
+}
+
+//查看该回答评论的子评论
+func (ac AnswerComment) GetChildComment() []map[string]interface{} {
+	comment, err := database.G_DB.Table.HighFind("answer_comment ", "uid, comment_id, pid, time, content ", "answer_id = "+ac.AnswerId+" and pid = "+ac.Pid)
+	basic.CheckError(err, "查看回答子评论失败!")
+	return comment
+}
+
+//查看子评论数
+func (ac AnswerComment) GetChildCount() int {
+	counts, err := database.G_DB.Table.HignCount("answer_comment ", "id", "pid = "+ac.Pid)
+	basic.CheckError(err, "回答评论子计数失败!")
+	return counts
+}

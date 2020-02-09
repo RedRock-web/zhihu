@@ -43,10 +43,24 @@ func (qc QuestionComment) GetCount() int {
 	return counts
 }
 
+//查看子评论数
+func (qc QuestionComment) GetChildCount() int {
+	counts, err := database.G_DB.Table.HignCount("question_comment ", "id", "pid = "+qc.Pid)
+	basic.CheckError(err, "问题评论子计数失败!")
+	return counts
+}
+
 //查看该问题的全部评论
 func (qc QuestionComment) GetAllComment() []map[string]interface{} {
-	comment, err := database.G_DB.Table.HighFind("question_comment", "uid, comment_id, pid, time, content ", "question_id = "+qc.QuestionId)
+	comment, err := database.G_DB.Table.HighFind("question_comment ", "uid, comment_id, pid, time, content ", "question_id = "+qc.QuestionId)
 	basic.CheckError(err, "查看问题评论失败!")
+	return comment
+}
+
+//查看该问题评论的子评论
+func (qc QuestionComment) GetChildComment() []map[string]interface{} {
+	comment, err := database.G_DB.Table.HighFind("question_comment ", "uid, comment_id, pid, time, content ", "question_id = "+qc.QuestionId+" and pid = "+qc.Pid)
+	basic.CheckError(err, "查看问题子评论失败!")
 	return comment
 }
 
