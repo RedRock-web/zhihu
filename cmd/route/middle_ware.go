@@ -383,7 +383,7 @@ func ViewChildQuestionComment() gin.HandlerFunc {
 //查看回答评论
 func ViewAnswerComment() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ac := features.NewAnswerComment()   //获取新评论
+		ac := features.NewAnswerComment() //获取新评论
 		ac.AnswerId = c.Param("answerId") //记住该问题id
 		counts := ac.GetCount()
 		comments := ac.GetAllComment()
@@ -417,7 +417,7 @@ func ViewAnswerComment() gin.HandlerFunc {
 //查看回答子评论
 func ViewChildAnswerComment() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ac := features.NewAnswerComment()   //获取新评论
+		ac := features.NewAnswerComment() //获取新评论
 		ac.AnswerId = c.Param("answerId") //记住该问题id
 		ac.Pid = c.Param("commentId")
 		counts := ac.GetChildCount()
@@ -446,5 +446,53 @@ func ViewChildAnswerComment() gin.HandlerFunc {
 			"data":   data,
 		})
 		c.Abort()
+	}
+}
+
+//获取问题详情
+func GetQuestion() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		q.Id = c.Param("questionId")
+		q.GetQuestion()
+
+		var question []gin.H
+		question = append(question, gin.H{
+			"author_uid":   q.Uid,
+			"question_id":  q.Id,
+			"created_time": q.Time,
+			"title":        q.Title,
+			"complement":   q.Complement,
+		})
+
+		var answer []gin.H
+		tempAnswers := q.GetAnswers()
+		answersCount := q.GetAnswersCount()
+		for i := 0; i < answersCount; i++ {
+			answer = append(answer, gin.H{
+				"uid":         string(tempAnswers[i]["uid"].([]uint8)),
+				"question_id": q.Id,
+				"answer_id":   string(tempAnswers[i]["answer_id"].([]uint8)),
+				"time":        string(tempAnswers[i]["time"].([]uint8)),
+				"content":     string(tempAnswers[i]["content"].([]uint8)),
+			})
+		}
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data": gin.H{
+				"question:": question,
+				"answer":    answer,
+			},
+		})
+		c.Abort()
+	}
+}
+
+//提问
+func Quiz() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		q.C = c
+		q.Quiz()
 	}
 }

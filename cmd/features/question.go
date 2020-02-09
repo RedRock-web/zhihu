@@ -44,13 +44,6 @@ func (q Question) IsFollow() bool {
 	return data != nil
 }
 
-// 提问接口
-func Quiz(c *gin.Context) {
-	q := NewQuestion()
-	q.C = c
-	q.Quiz()
-}
-
 // 发起提问
 func (q Question) Quiz() {
 	q.Title = q.C.PostForm("title")
@@ -92,4 +85,33 @@ func (q Question) IsQuestion() bool {
 //删除问题
 func (q Question) Delete() {
 
+}
+
+//获取问题信息
+func (q *Question) GetQuestion() {
+	tempTitle, _ := database.G_DB.Table.Find("question", "title", "question_id", q.Id)
+	q.Title = string(tempTitle[0]["title"].([]uint8))
+
+	tempUid, _ := database.G_DB.Table.Find("question", "uid", "question_id", q.Id)
+	q.Uid = string(tempUid[0]["uid"].([]uint8))
+
+	tempTime, _ := database.G_DB.Table.Find("question", "time", "question_id", q.Id)
+	q.Time = string(tempTime[0]["time"].([]uint8))
+
+	tempComplement, _ := database.G_DB.Table.Find("question", "complement", "question_id", q.Id)
+	q.Complement = string(tempComplement[0]["complement"].([]uint8))
+}
+
+//获取问题的答案
+func (q Question) GetAnswers() []map[string]interface{} {
+	answers, err := database.G_DB.Table.HighFind("answer ", "uid,answer_id, time, content ", "question_id = "+q.Id)
+	basic.CheckError(err, "获取问题的答案失败!")
+	return answers
+}
+
+//获取答案数目
+func (q Question) GetAnswersCount() int {
+	counts, err := database.G_DB.Table.HignCount("answer ", "id", " question_id = "+q.Id)
+	basic.CheckError(err, "回答评论子计数失败!")
+	return counts
 }

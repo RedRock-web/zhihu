@@ -75,7 +75,7 @@ func (e Engine) HomePage() {
 	//注销
 	e.r.GET("/logout", Authorized2Some(), LogOut())
 	//提问
-	e.r.POST("/questions", Authorized2Some(), features.Quiz)
+	e.r.POST("/questions", Authorized2Some(), Quiz())
 
 	/*
 		//搜索
@@ -125,7 +125,7 @@ func (e Engine) Question() {
 	NoLogin := e.r.Group("/questions")
 	{
 		//进入问题详情页，获取问题信息
-		NoLogin.GET("/:questionId/")
+		NoLogin.GET("/:questionId/", GetQuestion())
 
 		//查看问题评论
 		NoLogin.GET("/:questionId/comments", ViewQuestionComment())

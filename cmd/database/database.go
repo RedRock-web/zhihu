@@ -251,7 +251,7 @@ func (t *Table) Alter(tableName string, newKey string, newValue string, limitKey
 //查找记录,只能有一个限定条件
 func (t *Table) Find(tableName string, limit string, targeKey string, targeValue string) ([]map[string]interface{}, error) {
 	command := strings.Join([]string{"select ", limit, " from ", tableName, " where ", targeKey, " ='", targeValue, "'"}, "")
-	//fmt.Println(command)
+	fmt.Println(command)
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return nil, err
