@@ -2,16 +2,16 @@ package database
 
 import (
 	"database/sql"
+	"strconv"
 	"strings"
 	"zhihu/cmd/basic"
 )
 
 var G_DB Database
 
-
 //TODO:将time改为datatime格式
 //项目数据库相关准备
-func Start(){
+func Start() {
 	db := Database{
 		UserName: "root",
 		Password: "root",
@@ -317,10 +317,48 @@ func (t *Table) HighFind(tableName string, targe string, limitInfo string) ([]ma
 	return list, err
 }
 
+//对行计数,不加where条件
+func (t *Table) Count(tableName string, targe string) (count int, err error) {
+	var temp string
+	command := strings.Join([]string{"select count(", targe, " ) from ", tableName}, "")
+	//fmt.Println(command)
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return 0, nil
+	}
+	for stmt.Next() {
+		err = stmt.Scan(&temp)
+	}
+	count, err = strconv.Atoi(temp)
+	basic.CheckError(err, "将计数count转为int失败!")
+
+	return count, err
+}
+
+//对行计数,加where条件
+func (t *Table) HignCount(tableName, targe, limitInfo string) (count int, err error) {
+	var temp string
+
+	command := strings.Join([]string{"select count(", targe, " ) from ", tableName, "where ", limitInfo}, "")
+	//fmt.Println(command)
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return 0, nil
+	}
+	for stmt.Next() {
+		err = stmt.Scan(&temp)
+	}
+	count, err = strconv.Atoi(temp)
+	basic.CheckError(err, "将计数count转为int失败!")
+
+	return count, err
+}
+
 func UserName2Uid(username string) (string, error) {
 	uid, err := G_DB.Table.Find("user", "uid", "username", username)
 	return string(uid[0]["uid"].([]uint8)), err
 }
+
 func Uid2NickName(uid string) (string, error) {
 	nickName, err := G_DB.Table.Find("user", "nickname", "uid", uid)
 	return string(nickName[0]["nickname"].([]uint8)), err

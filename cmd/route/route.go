@@ -115,7 +115,7 @@ func (e Engine) Answer() {
 		Nologin.GET("/:answerId/comments")
 
 		//查看回答子评论
-		Nologin.GET("/:answerId/child_comments/commentId", JudgeIfCommentInAnswer())
+		Nologin.GET("/:answerId/child_comments/commentId", )
 	}
 }
 
@@ -128,10 +128,10 @@ func (e Engine) Question() {
 		NoLogin.GET("/:questionId/")
 
 		//查看问题评论
-		NoLogin.GET("/:questionId/comments")
+		NoLogin.GET("/:questionId/comments",ViewQuestionComment())
 
 		//查看问题子评论
-		NoLogin.GET("/:questionId/child_comments/commentId", JudgeIfCommentInQuestion())
+		NoLogin.GET("/:questionId/child_comments/commentId", )
 	}
 
 	//需登录

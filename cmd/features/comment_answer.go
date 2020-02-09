@@ -36,3 +36,16 @@ func (ac AnswerComment) Delete() error {
 	return err
 }
 
+//对回答评论计数
+func (ac AnswerComment) GetCount() int {
+	counts, err := database.G_DB.Table.Count("answer_comment", "id")
+	basic.CheckError(err, "回答评论计数失败!")
+	return counts
+}
+
+//查看该回答的全部评论
+func (ac AnswerComment) GetAllComment() []map[string]interface{} {
+	comment, err := database.G_DB.Table.HighFind("answer_comment", "uid, comment_id, pid, time, content ", "answer_id = "+ac.Id)
+	basic.CheckError(err, "查看回答评论失败!")
+	return comment
+}

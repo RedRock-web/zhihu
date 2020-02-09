@@ -1,9 +1,11 @@
 package route
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"zhihu/cmd/basic"
+	"zhihu/cmd/database"
 	"zhihu/cmd/features"
 )
 
@@ -310,16 +312,46 @@ func VoteAnswer() gin.HandlerFunc {
 	}
 }
 
-//判断是否评论是该回答的评论
-func JudgeIfCommentInAnswer() gin.HandlerFunc {
+//查看问题评论
+func ViewQuestionComment() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		qc := features.NewQuestionComment()   //获取新评论
+		qc.QuestionId = c.Param("questionId") //记住该问题id
+		counts := qc.GetCount()
+		comments := qc.GetAllComment()
 
+		var data []gin.H
+		data = append(data, gin.H{"commet_counts": counts})
+		for i := 0; i < counts; i++ {
+			qc.Id = string(comments[i]["comment_id"].([]uint8))
+			upCounts := qc.GetUpCounts()
+			downCounts := qc.GetDownCounts()
+
+			data = append(data, gin.H{
+				"id":         i + 1,
+				"uid":        string(comments[i]["uid"].([]uint8)),
+				"comment_id": qc.Id,
+				"pid":        string(comments[i]["pid"].([]uint8)),
+				"content":    string(comments[i]["content"].([]uint8)),
+				"time":       string(comments[i]["time"].([]uint8)),
+				"vote_up":    upCounts,
+				"vote_down":  downCounts,
+			})
+		}
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data":   data,
+		})
 	}
 }
 
-//判断是否评论是该问题的评论
-func JudgeIfCommentInQuestion() gin.HandlerFunc {
+//查看问题子评论
+func ViewChildQuestionComment() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
+		questionId := c.Param("questionId")
+		commentId := c.PostForm("commentId")
+		counts, err := database.G_DB.Table.HignCount("question_comment", "id", "comment_id = "+commentId)
+		basic.CheckError(err, "对问题评论计数失败!")
+		fmt.Println(questionId, counts)
 	}
 }
