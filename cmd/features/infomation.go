@@ -2,77 +2,57 @@ package features
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"zhihu/cmd/basic"
 	"zhihu/cmd/database"
 )
 
 //Info 表示用户信息
 type Info struct {
-	Uid      string //用户id
-	Gender   string //性别
-	Nickname string //昵称
-	Avatar   string //头像链接
-}
-
-//更改个人信息接口
-func Edit(c *gin.Context) {
-	targe := c.PostForm("targe")
-	content := c.PostForm("content")
-	G_user.Info.Alter(c, targe, content)
+	C            *gin.Context
+	AlterTarge   string
+	AlterContent string
+	Uid          string //用户id
+	Gender       string //性别
+	Nickname     string //昵称
+	Avatar       string //头像链接
+	Introduction string
 }
 
 //更改个人信息
-func (info Info) Alter(c *gin.Context, targe string, content string) (error){
-	if IsTargeCompliance(targe) {
-		err := database.G_DB.Table.Alter("user", targe, content, "uid", G_user.Info.Uid)
-		basic.CheckError(err, "更改个人信息失败！")
-		if err == nil {
-			err = info.View()
-			basic.CheckError(err, "查看个人信息失败！")
-			if err != nil {
-				return err
-			}
-			c.JSON(http.StatusOK, gin.H{
-				"uid":      info.Uid,
-				"nickname": info.Nickname,
-				"gender":   info.Gender,
-				"avatar":   info.Avatar,
-			})
-		} else {
-			return err
-		}
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": gin.H{
-				"message": "非法操作！",
-			},
-		})
-	}
-	return nil
+func (info Info) Alter() error {
+	return database.G_DB.Table.Alter("user", info.AlterTarge, info.AlterContent, "uid", G_user.Info.Uid)
 }
 
-func (info Info) View() error {
+//查看个人信息
+func (info *Info) View() error {
 	info.Uid = G_user.Info.Uid
+
 	nicknameTemp, err := database.G_DB.Table.Find("user", "nickname", "uid", G_user.Info.Uid)
 	if err != nil {
 		return err
 	}
 	info.Nickname = string(nicknameTemp[0]["nickname"].([]uint8))
-	avatarTemp, err := database.G_DB.Table.Find("user", "abatar", "uid", info.Uid)
-	if err != nil {
-		return err
+
+	avatarTemp, _ := database.G_DB.Table.Find("user", "avatar", "uid", info.Uid)
+	if avatarTemp[0]["avatar"] == nil {
+	} else {
+		info.Avatar = string(avatarTemp[0]["avatar"].([]uint8))
 	}
-	info.Avatar = string(avatarTemp[0]["avatar"].([]uint8))
+
+	introductionTemp, _ := database.G_DB.Table.Find("user", "introduction", "uid", info.Uid)
+	if introductionTemp[0]["avatar"] == nil {
+	} else {
+		info.Avatar = string(introductionTemp[0]["introduction"].([]uint8))
+	}
+
 	GenderTemp, err := database.G_DB.Table.Find("user", "gender", "uid", info.Uid)
-	info.Gender = string(GenderTemp[0]["avatar"].([]uint8))
+	info.Gender = string(GenderTemp[0]["gender"].([]uint8))
 
 	return err
 }
 
 //判断targe是否合理
-func IsTargeCompliance(targe string) bool {
-	return targe == "gender" || targe == "introduction" || targe == "nickname" || targe == "avatar"
+func (info *Info) IsTargeCompliance() bool {
+	return info.AlterTarge == "gender" || info.AlterTarge == "introduction" || info.AlterTarge == "nickname" || info.AlterTarge == "avatar"
 }
 
 //查看信息，分别查看个人和他人信息

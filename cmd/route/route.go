@@ -2,7 +2,6 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	"zhihu/cmd/features"
 )
 
 //Engine 表示一个路由
@@ -53,7 +52,7 @@ func (e Engine) PersonalPage() {
 	{
 		//编辑个人资料
 		personalPage.GET("/edit")
-		personalPage.PUT("/me", features.Edit)
+		personalPage.PUT("/me", Edit())
 		personalPage.POST("/chat", )
 	}
 }

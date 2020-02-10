@@ -496,3 +496,32 @@ func Quiz() gin.HandlerFunc {
 		q.Quiz()
 	}
 }
+
+//更改个人信息
+func Edit() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := features.NewUser()
+		user.Info.AlterTarge = c.PostForm("targe")
+		user.Info.AlterContent = c.PostForm("content")
+		user.Info.C = c
+		if user.Info.IsTargeCompliance() {
+			if user.Info.Alter() == nil && user.Info.View() == nil {
+				c.JSON(http.StatusOK, gin.H{
+					"status": 0,
+					"data": gin.H{
+						"uid":          user.Info.Uid,
+						"nickname":     user.Info.Nickname,
+						"gender":       user.Info.Gender,
+						"avatar":       user.Info.Avatar,
+						"introduction": user.Info.Introduction,
+					},
+				})
+			}
+		} else {
+			user.Info.C.JSON(http.StatusUnauthorized, gin.H{
+				"status":     41,
+				"error_info": "非法操作!",
+			})
+		}
+	}
+}
