@@ -7,8 +7,6 @@ import (
 	"zhihu/cmd/database"
 )
 
-var G_question_id string
-
 // Question表示一个问题
 type Question struct {
 	C          *gin.Context
@@ -25,71 +23,15 @@ func NewQuestion() *Question {
 	return &Question{}
 }
 
-//
-//func Start(c *gin.Context) {
-//	targe := c.Param("targe")
-//	switch targe {
-//	case "followers":
-//		{
-//			q.Follow()
-//		}
-//	case "comments":
-//		{
-//
-//		}
-//	case "answers":
-//		{
-//
-//		}
-//
-//	}
-//}
-
-//关注问题接口
-func Follow(c *gin.Context) {
-	q := NewQuestion()
-	q.C = c
-	q.Id = c.Param("questionId")
-	err := q.Follow()
-	if err != nil {
-		q.C.JSON(http.StatusOK, gin.H{
-			"isFollow": "yes",
-		})
-	} else {
-		q.C.JSON(500, gin.H{
-			"error": "关注问题失败！",
-		})
-	}
-
-}
-
-//取消关注问题接口
-func CancelFollow(c *gin.Context) {
-	q := NewQuestion()
-	q.C = c
-	q.Id = c.Param("questionId")
-	err := q.CancelFollow()
-	if err != nil {
-		q.C.JSON(http.StatusOK, gin.H{
-			"isFollow": "yes",
-		})
-	} else {
-		q.C.JSON(500, gin.H{
-			"error": "取消关注问题失败！",
-		})
-	}
-
-}
-
-//关注问题
-func (q Question) Follow() (err error) {
+//取消关注问题
+func (q Question) CancelFollow() (err error) {
 	err = database.G_DB.Table.Delete("question_follow", "uid = "+G_user.Info.Uid+" and question_id = "+q.Id)
 	basic.CheckError(err, "取消关注问题失败！")
 	return err
 }
 
-// 取消关注问题
-func (q Question) CancelFollow() (err error) {
+//关注问题
+func (q Question) Follow() (err error) {
 	err = database.G_DB.Table.Insert("question_follow", []string{"uid", "question_id"}, []string{G_user.Info.Uid, q.Id})
 	basic.CheckError(err, "关注问题失败！")
 	return err
@@ -99,14 +41,7 @@ func (q Question) CancelFollow() (err error) {
 func (q Question) IsFollow() bool {
 	data, err := database.G_DB.Table.HighFind("question_follow", "id", "uid = "+G_user.Info.Uid+" and "+"question_id = "+q.Id)
 	basic.CheckError(err, "查询是否关注问题失败！")
-	return data[0]["id"].([]uint8) == nil
-}
-
-// 提问接口
-func Quiz(c *gin.Context) {
-	q := NewQuestion()
-	q.C = c
-	q.Quiz()
+	return data != nil
 }
 
 // 发起提问
@@ -121,11 +56,14 @@ func (q Question) Quiz() {
 		basic.CheckError(err, "提问失败！")
 		if err == nil {
 			q.C.JSON(http.StatusOK, gin.H{
-				"question_id": q.Id,
-				"time":        q.Time,
-				"uid":         q.Uid,
-				"title":       q.Title,
-				"complement":  q.Complement,
+				"status": 0,
+				"data": gin.H{
+					"question_id": q.Id,
+					"time":        q.Time,
+					"uid":         q.Uid,
+					"title":       q.Title,
+					"complement":  q.Complement,
+				},
 			})
 		} else {
 			q.C.JSON(500, gin.H{
@@ -147,4 +85,33 @@ func (q Question) IsQuestion() bool {
 //删除问题
 func (q Question) Delete() {
 
+}
+
+//获取问题信息
+func (q *Question) GetQuestion() {
+	tempTitle, _ := database.G_DB.Table.Find("question", "title", "question_id", q.Id)
+	q.Title = string(tempTitle[0]["title"].([]uint8))
+
+	tempUid, _ := database.G_DB.Table.Find("question", "uid", "question_id", q.Id)
+	q.Uid = string(tempUid[0]["uid"].([]uint8))
+
+	tempTime, _ := database.G_DB.Table.Find("question", "time", "question_id", q.Id)
+	q.Time = string(tempTime[0]["time"].([]uint8))
+
+	tempComplement, _ := database.G_DB.Table.Find("question", "complement", "question_id", q.Id)
+	q.Complement = string(tempComplement[0]["complement"].([]uint8))
+}
+
+//获取问题的答案
+func (q Question) GetAnswers() []map[string]interface{} {
+	answers, err := database.G_DB.Table.HighFind("answer ", "uid,answer_id, time, content ", "question_id = "+q.Id)
+	basic.CheckError(err, "获取问题的答案失败!")
+	return answers
+}
+
+//获取答案数目
+func (q Question) GetAnswersCount() int {
+	counts, err := database.G_DB.Table.HignCount("answer ", "id", " question_id = "+q.Id)
+	basic.CheckError(err, "回答评论子计数失败!")
+	return counts
 }

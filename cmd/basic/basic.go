@@ -1,6 +1,8 @@
 package basic
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -10,13 +12,13 @@ import (
 )
 
 var (
-	NowTimeUinx string         //用于记录当前时间戳
+	NowTimeUinx string //用于记录当前时间戳
 )
 
 //检查error
 func CheckError(err error, errorMsg string) {
 	if err != nil {
-		//fmt.Println(err)
+		fmt.Println(err)
 		fmt.Println(errors.New(errorMsg))
 	}
 }
@@ -62,4 +64,20 @@ func RediRect(c *gin.Context, url string) {
 //获取十位时间戳
 func GetTimeUinx() string {
 	return strconv.FormatInt(time.Now().Unix(), 10)
+}
+
+//返回32位经过md5加密后的字符串
+func Get32Md5(s string) string {
+	m := md5.Sum([]byte (s))
+	return hex.EncodeToString(m[:])
+}
+
+//返回16位经过md5加密后的字符串
+func Get16Md5(s string) string {
+	return Get32Md5(s)[8:24]
+}
+
+//判断请求方法是否一致
+func MethodIsOk(c *gin.Context, method string) bool {
+	return c.Request.Method == method
 }

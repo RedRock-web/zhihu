@@ -1,7 +1,6 @@
 package features
 
 import (
-	"github.com/gin-gonic/gin"
 	"zhihu/cmd/basic"
 	"zhihu/cmd/database"
 )
@@ -19,42 +18,41 @@ func NewAnswerVote() *AnswerVote {
 	return &AnswerVote{}
 }
 
-func (av AnswerVote) Start(c *gin.Context) {
-	targe := c.PostForm("type")
+//支持回答
+func (av AnswerVote) Agree() error {
+	err := database.G_DB.Table.Insert("answer_vote", []string{"uid", "time", "answer_id", "attitude"}, []string{av.Uid, av.Time, av.Id, av.Attitude})
+	basic.CheckError(err, "支持回答失败!")
+	return err
+}
 
-	if av.IsAgree() {
-		av.Against() //如果已经点赞，那么无论点击赞同还是反对都是反对
-	} else if av.IsAgainst() {
-		av.Agree() //如果已经反对，那么无论点击反对还是赞同都是赞同
-	} else { //没有表明态度
-		if targe == "up" {
-			av.Agree()
-		} else if targe == "down" {
-			av.Against()
-		}
+//取消支持回答
+func (av AnswerVote) CancelAgree() error {
+	err := database.G_DB.Table.Delete("answer_vote", "answer_id = "+av.Id)
+	basic.CheckError(err, "取消支持回答失败!")
+	return err
+}
+
+//反对回答
+func (av AnswerVote) Against() error {
+	err := database.G_DB.Table.Insert("answer_vote", []string{"uid", "time", "answer_id", "attitude"}, []string{av.Uid, av.Time, av.Id, av.Attitude})
+	basic.CheckError(err, "反对回答失败!")
+	return err
+}
+
+//取消反对回答
+func (av AnswerVote) CancelAgainst() error {
+	err := database.G_DB.Table.Delete("answer_vote", "answer_id = "+av.Id)
+	basic.CheckError(err, "取消反对回答失败!")
+	return err
+}
+
+//获取态度,nil表不关心,1表赞同,0表反对
+func (av AnswerVote) GetAttitude() string {
+	data, err := database.G_DB.Table.HighFind("answer_vote", "attitude", "answer_id = "+av.Id)
+	basic.CheckError(err, "获取回答态度失败!")
+	if data == nil {
+		return ""
+	} else {
+		return string(data[0]["attitude"].([]uint8))
 	}
-}
-
-//取消点赞
-func (av AnswerVote) Against() {
-
-}
-
-//点赞
-func (av AnswerVote) Agree() {
-
-}
-
-//判断是否反对
-func (av AnswerVote) IsAgainst() bool {
-	data, err := database.G_DB.Table.HighFind("answer_vote", "attitude", "answer_id = "+av.Id+"uid = "+av.Uid)
-	basic.CheckError(err,"判断回答是否反对失败！")
-	return string(data[0]["attitude"].([]uint8)) == "2"
-}
-
-//判断是否赞同
-func (av AnswerVote) IsAgree() bool {
-	data, err := database.G_DB.Table.HighFind("answer_vote", "attitude", "answer_id = "+av.Id+"uid = "+av.Uid)
-	basic.CheckError(err,"判断回答是否反对失败！")
-	return string(data[0]["attitude"].([]uint8)) == "1"
 }

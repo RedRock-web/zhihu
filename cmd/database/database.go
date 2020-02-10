@@ -3,14 +3,16 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 	"zhihu/cmd/basic"
 )
 
 var G_DB Database
 
+//TODO:将time改为datatime格式
 //项目数据库相关准备
-func Start() Database {
+func Start() {
 	db := Database{
 		UserName: "root",
 		Password: "root",
@@ -36,7 +38,7 @@ func Start() Database {
 	//nickname    --  用户名，默认‘知乎用户’
 	//introdution --  个人介绍
 	//avatar      --  头像链接
-	err = db1.Table.Create("user", "username varchar(15), password varchar(15), uid int,gender char(2) not null DEFAULT '0',nickname varchar(20) not null DEFAULT '知乎用户', introduction varchar(200), avatar varchar(50)")
+	err = db1.Table.Create("user", "username varchar(15), password varchar(40), uid int,gender char(2) not null DEFAULT '0',nickname varchar(20) not null DEFAULT '知乎用户', introduction varchar(200), avatar varchar(50)")
 	basic.CheckError(err, "user表格创建失败！")
 
 	//question表，用于存储问题基本信息
@@ -45,7 +47,7 @@ func Start() Database {
 	//time        --       问题创建时间
 	//title       --       问题的标题
 	//complement  --       问题的补充
-	err = db1.Table.Create("question", "uid int, question_id int, time varchar(30), title varchar(30), complement varchar(300)")
+	err = db1.Table.Create("question", "uid int, question_id int, time datetime, title varchar(30), complement varchar(300)")
 	basic.CheckError(err, "question创建失败！")
 
 	//answer表，用于存储回答基本信息
@@ -54,7 +56,7 @@ func Start() Database {
 	//answer_id      --         回答id
 	//time           --         回答的时间
 	//content        --         回答的内容
-	err = db1.Table.Create("answer", "uid int, question_id int, answer_id int, time varchar(30),content varchar(4000)")
+	err = db1.Table.Create("answer", "uid int, question_id int, answer_id int, time datetime,content varchar(4000)")
 	basic.CheckError(err, "answer创建失败！")
 
 	//question_comment表用于存储问题的评论
@@ -66,7 +68,7 @@ func Start() Database {
 	//pid存储comment_id，默认为0
 	//若为0,则表示回复提问
 	//若不为0,则表示向comment_id的评论回复
-	err = db1.Table.Create("question_comment", "uid int, comment_id int, question_id int, pid int not null DEFAULT 0, time varchar(30), content varchar(200)")
+	err = db1.Table.Create("question_comment", "uid int, comment_id int, question_id int, pid int not null DEFAULT 0, time datetime, content varchar(200)")
 	basic.CheckError(err, "question_comment创建失败！")
 
 	//answer_comment表用于存储回答的评论
@@ -79,7 +81,7 @@ func Start() Database {
 	//pid存储表中的主键comment_id，默认为0
 	//若为0,则表示回复回答
 	//若不为0,则表示向comment_id评论的回复
-	err = db1.Table.Create("answer_comment", "uid int, comment_id int, answer_id int, pid int not null DEFAULT 0, time varchar(30),content varchar(200)")
+	err = db1.Table.Create("answer_comment", "uid int, comment_id int, answer_id int, pid int not null DEFAULT 0, time datetime,content varchar(200)")
 	basic.CheckError(err, "answer_comment创建失败！")
 
 	//question_follow存用户对问题的关注
@@ -102,23 +104,23 @@ func Start() Database {
 	//uid           --      用户
 	//time          --      时间
 	//answer_id     --		回答
-	//attitude      --      态度，默认为0
-	//0表示不关心，1表示赞同，2表示反对
-	err = db1.Table.Create("answer_vote", "uid int,time varchar(30), answer_id int, attitude int not null DEFAULT 0 ")
+	//attitude      --      态度
+	//没有表示不关心，1表示赞同，0表示反对
+	err = db1.Table.Create("answer_vote", "uid int,time datetime, answer_id int, attitude int")
 	basic.CheckError(err, "answer_vote表创建失败！")
 
 	//comment_vote存用户对评论的态度
 	//uid           --      用户
 	//time          --      时间
 	//comment_id    --		回答
-	//attitude      --      态度，默认为0
-	//0表示不关心，1表示赞同，2表示反对
-	err = db1.Table.Create("comment_vote", "uid int, time varchar(30), comment_id int, attitude int not null DEFAULT 0 ")
+	//attitude      --      态度
+	//没有表示不关心，1表示赞同，0表示反对
+	err = db1.Table.Create("comment_vote", "uid int, time datetime, comment_id int, attitude int")
 	basic.CheckError(err, "comment_vote表创建失败！")
 
 	//todo:增加收藏夹，文章，想法，专栏
 
-	return db1
+	G_DB = db1
 }
 
 //数据库结构体，内置表格结构体，分别为数据库和结构体增加增删改查方法
@@ -193,7 +195,7 @@ func (t *Table) Drop(tableName string) error {
 //插入记录
 func (t *Table) Insert(tableName string, targeKey []string, targeValue []string) error {
 	command := strings.Join([]string{"insert into ", tableName, "( ", strings.Join(targeKey, ","), " ) values ", ObtainDbStr(targeValue)}, "")
-	fmt.Println(command, targeValue)
+	//fmt.Println(command, targeValue)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -225,6 +227,7 @@ func StrToInterface(data []string) []interface{} {
 //删除记录
 func (t *Table) Delete(tableName string, limitInfo string) error {
 	command := strings.Join([]string{"delete from ", tableName, "where ", limitInfo}, " ")
+	//fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -236,6 +239,7 @@ func (t *Table) Delete(tableName string, limitInfo string) error {
 //更改记录
 func (t *Table) Alter(tableName string, newKey string, newValue string, limitKey string, limitValue string) error {
 	command := strings.Join([]string{"update ", tableName, " set ", newKey, " = '", newValue, "' where ", limitKey + " = '", limitValue, "'"}, "")
+	//fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -247,6 +251,7 @@ func (t *Table) Alter(tableName string, newKey string, newValue string, limitKey
 //查找记录,只能有一个限定条件
 func (t *Table) Find(tableName string, limit string, targeKey string, targeValue string) ([]map[string]interface{}, error) {
 	command := strings.Join([]string{"select ", limit, " from ", tableName, " where ", targeKey, " ='", targeValue, "'"}, "")
+	fmt.Println(command)
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return nil, err
@@ -281,7 +286,7 @@ func (t *Table) Find(tableName string, limit string, targeKey string, targeValue
 //查找记录,可复杂限定条件
 func (t *Table) HighFind(tableName string, targe string, limitInfo string) ([]map[string]interface{}, error) {
 	command := strings.Join([]string{"select ", targe, " from ", tableName, " where ", limitInfo}, "")
-	fmt.Println(command)
+	//fmt.Println(command)
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return nil, err
@@ -313,10 +318,48 @@ func (t *Table) HighFind(tableName string, targe string, limitInfo string) ([]ma
 	return list, err
 }
 
+//对行计数,不加where条件
+func (t *Table) Count(tableName string, targe string) (count int, err error) {
+	var temp string
+	command := strings.Join([]string{"select count(", targe, " ) from ", tableName}, "")
+	//fmt.Println(command)
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return 0, nil
+	}
+	for stmt.Next() {
+		err = stmt.Scan(&temp)
+	}
+	count, err = strconv.Atoi(temp)
+	basic.CheckError(err, "将计数count转为int失败!")
+
+	return count, err
+}
+
+//对行计数,加where条件
+func (t *Table) HignCount(tableName, targe, limitInfo string) (count int, err error) {
+	var temp string
+
+	command := strings.Join([]string{"select count(", targe, " ) from ", tableName, "where ", limitInfo}, "")
+	fmt.Println(command)
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return 0, nil
+	}
+	for stmt.Next() {
+		err = stmt.Scan(&temp)
+	}
+	count, err = strconv.Atoi(temp)
+	basic.CheckError(err, "将计数count转为int失败!")
+
+	return count, err
+}
+
 func UserName2Uid(username string) (string, error) {
 	uid, err := G_DB.Table.Find("user", "uid", "username", username)
 	return string(uid[0]["uid"].([]uint8)), err
 }
+
 func Uid2NickName(uid string) (string, error) {
 	nickName, err := G_DB.Table.Find("user", "nickname", "uid", uid)
 	return string(nickName[0]["nickname"].([]uint8)), err
