@@ -28,9 +28,41 @@
             <div class="left">
 
                 <div class="left_head">
-                    <a href="" class="link">推荐</a>
-                    <a href="" class="link">关注</a>
-                    <a href="" class="link">热榜</a>
+                    <a class="link" onclick="change1()">推荐</a>
+                    <a class="link" onclick="change2()">关注</a>
+                    <a class="link" onclick="change3()">热榜</a>
+                </div>
+                <div id="left_middle">
+                    <div class="box">
+                        <input type="button" value="赞同" class="agree1" onclick="doAgree1()">
+                        <input type="button" value="不赞同" class="disagree1" onclick="doDisagree1()">
+                        <span>评论</span>
+                        <span>分享</span>
+                        <span>收藏</span>
+                        <span>喜欢</span>
+                    </div>
+                    <div class="box">
+                        <input type="button" value="赞同" class="agree1" onclick="doAgree2()">
+                        <input type="button" value="不赞同" class="disagree1" onclick="doDisagree2()">
+                        <span>评论</span>
+                        <span>分享</span>
+                        <span>收藏</span>
+                        <span>喜欢</span>
+                    </div>
+                    <div class="box">
+                        <input type="button" value="赞同" class="agree1" onclick="doAgree3()">
+                        <input type="button" value="不赞同" class="disagree1" onclick="doDisagree3()">
+                        <span>评论</span>
+                        <span>分享</span>
+                        <span>收藏</span>
+                        <span>喜欢</span>
+                    </div>
+                </div>
+                <div id="left_middle_1">
+
+                </div>
+                <div id="left_middle_2">
+
                 </div>
             </div>
             <div class="right">
@@ -123,6 +155,87 @@
         }
         function hide() {
             Hole.style.display = 'none'
+        }
+        var agr = document.getElementsByClassName('agree1')
+        var times = 0;
+        var dis = document.getElementsByClassName('disagree1')
+        function doAgree1() {
+            if(times++%2==0){
+                agr[0].style.backgroundColor = '#0084ff'
+                agr[0].style.color = '#fff'
+            }else{
+                agr[0].style.backgroundColor = 'rgba(0,132,255,.1)'
+                agr[0].style.color = '#0084ff'
+            }
+        }
+        function doDisagree1(){
+            if(times++%2==0){
+                dis[0].style.backgroundColor = '#0084ff'
+                dis[0].style.color = '#fff'
+            }else{
+                dis[0].style.backgroundColor = 'rgba(0,132,255,.1)'
+                dis[0].style.color = '#0084ff'
+            }
+        }
+         function doAgree2() {
+            if(times++%2==0){
+                agr[1].style.backgroundColor = '#0084ff'
+                agr[1].style.color = '#fff'
+            }else{
+                agr[1].style.backgroundColor = 'rgba(0,132,255,.1)'
+                agr[1].style.color = '#0084ff'
+            }
+        }
+        function doDisagree2(){
+            if(times++%2==0){
+                dis[1].style.backgroundColor = '#0084ff'
+                dis[1].style.color = '#fff'
+            }else{
+                dis[1].style.backgroundColor = 'rgba(0,132,255,.1)'
+                dis[1].style.color = '#0084ff'
+            }
+        }
+        function doAgree3() {
+            if(times++%2==0){
+                agr[2].style.backgroundColor = '#0084ff'
+                agr[2].style.color = '#fff'
+            }else{
+                agr[2].style.backgroundColor = 'rgba(0,132,255,.1)'
+                agr[2].style.color = '#0084ff'
+            }
+        }
+        function doDisagree3(){
+            if(times++%2==0){
+                dis[2].style.backgroundColor = '#0084ff'
+                dis[2].style.color = '#fff'
+            }else{
+                dis[2].style.backgroundColor = 'rgba(0,132,255,.1)'
+                dis[2].style.color = '#0084ff'
+            }
+        }
+        function change1(){
+            var middle = document.getElementById('left_middle');
+            var middle1 = document.getElementById('left_middle_1');
+            var middle2 = document.getElementById('left_middle_2');
+            middle.style.display = 'block'
+            middle1.style.display = 'none'
+            middle2.style.display = 'none'
+        }
+        function change2(){
+            var middle = document.getElementById('left_middle');
+            var middle1 = document.getElementById('left_middle_1');
+            var middle2 = document.getElementById('left_middle_2');
+            middle.style.display = 'none'
+            middle1.style.display = 'block'
+            middle2.style.display = 'none'
+        }
+        function change3(){
+            var middle = document.getElementById('left_middle');
+            var middle1 = document.getElementById('left_middle_1');
+            var middle2 = document.getElementById('left_middle_2');
+            middle.style.display = 'none'
+            middle1.style.display = 'none'
+            middle2.style.display = 'block'
         }
     </script>
 </body>
