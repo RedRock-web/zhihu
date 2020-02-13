@@ -15,14 +15,13 @@
         <div class="head">
             <div class="content">
                 <span class="zhihu">知乎</span>
-                <a class="home_page" href="D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
+                <a class="home_page" href="file:///D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
                 <a class="find" href="">发现</a>
                 <a class="answer" href="">等你来答</a>
                 <input type="text" value="" id="search">
                 <input type="submit" value="搜索" id="commit">
                 <input type="submit" value="提问" class="ask" onclick="Ask()">
-                <img src="../image/da8e974dc_xl.jpg" class="pic"
-                    onclick="window.location.href='D:/GIT2/RedRock-web/web/personal/personal_page/personal_page.html'">
+                <img src="../image/da8e974dc_xl.jpg" class="pic" onclick="change_page()">
             </div>
         </div>
         <div class="middle">
@@ -103,6 +102,9 @@
         </div>
     </div>
     <script>
+        function change_page(){
+            window.location.href = "file:///D:/GIT2/RedRock-web/web/personal/personal_page/personal_page.html"
+        }
         var add = document.getElementById('add')
         var Topic = document.getElementById('topic')
         var Hole = document.getElementById('hole_in')

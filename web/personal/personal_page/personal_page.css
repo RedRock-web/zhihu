@@ -66,7 +66,8 @@
 .back{
     background-color: #1a1a1a82;
     width: 1000px;
-    height: 124px;
+    height: 134px;
+    border-radius: 2px;
 }
 .img{
     width: 160px;
@@ -76,6 +77,18 @@
     margin-top: 50px;
     border-radius: 5px;
 }
+.nickname{
+    font-size: 26px;
+    font-weight: 600;
+    color: #1a1a1a;
+    position: relative;
+    left: 40px;
+    top: -45px;
+}
+.detail{
+    font-size: 14px;
+    color: #8590a6;
+}
 .edit{
     width: 118px;
     height: 34px;
@@ -84,16 +97,18 @@
     color: #0084ff;
     background-color: white;
     position: relative;
-    left: 650px;
+    left: 530px;
 }
 .left_lower{
     width: 694px;
     border: solid #f6f6f6 2px;
     margin-top: 10px;
     float: left;
+    padding-bottom: 30px;
 }
 .left_head{
-    font-size: large;
+    font-size: 18px;
+    margin-top: 15px;
 }
 .link{
     margin-left: 30px;
@@ -112,14 +127,14 @@
     color: #8590a6;
     margin-bottom: 5px;
 }
-.box1{
+.box6{
     float: left;
     width: 148px;
     height: 45.2px;
     border-right: solid #f6f6f6 1px;
     padding-top: 25px;
 }
-.box2{
+.box7{
     padding-top: 25px;
 }
 .attention1>a{
@@ -127,4 +142,31 @@
     color: #646464;
     margin-top: 10px;
 }
-
+.head{
+    height: 50px;
+    border-top: solid 1px #f6f6f6;
+    border-bottom: solid 1px #f6f6f6;
+    margin-top: 15px;
+}
+.dynamic{
+    position: relative;
+    top: 30%;
+    left: 30px;
+    font-size: 15px;
+    font-weight: 600;
+}
+#box1{
+    display: block;
+}
+#box2{
+    display: none;
+}
+#box3{
+    display: none;
+}
+#box4{
+    display: none;
+}
+#box5{
+    display: none;
+}

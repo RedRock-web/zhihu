@@ -14,7 +14,7 @@
     <div class="head">
         <div class="content">
             <span class="zhihu">知乎</span>
-            <a class="home_page" href="D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
+            <a class="home_page" href="file:///D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
             <a class="find" href="">发现</a>
             <a class="answer" href="">等你来答</a>
             <input type="text" value="" id="search">
@@ -26,26 +26,53 @@
         <div class="middle_head">
             <div class="back">
                 <img src="../image/da8e974dc_xl.jpg" class="img">
+                <span class="nickname">Dai</span>
+                <span class="detail">查看详细资料</span>
                 <input type="submit" value="编辑个人资料" class="edit" onclick="data()">
             </div>
         </div>
         <div class="left_lower">
             <div class="left_head">
-                <a href="" class="link">动态</a>
-                <a href="" class="link">回答</a>
-                <a href="" class="link">提问</a>
-                <a href="" class="link">文章</a>
-                <a href="" class="link">专栏</a>
+                <a class="link" onclick="dynamic()">动态</a>
+                <a class="link" onclick="answer()">回答</a>
+                <a class="link" onclick="question()">提问</a>
+                <a class="link" onclick="passage()">文章</a>
+                <a class="link">专栏</a>
                 <a href="" class="link">想法</a>
-                <a href="" class="link">更多</a>
+                <a class="link" onclick="ens()">收藏</a>
+            </div>
+            <div id="box1">
+                <div class="head">
+                    <span class="dynamic">我的动态</span>
+                </div>
+            </div>
+            <div id="box2">
+                <div class="head">
+                    <span class="dynamic">我的回答</span>
+                </div>
+            </div>
+             <div id="box3">
+                <div class="head">
+                    <span class="dynamic">我的提问</span>
+                </div>
+            </div>
+            <div id="box4">
+                <div class="head">
+                    <span class="dynamic">我的文章</span>
+                </div>
+            </div>
+            <div id="box5">
+                <div class="head">
+                    <span class="dynamic">我的收藏夹</span>
+                </div>
             </div>
         </div>
         <div class="right_lower">
             <div class="attention">
-                <div class="box1">
+                <div class="box6">
                     <span>关注了</span>
                 </div>
-                <div class="box2">
+                <div class="box7">
                     <span>关注者</span>
                 </div>
             </div>
@@ -67,7 +94,47 @@
     </div>
     <script>
         function data(){
-            window.location.href='./data.html'
+            window.location.href='file:///D:/GIT2/RedRock-web/web/personal/personal_page/data.html'
+        }
+        var box1 = document.getElementById('box1')
+        var box2 = document.getElementById('box2')
+        var box3 = document.getElementById('box3')
+        var box4 = document.getElementById('box4')
+        var box5 = document.getElementById('box5')
+        function dynamic(){
+            box1.style.display = 'block'
+            box2.style.display = 'none'
+            box3.style.display = 'none'
+            box4.style.display = 'none'
+            box5.style.display = 'none'
+        }
+        function answer(){
+            box1.style.display = 'none'
+            box2.style.display = 'block'
+            box3.style.display = 'none'
+            box4.style.display = 'none'
+            box5.style.display = 'none'
+        }
+        function question(){
+            box1.style.display = 'none'
+            box2.style.display = 'none'
+            box3.style.display = 'block'
+            box4.style.display = 'none'
+            box5.style.display = 'none'
+        }
+        function passage(){
+            box1.style.display = 'none'
+            box2.style.display = 'none'
+            box3.style.display = 'none'
+            box4.style.display = 'block'
+            box5.style.display = 'none'
+        }
+        function ens(){
+            box1.style.display = 'none'
+            box2.style.display = 'none'
+            box3.style.display = 'none'
+            box4.style.display = 'none'
+            box5.style.display = 'block'
         }
     </script>
 </body>
