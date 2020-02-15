@@ -11,7 +11,7 @@
 .content{
     padding-left: 16px; 
     position: absolute;
-    left: 300px;
+    left: 230px;
 }
 .zhihu{
     font-size: 30px;
@@ -54,6 +54,27 @@
     width: 58px;
     height: 34px;
     margin-left: 16px;
+}
+.person{
+    width: 30px;
+    height: 30px;
+    margin-left: 20px;
+    position: relative;
+    top: 10px;
+}
+.pic_1{
+    width: 25px;
+    height:25px;
+    margin-left: 50px;
+    position: relative;
+    top: 10px;
+}
+.pic_2{
+    width: 25px;
+    height:25px;
+    margin-left: 20px;
+    position: relative;
+    top: 10px;
 }
 .middle{
     width: 1000px;
@@ -112,7 +133,25 @@
     margin-left: 130px;
     display: none;
 }
-.preservation{
+#preservation1{
+    width: 62px;
+    height: 34px;
+    outline: none;
+    color: #fff;
+    background-color: #0084ff;
+    border: none;
+    margin-top: 10px;
+}
+#preservation2{
+    width: 62px;
+    height: 34px;
+    outline: none;
+    color: #fff;
+    background-color: #0084ff;
+    border: none;
+    margin-top: 10px;
+}
+#preservation3{
     width: 62px;
     height: 34px;
     outline: none;
