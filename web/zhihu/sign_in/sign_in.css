@@ -121,6 +121,7 @@ body{
 #password2{
     margin-left: 20px;
     font-size: 16px;
+    font-weight: 600;
     color: #444;
 }
 .button_in{

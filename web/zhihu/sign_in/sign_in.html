@@ -23,11 +23,12 @@
         <img src="../image/image.png" class="code">
         <form id="box1">
             <div class="number1">
-                <input name="username" value="" placeholder="手机号或邮箱" id="number" autocomplete="off" onblur="check()">
+                <input name="" type="text" value="" placeholder="手机号或邮箱" id="number" autocomplete="off"
+                    onblur="check()">
             </div>
             <hr>
             <div class="security_code">
-                <input name="password" type="" id="note" placeholder="密码" autocomplete="off" onblur="check_note()">
+                <input name="" type="password" id="note" placeholder="密码" autocomplete="off" onblur="check_note()">
             </div>
             <hr>
             <input placeholder="验证码" class="code1">
@@ -96,25 +97,25 @@
         <span>违法和不良信息举报：010-82716601</span>
     </div>
     <script>
-            var box1 = document.getElementById('box1')
-            var box2 = document.getElementById('box2')
-            var passWord1 = document.getElementById('password1')
-            var passWord2 = document.getElementById('password2')
-        function nonecord(){
-            if(box1.style.display = 'block'){
+        var box1 = document.getElementById('box1')
+        var box2 = document.getElementById('box2')
+        var passWord1 = document.getElementById('password1')
+        var passWord2 = document.getElementById('password2')
+        function nonecord() {
+            if (box1.style.display = 'block') {
                 box1.style.display = 'none'
                 box2.style.display = 'block'
             }
             passWord1.style.fontWeight = '600'
             passWord2.style.fontWeight = '400'
         }
-        function cord(){
-            if(box2.style.display = 'block'){
+        function cord() {
+            if (box2.style.display = 'block') {
                 box2.style.display = 'none'
                 box1.style.display = 'block'
             }
-                passWord2.style.fontWeight = '600'
-                passWord1.style.fontWeight = '400'
+            passWord2.style.fontWeight = '600'
+            passWord1.style.fontWeight = '400'
 
         }
         var user = document.getElementById("number")
@@ -134,80 +135,82 @@
         var userName = document.getElementById('number');
         var passWord = document.getElementById('note');
         var btn = document.getElementById('button')
-        btn.onclick =function(){
-        function ajax(options){
-            var defaults = {
-                type:'post',
-                url:'',
-                async:true,
-                data:{},
-                headers:{
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                success:function(){},
-                error:function(){}
-            };
-            Object.assign(defaults,options);
-            var xhr = new XMLHttpRequest();
-            var params = '';
-            for(var attr in defaults.data){
-                params += attr + '=' + defaults.data[attr]+'&';
-            }
-            params = params.substr(0,params.length-1);
-            if(defaults.type=='get'){
-                defaults.url = defaults.url + '?' + params;
-            }
-            xhr.open(defaults.type,defaults.url);  
-            // xhr.withCredentials = true;
-            if(defaults.type == 'post'){
-                var contentType =  defaults.headers['Content-Type']
-                xhr.setRequestHeader('Content-Type',contentType)
-                if(contentType == 'application/json'){
-                    xhr.send(JSON.stringify(defaults.data));
-                }else{
-                    xhr.send(params);
+        btn.onclick = function () {
+            function ajax(options) {
+                var defaults = {
+                    type: 'post',
+                    url: '',
+                    async: true,
+                    data: {},
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    success: function () { },
+                    error: function () { }
+                };
+                Object.assign(defaults, options);
+                var xhr = new XMLHttpRequest();
+                var params = '';
+                for (var attr in defaults.data) {
+                    params += attr + '=' + defaults.data[attr] + '&';
                 }
-                
-            }else{
-                xhr.send();
-            }
-          
-            xhr.onload=function(){
-                var contentType = xhr.getResponseHeader('Content-type');
-                var responseText = xhr.responseText;
-                if(contentType.includes('application/json')){
-                   responseText = JSON.parse(responseText);
+                params = params.substr(0, params.length - 1);
+                if (defaults.type == 'get') {
+                    defaults.url = defaults.url + '?' + params;
                 }
-                if(xhr.status == 200){
-                   defaults.success(responseText); 
-                   console.log(responseText);
-                   window.location.href='D:/GIT2/RedRock-web/web/home_page/page/page.html'
-                }else{
-                    defaults.error(responseText,xhr);
-                }
-                
-            }
-        }
-        ajax({
-            type:'post',
-            url:'http://47.98.57.152:8080/sign_in',
-            async:true,
-            data:{
-                username:userName.value,
-                password:passWord.value
-            },
-            headers:{
-                'Content-Type':'application/x-www-form-urlencoded;charset = UTF-8',
-            },
-            success:function(data){
-                console.log(data);
-            },
-            error:function(data){
-                console.log(data);
-            }
-        })
+                xhr.open(defaults.type, defaults.url);
+                if (defaults.type == 'post') {
+                    var contentType = defaults.headers['Content-Type']
+                    xhr.setRequestHeader('Content-Type', contentType)
+                    if (contentType == 'application/json') {
+                        xhr.send(JSON.stringify(defaults.data));
+                    } else {
+                        xhr.send(params);
+                    }
 
+                } else {
+                    xhr.send();
+                }
+
+                xhr.onload = function () {
+                    var contentType = xhr.getResponseHeader('Content-type');
+                    var responseText = xhr.responseText;
+                    if (contentType.includes('application/json')) {
+                        responseText = JSON.parse(responseText);
+                    }
+                    if (xhr.status == 200) {
+                        defaults.success(responseText);
+                        console.log(responseText);
+                        document.cookie = "username=dai"
+                        document.cookie = "password=12345678"
+                        window.location.href = 'file:///D:/GIT2/RedRock-web/web/home_page/page/page.html'
+                    } else {
+                        defaults.error(responseText, xhr);
+                        alert(xhr.responseText);
+                    }
+
+                }
+            }
+            ajax({
+                type: 'post',
+                url: 'http://47.98.57.152:8080/sign_in',
+                async: true,
+                data: {
+                    username: userName.value,
+                    password: passWord.value
+                },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset = UTF-8',
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            })
         }
+        
     </script>
 </body>
 
