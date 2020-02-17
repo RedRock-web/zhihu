@@ -135,3 +135,49 @@ func (q Question) GetByFollowNum() ([]map[string]interface{}, error) {
 	return data, err
 }
 
+//获取用户关注的问题
+func (q Question) GetByFollow() ([]map[string]interface{}, error) {
+	data, err := database.G_DB.Table.GetByOneself("select question_id from question_follow where uid = " + G_user.Info.Uid)
+	return data, err
+}
+
+//json返回问题详情
+func PostQuestion(c *gin.Context, q *Question, data []map[string]interface{}) {
+	var answer []gin.H
+	var question []gin.H
+
+	for _, v := range data {
+		//获取问题相关信息
+		q.Id = string(v["question_id"].([]uint8))
+		q.GetQuestion()
+		//获取答案相关信息,将一个问题的答案组合为一个gin.H
+		tempAnswers := q.GetAnswers()
+		answersCount := q.GetAnswersCount()
+		for i := 0; i < answersCount; i++ {
+			answer = append(answer, gin.H{
+				"uid":         string(tempAnswers[i]["uid"].([]uint8)),
+				"question_id": q.Id,
+				"answer_id":   string(tempAnswers[i]["answer_id"].([]uint8)),
+				"time":        string(tempAnswers[i]["time"].([]uint8)),
+				"content":     string(tempAnswers[i]["content"].([]uint8)),
+			})
+		}
+		//将所有问题组合成一个gin.H
+		question = append(question, gin.H{
+			"author_uid":   q.Uid,
+			"question_id":  q.Id,
+			"created_time": q.Time,
+			"title":        q.Title,
+			"complement":   q.Complement,
+			"answer":       answer,
+		})
+	}
+	//所有问题组合后,返回json
+	c.JSON(200, gin.H{
+		"status": 0,
+		"data": gin.H{
+			"question:": question,
+		},
+	})
+	c.Abort()
+}

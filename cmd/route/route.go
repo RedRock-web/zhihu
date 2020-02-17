@@ -72,6 +72,8 @@ func (e Engine) HomePage() {
 		RequiredLogin.GET("/logout", LogOut())
 		//提问
 		RequiredLogin.POST("/questions", Quiz())
+		//关注
+		RequiredLogin.GET("/follow", Follow())
 	}
 
 	//无需登录
@@ -83,8 +85,6 @@ func (e Engine) HomePage() {
 		Nologin.GET("/search", Search())
 		//热榜
 		Nologin.GET("/hot", Hot())
-		//关注
-		Nologin.GET("/follow", )
 	}
 }
 
