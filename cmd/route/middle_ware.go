@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"zhihu/cmd/basic"
+	"zhihu/cmd/database"
 	"zhihu/cmd/features"
 )
 
@@ -653,9 +654,49 @@ func DeleteQuestion() gin.HandlerFunc {
 //动态
 func Dynamic() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var statusData []gin.H
+		q := features.NewQuestion()
 		u := features.NewUser()
-		u.Info.Uid = c.Param("uid")
+		a := features.NewAnswer()
 
+		u.Info.Uid = c.Param("uid")
+		data, err := features.GetDataByTime()
+		basic.CheckError(err, "获取用户动态失败!")
+
+		for _, v := range data {
+			if features.IsQuestion(v) {
+				q.Id = string(v["question_id"].([]uint8))
+				q.GetQuestion()
+				statusData = append(statusData, gin.H{
+					"type":         "question",
+					"author_uid":   q.Uid,
+					"question_id":  q.Id,
+					"created_time": q.Time,
+					"title":        q.Title,
+					"complement":   q.Complement,
+				})
+			} else {
+				a.Uid = string(v["uid"].([]uint8))
+				a.QuestionId = string(v["question_id"].([]uint8))
+				answerData, err := database.G_DB.Table.HighFind("answer", "answer_id, time, content", "uid = "+a.Uid+" and question_id = "+a.QuestionId)
+				basic.CheckError(err, "状态中查询答案失败!")
+
+				statusData = append(statusData, gin.H{
+					"type":        "answer",
+					"uid":         a.Uid,
+					"question_id": a.QuestionId,
+					"answer_id":   string(answerData[0]["answer_id"].([]uint8)),
+					"time":        string(answerData[0]["time"].([]uint8)),
+					"content":     string(answerData[0]["content"].([]uint8)),
+				})
+			}
+		}
+
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data":   statusData,
+		})
+		c.Abort()
 	}
 }
 

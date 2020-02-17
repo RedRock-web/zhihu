@@ -3,6 +3,7 @@ package features
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"zhihu/cmd/basic"
 	"zhihu/cmd/database"
 )
@@ -187,4 +188,23 @@ func (q Question) HaveQuestion() bool {
 	data, err := database.G_DB.Table.HighFind("question", "id ", " question_id = "+q.Id+" and uid = "+G_user.Info.Uid)
 	basic.CheckError(err, "判断是否提了问题失败！")
 	return data != nil
+}
+
+//判断是否是问题
+func IsQuestion(v map[string]interface{}) bool {
+	_, err1 := strconv.Atoi(string(v["j"].([]uint8)))
+	return err1 == nil
+}
+
+//根据时间获取问题表和回答表的数据
+func GetDataByTime() ([]map[string]interface{}, error) {
+	data, err := database.G_DB.Table.GetByOneself(`
+		select * from (
+			select uid, question_id, time, time as j from answer 
+			union all
+			select uid, question_id, time,id as j from question
+     		) AA
+		order by AA.time
+ 		`)
+	return data, err
 }
