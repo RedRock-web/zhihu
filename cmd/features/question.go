@@ -84,8 +84,8 @@ func (q Question) IsQuestion() bool {
 }
 
 //删除问题
-func (q Question) Delete() {
-
+func (q Question) Delete() error {
+	return database.G_DB.Table.Delete("question", "question_id = "+q.Id+" and uid = "+G_user.Info.Uid)
 }
 
 //获取问题信息
@@ -180,4 +180,11 @@ func PostQuestion(c *gin.Context, q *Question, data []map[string]interface{}) {
 		},
 	})
 	c.Abort()
+}
+
+//判断是否已经提了问题
+func (q Question) HaveQuestion() bool {
+	data, err := database.G_DB.Table.HighFind("question", "id ", " question_id = "+q.Id+" and uid = "+G_user.Info.Uid)
+	basic.CheckError(err, "判断是否提了问题失败！")
+	return data != nil
 }

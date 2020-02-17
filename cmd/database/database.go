@@ -226,7 +226,7 @@ func StrToInterface(data []string) []interface{} {
 //删除记录
 func (t *Table) Delete(tableName string, limitInfo string) error {
 	command := strings.Join([]string{"delete from ", tableName, "where ", limitInfo}, " ")
-	//fmt.Println(command)
+	fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err

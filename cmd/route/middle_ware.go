@@ -636,3 +636,16 @@ func GetFollowers() gin.HandlerFunc {
 		}
 	}
 }
+
+//删除问题
+func DeleteQuestion() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		q.Uid = features.G_user.Info.Uid
+		q.Id = c.Param("questionId")
+		if q.HaveQuestion() && basic.MethodIsOk(c, "DELETE") && q.Delete() == nil {
+			//
+		}
+		c.Abort()
+	}
+}
