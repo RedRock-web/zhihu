@@ -649,3 +649,32 @@ func DeleteQuestion() gin.HandlerFunc {
 		c.Abort()
 	}
 }
+
+//动态
+func Dynamic() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+
+	}
+}
+
+//获取用户提问
+func GetAsks() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		u := features.NewUser()
+
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetQuestion()
+		basic.CheckError(err, "获取用户提问失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostQuestion(c, q, data)
+		} else {
+			c.JSON(200, gin.H{
+				"status": 0,
+				"data":   "获取用户提问失败!",
+			})
+		}
+	}
+}

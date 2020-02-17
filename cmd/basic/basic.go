@@ -30,7 +30,7 @@ func GetUid(c *gin.Context) string {
 	return uid
 }
 
-//TODO:考虑各种算法获取用户唯一id
+//todo:考虑各种算法获取用户唯一id
 //获取当前时间-格式："2006-01-02 15:04:05"
 func GetTimeNow() string {
 	return time.Now().Format("2006-01-02 15:04:05")

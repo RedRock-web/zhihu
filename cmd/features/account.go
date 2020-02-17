@@ -116,7 +116,7 @@ func (a Account) Logout() error {
 	return err
 }
 
-//TODO:重置密码
+//todo:重置密码
 func (a Account) PasswdReset(c *gin.Context) {
 
 }

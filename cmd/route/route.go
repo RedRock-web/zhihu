@@ -59,12 +59,18 @@ func (e Engine) PersonalPage() {
 
 	}
 	//无需登录
-	Nologin := e.r.Group("")
+	Nologin := e.r.Group("/people")
 	{
+		//动态
+		Nologin.GET("/:uid", Dynamic())
+		//回答
+		Nologin.GET("/:uid/answers")
+		//提问
+		Nologin.GET("/:uid/asks", GetAsks())
 		//关注了
-		Nologin.GET("/people/:uid/following", GetFollowing())
+		Nologin.GET("/:uid/following", GetFollowing())
 		//关注者
-		Nologin.GET("/people/:uid/followers", GetFollowers())
+		Nologin.GET("/:uid/followers", GetFollowers())
 	}
 }
 
@@ -151,7 +157,7 @@ func (e Engine) Question() {
 		RequiredLogin.POST("/:questionId/followers", FollowQuestion())
 
 		//删除问题
-		RequiredLogin.DELETE("/:questionId",DeleteQuestion())
+		RequiredLogin.DELETE("/:questionId", DeleteQuestion())
 
 		//取消关注问题
 		RequiredLogin.DELETE("/:questionId/followers", FollowQuestion())
