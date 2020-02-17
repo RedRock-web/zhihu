@@ -64,7 +64,7 @@ func (e Engine) PersonalPage() {
 		//动态
 		Nologin.GET("/:uid", Dynamic())
 		//回答
-		Nologin.GET("/:uid/answers")
+		Nologin.GET("/:uid/answers", GetAnswers())
 		//提问
 		Nologin.GET("/:uid/asks", GetAsks())
 		//关注了

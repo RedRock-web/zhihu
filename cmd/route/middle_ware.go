@@ -678,3 +678,21 @@ func GetAsks() gin.HandlerFunc {
 		}
 	}
 }
+
+//获取用户回答
+func GetAnswers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetAnswers()
+		basic.CheckError(err, "获取用户回答失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostAnswers(c, data)
+		} else {
+			c.JSON(200, gin.H{
+				"status": 0,
+				"data":   "获取用户回答失败!",
+			})
+		}
+	}
+}

@@ -57,3 +57,28 @@ func (a Answer) GetContent() string {
 	basic.CheckError(err, "获取回答content失败！")
 	return string(data[0]["content"].([]uint8))
 }
+
+//json返回回答详情
+func PostAnswers(c *gin.Context,data []map[string]interface{}) {
+	var answer []gin.H
+
+	for _, v := range data {
+		//获取答案相关信息,将一个答案组合为一个gin.H
+		answer = append(answer, gin.H{
+			"uid":         string(v["uid"].([]uint8)),
+			"question_id": string(v["question_id"].([]uint8)),
+			"answer_id":   string(v["answer_id"].([]uint8)),
+			"time":        string(v["time"].([]uint8)),
+			"content":     string(v["content"].([]uint8)),
+		})
+	}
+
+	//所有回答组合后,返回json
+	c.JSON(200, gin.H{
+		"status": 0,
+		"data": gin.H{
+			"answer": answer,
+		},
+	})
+	c.Abort()
+}

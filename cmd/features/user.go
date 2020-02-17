@@ -75,3 +75,9 @@ func (u User) GetQuestion() ([]map[string]interface{}, error) {
 	data, err := database.G_DB.Table.HighFind("question", "question_id, time, title, complement", "uid = "+u.Info.Uid)
 	return data, err
 }
+
+//获取用户的回答
+func (u User) GetAnswers() ([]map[string]interface{}, error) {
+	data, err := database.G_DB.Table.HighFind("answer", "uid, question_id,answer_id, time, content", "uid = "+u.Info.Uid)
+	return data, err
+}
