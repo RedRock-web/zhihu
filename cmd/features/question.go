@@ -117,8 +117,14 @@ func (q Question) GetAnswersCount() int {
 	return counts
 }
 
-//搜索问题
+//搜索问题-通过正则表达式
 func (q Question) Search(tableName string, targe string, limitInfo string) ([]map[string]interface{}, error) {
 	data, err := database.G_DB.Table.HighFind(tableName, targe, "`title` regexp '"+limitInfo+"'")
+	return data, err
+}
+
+//随机获取5条数据
+func (q Question) GetByRand() ([]map[string]interface{}, error) {
+	data, err := database.G_DB.Table.GetByRand("question", "question_id", "5")
 	return data, err
 }

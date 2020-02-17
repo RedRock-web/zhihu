@@ -65,31 +65,27 @@ func (e Engine) QuestionPage() {
 
 //主页
 func (e Engine) HomePage() {
-	//主页
-	e.r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"msg": "这里是主页！",
-		})
-	})
-	//注销
-	e.r.GET("/logout", Authorized2Some(), LogOut())
-	//提问
-	e.r.POST("/questions", Authorized2Some(), Quiz())
+	//需要登录
+	RequiredLogin := e.r.Group("", Authorized2Some())
+	{
+		//注销
+		RequiredLogin.GET("/logout", LogOut())
+		//提问
+		RequiredLogin.POST("/questions", Quiz())
+	}
 
-	//搜索
-	e.r.GET("/search", Search())
-
-	/*
+	//无需登录
+	Nologin := e.r.Group("")
+	{
+		//主页
+		Nologin.GET("/", HomePage())
 		//搜索
-		route.auth.GET("/search", )
-		//推荐
-		route.auth.GET("/feed/topstory/recommend", )
-		//关注
-		route.auth.GET("/feed/topstory/follow_wonderful", )
+		Nologin.GET("/search", Search())
 		//热榜
-		route.auth.GET("/feed/topstory/hot", )
-	*/
-
+		Nologin.GET("/hot", )
+		//关注
+		Nologin.GET("/follow", )
+	}
 }
 
 //问题详情页-回答
