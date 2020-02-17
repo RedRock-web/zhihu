@@ -353,6 +353,39 @@ func (t *Table) GetByRand(tableName string, targe string, Number string) ([]map[
 	return list, err
 }
 
+//自行输入sql语句获取记录
+func (t *Table) GetByOneself(command string) ([]map[string]interface{}, error) {
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return nil, err
+	}
+	columns, err := stmt.Columns()
+	if err != nil {
+		return nil, err
+	}
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength) //临时存储每行数据
+	for index, _ := range cache {              //为每一列初始化一个指针
+		var a interface{}
+		cache[index] = &a
+	}
+	var list []map[string]interface{} //返回的切片
+	for stmt.Next() {
+		err = stmt.Scan(cache...)
+		if err != nil {
+			return nil, err
+		}
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{}) //取实际类型
+		}
+		list = append(list, item)
+	}
+	err = stmt.Close()
+
+	return list, err
+}
+
 //对行计数,不加where条件
 func (t *Table) Count(tableName string, targe string) (count int, err error) {
 	var temp string

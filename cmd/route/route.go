@@ -82,7 +82,7 @@ func (e Engine) HomePage() {
 		//搜索
 		Nologin.GET("/search", Search())
 		//热榜
-		Nologin.GET("/hot", )
+		Nologin.GET("/hot", Hot())
 		//关注
 		Nologin.GET("/follow", )
 	}

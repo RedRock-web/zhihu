@@ -128,3 +128,10 @@ func (q Question) GetByRand() ([]map[string]interface{}, error) {
 	data, err := database.G_DB.Table.GetByRand("question", "question_id", "5")
 	return data, err
 }
+
+//获取关注度最高的前n个问题
+func (q Question) GetByFollowNum() ([]map[string]interface{}, error) {
+	data, err := database.G_DB.Table.GetByOneself("select question_id,count(*) as count from question_follow group by question_id order by count desc limit 5")
+	return data, err
+}
+
