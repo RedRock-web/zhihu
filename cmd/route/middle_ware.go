@@ -525,3 +525,60 @@ func Edit() gin.HandlerFunc {
 		}
 	}
 }
+
+//搜索feature
+//TODO:按赞数排序
+//TODO:搜索匹配回答
+func Search() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var answer []gin.H
+		var question []gin.H
+
+		qq := c.Query("q")
+		q := features.NewQuestion()
+		data, err := q.Search("question", "question_id", qq)
+		basic.CheckError(err, "搜索问题失败!")
+
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			for _, v := range data {
+				//获取问题相关信息
+				q.Id = string(v["question_id"].([]uint8))
+				q.GetQuestion()
+				//获取答案相关信息,将一个问题的答案组合为一个gin.H
+				tempAnswers := q.GetAnswers()
+				answersCount := q.GetAnswersCount()
+				for i := 0; i < answersCount; i++ {
+					answer = append(answer, gin.H{
+						"uid":         string(tempAnswers[i]["uid"].([]uint8)),
+						"question_id": q.Id,
+						"answer_id":   string(tempAnswers[i]["answer_id"].([]uint8)),
+						"time":        string(tempAnswers[i]["time"].([]uint8)),
+						"content":     string(tempAnswers[i]["content"].([]uint8)),
+					})
+				}
+				//将所有问题组合成一个gin.H
+				question = append(question, gin.H{
+					"author_uid":   q.Uid,
+					"question_id":  q.Id,
+					"created_time": q.Time,
+					"title":        q.Title,
+					"complement":   q.Complement,
+					"answer":       answer,
+				})
+			}
+			//所有问题组合后,返回json
+			c.JSON(200, gin.H{
+				"status": 0,
+				"data": gin.H{
+					"question:": question,
+				},
+			})
+			c.Abort()
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有相关问题!",
+			})
+		}
+	}
+}

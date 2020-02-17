@@ -72,7 +72,8 @@ func (q Question) Quiz() {
 		}
 	} else {
 		q.C.JSON(http.StatusUnauthorized, gin.H{
-			"error": "不是提问！",
+			"status":     42,
+			"error_info": "不是提问！",
 		})
 	}
 }
@@ -114,4 +115,10 @@ func (q Question) GetAnswersCount() int {
 	counts, err := database.G_DB.Table.HignCount("answer ", "id", " question_id = "+q.Id)
 	basic.CheckError(err, "回答评论子计数失败!")
 	return counts
+}
+
+//搜索问题
+func (q Question) Search(tableName string, targe string, limitInfo string) ([]map[string]interface{}, error) {
+	data, err := database.G_DB.Table.HighFind(tableName, targe, "`title` regexp '"+limitInfo+"'")
+	return data, err
 }

@@ -286,7 +286,7 @@ func (t *Table) Find(tableName string, limit string, targeKey string, targeValue
 //查找记录,可复杂限定条件
 func (t *Table) HighFind(tableName string, targe string, limitInfo string) ([]map[string]interface{}, error) {
 	command := strings.Join([]string{"select ", targe, " from ", tableName, " where ", limitInfo}, "")
-	//fmt.Println(command)
+	fmt.Println(command)
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return nil, err

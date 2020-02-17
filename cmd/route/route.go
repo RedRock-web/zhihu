@@ -76,6 +76,9 @@ func (e Engine) HomePage() {
 	//提问
 	e.r.POST("/questions", Authorized2Some(), Quiz())
 
+	//搜索
+	e.r.GET("/search", Search())
+
 	/*
 		//搜索
 		route.auth.GET("/search", )
