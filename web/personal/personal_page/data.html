@@ -14,12 +14,15 @@
     <div class="head">
         <div class="content">
             <span class="zhihu">知乎</span>
-            <a class="home_page" href="D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
+            <a class="home_page" href="file:///D:/GIT2/RedRock-web/web/home_page/page/page.html">首页</a>
             <a class="find" href="">发现</a>
             <a class="answer" href="">等你来答</a>
             <input type="text" value="" id="search">
             <input type="submit" value="搜索" id="commit">
             <input type="submit" value="提问" class="ask">
+            <img src="../image/1.1.png" class="pic_1">
+            <img src="../image/1.2.png" class="pic_2">
+            <a href="file:///D:/GIT2/RedRock-web/web/personal/personal_page/personal_page.html"><img src="../image/da8e974dc_xl.jpg" class="person"></a>
         </div>
     </div>
     <div class="middle">
@@ -32,7 +35,7 @@
             <div id="nickname">
                 <input type="text" name="name_input" id="introduce_import">
                 <br>
-                <input class="preservation" name="preservation" type="submit" value="保存" onclick="nickName()">
+                <input id="preservation1" name="preservation1" type="button" value="保存" onclick="nickName()">
                 <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel3()">
             </div>
             <div>
@@ -44,7 +47,7 @@
                                 <input type="radio" name="sex" value="男" id="isMale">男
                                 <input type="radio" name="sex" value="女" id="isFemale">女
                             </form>
-                            <input class="preservation" name="preservation" type="submit" value="保存"
+                            <input id="preservation2" name="preservation2" type="button" value="保存"
                                 onclick="my_gender()">
                             <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel()">
                         </div>
@@ -59,7 +62,7 @@
                         <div id="introduce">
                             <input type="text" name="introduce_import" id="brief_introduce">
                             <br>
-                            <input class="preservation" name="preservation" type="submit" value="保存" onclick="brief()">
+                            <input id="preservation3" name="preservation3" type="button" value="保存" onclick="brief()">
                             <input class="cancel" name="cancel" type="submit" value="取消" onclick="cancel1()">
                         </div>
             </div>
@@ -134,21 +137,46 @@
             var Name = document.getElementById('name')
             var nick = document.getElementById('introduce_import')
             Name.innerHTML = nick.value
+           
         }
         function my_gender() {
             var sex = document.getElementsByName('sex')
             var gender = document.getElementById('sex')
-            for(var i=0;i<sex.length;i++){
-                if(sex[i].checked){
+            for (var i = 0; i < sex.length; i++) {
+                if (sex[i].checked) {
                     gender.innerHTML = sex[i].value
-                }            
                 }
+            }
         }
         function brief() {
             var bri = document.getElementById('brief_introduce')
             var my = document.getElementById('myself')
             my.innerHTML = bri.value
+
         }
+
+        var nick = document.getElementById('introduce_import')
+        // fetch('http://47.98.57.152/me',{
+        //     method:'put'
+        // }).then((res)=>{
+        //     res.json(()=>{
+
+        //     }).then((res)=>{
+        //         console.log(res)
+        //     }).catch(()=>{
+        //         console.log('服务器错误')
+        //     })
+        // })
+         var xhr = new XMLHttpRequest();
+            xhr.open('put','http://47.98.57.152/me',true);
+            xhr.onload = function(){
+                if(xhr.status == 200){
+                    console.log(xhr.responseText)
+                }else{
+                    alert('错误')
+                }
+            };
+            xhr.send(null);
     </script>
 </body>
 

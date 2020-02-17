@@ -17,17 +17,18 @@
     </div>
     <div id="center">
         <div class="log_in">
-            <a class="password">免密码登录</a>
-            <a class="password">密码登录</a>
+            <a id="password1" onclick="nonecord()">免密码登录</a>
+            <a id="password2" onclick="cord()">密码登录</a>
         </div>
         <img src="../image/image.png" class="code">
-        <form>
+        <form id="box1">
             <div class="number1">
-                <input name="username" value="" placeholder="手机号或邮箱" id="number">
+                <input name="" type="text" value="" placeholder="手机号或邮箱" id="number" autocomplete="off"
+                    onblur="check()">
             </div>
             <hr>
             <div class="security_code">
-                <input name="password" type="" id="note" placeholder="密码">
+                <input name="" type="password" id="note" placeholder="密码" autocomplete="off" onblur="check_note()">
             </div>
             <hr>
             <input placeholder="验证码" class="code1">
@@ -35,8 +36,17 @@
             <span class="overseas">海外手机号登录</span>
             <a href="https://www.zhihu.com/account/password_reset" class="forget">忘记密码？</a>
             <div class="button_in">
-                <input type="submit" id="button" value="登录/注册" onclick="check()">
+                <input type="button" id="button" value="登录/注册">
             </div>
+        </form>
+        <form id="box2">
+            <input name="conutry" value="" placeholder="中国+86" class="conutry" autocomplete="off">
+            <input name="phone" value="" placeholder="手机号" class="phone" autocomplete="off">
+            <hr>
+            <input name="cord" value="" placeholder="输入六位短信验证码" class="cord" autocomplete="off">
+            <a href="" class="get">获取短信验证码</a>
+            <hr>
+            <a href="" class="voice">获取语音验证码</a>
         </form>
         <div class="explain">
             <div class="explain_left">
@@ -87,66 +97,120 @@
         <span>违法和不良信息举报：010-82716601</span>
     </div>
     <script>
+        var box1 = document.getElementById('box1')
+        var box2 = document.getElementById('box2')
+        var passWord1 = document.getElementById('password1')
+        var passWord2 = document.getElementById('password2')
+        function nonecord() {
+            if (box1.style.display = 'block') {
+                box1.style.display = 'none'
+                box2.style.display = 'block'
+            }
+            passWord1.style.fontWeight = '600'
+            passWord2.style.fontWeight = '400'
+        }
+        function cord() {
+            if (box2.style.display = 'block') {
+                box2.style.display = 'none'
+                box1.style.display = 'block'
+            }
+            passWord2.style.fontWeight = '600'
+            passWord1.style.fontWeight = '400'
+
+        }
+        var user = document.getElementById("number")
+        var pwd = document.getElementById("note")
         function check() {
-            var user = document.getElementById("number")
-            var pwd = document.getElementById("note")
             if (user.value == "") {
                 alert("用户名不能为空")
-            } else if (pwd.value == "") {
+            }
+        }
+        function check_note() {
+            if (pwd.value == "") {
                 alert("密码不能为空")
             } else if (pwd.value.length < 6) {
                 alert("密码不能小于六位")
             }
         }
-        // var xmlHttp;
-        // function doAjax(){
-        //     if(window.XMLHttpRequest){
-        //         xmlHttp = new XMLHttpRequest();
-        //     }else if(window.ActiveXObject){
-        //         xmlHttp = new ActiveXObject('Microsoft XMLHTTP');
-        //     }
-
-        //     if(xmlHttp != null){
-        //         var userName = document.getElementById('number').value;
-        //         var password = document.getElementById('note').value;
-        //         var url ='http://47.98.57.152:8080/sign_in'
-        //         //url = encodeURI(encodeURI(url)); 
-        //         xmlHttp.open('post',url,true);
-        //         xmlHttp.onreadystatechange = processRequset;
-        //         xmlHttp.send(null);
-        //     }else{
-        //         alert('无法创建XMLHttpRequset对象！')
-        //     }
-        //     function processRequset(){
-        //         if(xmlHttp.readyState == 4){
-        //             if(xmlHttp.status == 200){
-        //                 var str = xmlHttp.responseText;
-        //                 if(str != 0){
-
-        //                 }else{
-
-        //                 }
-        //             }else{
-        //                 alert(xmlHttp.status);
-        //             }
-        //         }
-        //     }
-        // }
-        var xhr = new XMLHttpRequest();
-        var Num = document.getElementById('number').value;
-        var Note = document.getElementById('note').value;
-        xhr.open('post', 'http://47.98.57.152:8080/sign_in', true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200 || xhr.status == 304) {
-                    console.log(xhr.responseText)
+        var userName = document.getElementById('number');
+        var passWord = document.getElementById('note');
+        var btn = document.getElementById('button')
+        btn.onclick = function () {
+            function ajax(options) {
+                var defaults = {
+                    type: 'post',
+                    url: '',
+                    async: true,
+                    data: {},
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    success: function () { },
+                    error: function () { }
+                };
+                Object.assign(defaults, options);
+                var xhr = new XMLHttpRequest();
+                var params = '';
+                for (var attr in defaults.data) {
+                    params += attr + '=' + defaults.data[attr] + '&';
                 }
-            } else {
-                console.log('请求失败')
+                params = params.substr(0, params.length - 1);
+                if (defaults.type == 'get') {
+                    defaults.url = defaults.url + '?' + params;
+                }
+                xhr.open(defaults.type, defaults.url);
+                if (defaults.type == 'post') {
+                    var contentType = defaults.headers['Content-Type']
+                    xhr.setRequestHeader('Content-Type', contentType)
+                    if (contentType == 'application/json') {
+                        xhr.send(JSON.stringify(defaults.data));
+                    } else {
+                        xhr.send(params);
+                    }
+
+                } else {
+                    xhr.send();
+                }
+
+                xhr.onload = function () {
+                    var contentType = xhr.getResponseHeader('Content-type');
+                    var responseText = xhr.responseText;
+                    if (contentType.includes('application/json')) {
+                        responseText = JSON.parse(responseText);
+                    }
+                    if (xhr.status == 200) {
+                        defaults.success(responseText);
+                        console.log(responseText);
+                        document.cookie = "username=dai"
+                        document.cookie = "password=12345678"
+                        window.location.href = 'file:///D:/GIT2/RedRock-web/web/home_page/page/page.html'
+                    } else {
+                        defaults.error(responseText, xhr);
+                        alert(xhr.responseText);
+                    }
+
+                }
             }
+            ajax({
+                type: 'post',
+                url: 'http://47.98.57.152:8080/sign_in',
+                async: true,
+                data: {
+                    username: userName.value,
+                    password: passWord.value
+                },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset = UTF-8',
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            })
         }
-        xhr.send();
+        
     </script>
 </body>
 

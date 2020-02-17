@@ -16,7 +16,7 @@ body{
 }
 #center{
     width: 400px;
-    height: 436px;
+    /* height: 436px; */
     background-color: white;
     margin: 0 auto;
     border-radius: 4px;
@@ -63,8 +63,11 @@ body{
     color: #8590a6;
     margin-left: 30px;
 }
+#box1{
+    display: block;
+}
 .number1{
-   
+    
     margin-left: 20px;
 }
 #number{
@@ -72,6 +75,7 @@ body{
     height: 31.2px;
     border: none;
     outline: none;
+    
 }
 #note{
     width: 140px;
@@ -109,9 +113,15 @@ body{
     color: #8590a6;
     margin-left: 30px;
 }
-.password{
+#password1{
     margin-left: 20px;
     font-size: 16px;
+    color: #444;
+}
+#password2{
+    margin-left: 20px;
+    font-size: 16px;
+    font-weight: 600;
     color: #444;
 }
 .button_in{
@@ -127,6 +137,48 @@ body{
     border-radius: 4px;
     color: #fff;
     font-size: 14px;
+}
+#box2{
+    display: none;
+}
+.conutry{
+    width: 92px;
+    height: 26px;
+    margin-left: 25px;
+    font-size: 14px;
+    color: #8590a6;
+    border: none;
+    outline: none;
+    float: left;
+}
+.phone{
+    width: 234px;
+    height: 30px;
+    outline: none;
+    font-size: 14px;
+    color: #8590a6;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+    padding-left: 20px;
+    border-left: solid 1px;
+}
+.cord{
+    width: 250px;
+    height: 48px;
+    outline: none;
+    font-size: 14px;
+    color: #8590a6;
+    border: none;
+    margin-left: 25px;
+}
+.get{
+    font-size: 14px;
+}
+.voice{
+    font-size: 14px;
+    position: relative;
+    left: 70%;
 }
 .explain{
     width: 400px;
