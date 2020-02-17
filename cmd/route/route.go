@@ -48,12 +48,23 @@ func (e Engine) LoginPage() {
 
 //用户详情页
 func (e Engine) PersonalPage() {
-	personalPage := e.r.Group("", Authorized2Some())
+	//需要登录
+	RequiredLogin := e.r.Group("", Authorized2Some())
 	{
 		//编辑个人资料
-		personalPage.GET("/edit")
-		personalPage.PUT("/me", Edit())
-		personalPage.POST("/chat", )
+		RequiredLogin.GET("/edit")
+		RequiredLogin.PUT("/me", Edit())
+		//聊天
+		RequiredLogin.POST("/chat", )
+
+	}
+	//无需登录
+	Nologin := e.r.Group("")
+	{
+		//关注了
+		Nologin.GET("/people/:uid/following", GetFollowing())
+		//关注者
+		Nologin.GET("/people/:uid/followers", GetFollowers())
 	}
 }
 
@@ -123,6 +134,7 @@ func (e Engine) Question() {
 	NoLogin := e.r.Group("/questions")
 	{
 		//进入问题详情页，获取问题信息
+		//TODO:对回答排序
 		NoLogin.GET("/:questionId/", GetQuestion())
 
 		//查看问题评论

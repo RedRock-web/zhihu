@@ -599,3 +599,40 @@ func Follow() gin.HandlerFunc {
 		}
 	}
 }
+
+//关注我的人
+func GetFollowing() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetFollowers(u.Info.Uid)
+		basic.CheckError(err, "获取关注我的人失败!")
+
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostUser(c, u, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有关注我的人!",
+			})
+		}
+	}
+}
+
+//我关注的人
+func GetFollowers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetFollowing(u.Info.Uid)
+		basic.CheckError(err, "获取我关注的人失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostUser(c, u, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有关注我的人!",
+			})
+		}
+	}
+}

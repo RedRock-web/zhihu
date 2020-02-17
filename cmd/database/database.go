@@ -10,7 +10,6 @@ import (
 
 var G_DB Database
 
-//TODO:将time改为datatime格式
 //项目数据库相关准备
 func Start() {
 	db := Database{
