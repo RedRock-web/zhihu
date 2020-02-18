@@ -48,12 +48,29 @@ func (e Engine) LoginPage() {
 
 //用户详情页
 func (e Engine) PersonalPage() {
-	personalPage := e.r.Group("", Authorized2Some())
+	//需要登录
+	RequiredLogin := e.r.Group("", Authorized2Some())
 	{
 		//编辑个人资料
-		personalPage.GET("/edit")
-		personalPage.PUT("/me", Edit())
-		personalPage.POST("/chat", )
+		RequiredLogin.GET("/edit")
+		RequiredLogin.PUT("/me", Edit())
+		//聊天
+		RequiredLogin.POST("/chat", )
+
+	}
+	//无需登录
+	Nologin := e.r.Group("/people")
+	{
+		//动态
+		Nologin.GET("/:uid", Dynamic())
+		//回答
+		Nologin.GET("/:uid/answers", GetAnswers())
+		//提问
+		Nologin.GET("/:uid/asks", GetAsks())
+		//关注了
+		Nologin.GET("/:uid/following", GetFollowing())
+		//关注者
+		Nologin.GET("/:uid/followers", GetFollowers())
 	}
 }
 
@@ -65,28 +82,27 @@ func (e Engine) QuestionPage() {
 
 //主页
 func (e Engine) HomePage() {
-	//主页
-	e.r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"msg": "这里是主页！",
-		})
-	})
-	//注销
-	e.r.GET("/logout", Authorized2Some(), LogOut())
-	//提问
-	e.r.POST("/questions", Authorized2Some(), Quiz())
-
-	/*
-		//搜索
-		route.auth.GET("/search", )
-		//推荐
-		route.auth.GET("/feed/topstory/recommend", )
+	//需要登录
+	RequiredLogin := e.r.Group("", Authorized2Some())
+	{
+		//注销
+		RequiredLogin.GET("/logout", LogOut())
+		//提问
+		RequiredLogin.POST("/questions", Quiz())
 		//关注
-		route.auth.GET("/feed/topstory/follow_wonderful", )
-		//热榜
-		route.auth.GET("/feed/topstory/hot", )
-	*/
+		RequiredLogin.GET("/follow", Follow())
+	}
 
+	//无需登录
+	Nologin := e.r.Group("")
+	{
+		//主页
+		Nologin.GET("/", HomePage())
+		//搜索
+		Nologin.GET("/search", Search())
+		//热榜
+		Nologin.GET("/hot", Hot())
+	}
 }
 
 //问题详情页-回答
@@ -124,6 +140,7 @@ func (e Engine) Question() {
 	NoLogin := e.r.Group("/questions")
 	{
 		//进入问题详情页，获取问题信息
+		//TODO:对回答排序
 		NoLogin.GET("/:questionId/", GetQuestion())
 
 		//查看问题评论
@@ -134,30 +151,33 @@ func (e Engine) Question() {
 	}
 
 	//需登录
-	q := e.r.Group("/questions", RefreshCookie(), Authorized2Some())
+	RequiredLogin := e.r.Group("/questions", RefreshCookie(), Authorized2Some())
 	{
 		//关注问题
-		q.POST("/:questionId/followers", FollowQuestion())
+		RequiredLogin.POST("/:questionId/followers", FollowQuestion())
+
+		//删除问题
+		RequiredLogin.DELETE("/:questionId", DeleteQuestion())
 
 		//取消关注问题
-		q.DELETE("/:questionId/followers", FollowQuestion())
+		RequiredLogin.DELETE("/:questionId/followers", FollowQuestion())
 
 		//对问题发表评论
-		q.POST("/:questionId/comments", PostQuestionComments())
+		RequiredLogin.POST("/:questionId/comments", PostQuestionComments())
 
 		//删除问题评论
-		q.DELETE("/:questionId/comments/:commentId", DeteleQuestionComment())
+		RequiredLogin.DELETE("/:questionId/comments/:commentId", DeteleQuestionComment())
 
 		//点赞或反对评论
-		q.POST("/:questionId/comments/:commentId/voters", VoteComment())
+		RequiredLogin.POST("/:questionId/comments/:commentId/voters", VoteComment())
 
 		//写回答
-		q.POST("/:questionId/draft", ReplyAnswer())
+		RequiredLogin.POST("/:questionId/draft", ReplyAnswer())
 
 		//查看自己的回答
-		q.GET("/:questionId/answer", ViewAnswer())
+		RequiredLogin.GET("/:questionId/answer", ViewAnswer())
 
 		//删除自己的回答
-		q.DELETE("/:questionId/answer", DeleteAnswer())
+		RequiredLogin.DELETE("/:questionId/answer", DeleteAnswer())
 	}
 }

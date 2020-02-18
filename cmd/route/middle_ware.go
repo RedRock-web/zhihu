@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"zhihu/cmd/basic"
+	"zhihu/cmd/database"
 	"zhihu/cmd/features"
 )
 
@@ -521,6 +522,217 @@ func Edit() gin.HandlerFunc {
 			user.Info.C.JSON(http.StatusUnauthorized, gin.H{
 				"status":     41,
 				"error_info": "非法操作!",
+			})
+		}
+	}
+}
+
+//搜索feature
+//TODO:按赞数排序
+//TODO:搜索匹配回答
+func Search() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		qq := c.Query("q")
+		q := features.NewQuestion()
+		data, err := q.Search("question", "question_id", qq)
+		basic.CheckError(err, "搜索问题失败!")
+
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostQuestion(c, q, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有相关问题!",
+			})
+		}
+	}
+}
+
+//主页,点击后随机获取5个问题
+func HomePage() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		data, err := q.GetByRand()
+		basic.CheckError(err, "获取主页问题失败!")
+
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostQuestion(c, q, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有问题推荐!",
+			})
+		}
+	}
+}
+
+//热榜
+func Hot() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		data, err := q.GetByFollowNum()
+		basic.CheckError(err, "获取热榜问题失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostQuestion(c, q, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有热榜问题!",
+			})
+		}
+	}
+}
+
+//关注的问题
+func Follow() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		data, err := q.GetByFollow()
+		basic.CheckError(err, "获取关注的问题失败!")
+
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostQuestion(c, q, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有关注问题!",
+			})
+		}
+	}
+}
+
+//关注我的人
+func GetFollowing() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetFollowers(u.Info.Uid)
+		basic.CheckError(err, "获取关注我的人失败!")
+
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostUser(c, u, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有关注我的人!",
+			})
+		}
+	}
+}
+
+//我关注的人
+func GetFollowers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetFollowing(u.Info.Uid)
+		basic.CheckError(err, "获取我关注的人失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostUser(c, u, data)
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 0,
+				"data":   "没有关注我的人!",
+			})
+		}
+	}
+}
+
+//删除问题
+func DeleteQuestion() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		q.Uid = features.G_user.Info.Uid
+		q.Id = c.Param("questionId")
+		if q.HaveQuestion() && basic.MethodIsOk(c, "DELETE") && q.Delete() == nil {
+			//
+		}
+		c.Abort()
+	}
+}
+
+//动态
+func Dynamic() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var statusData []gin.H
+		q := features.NewQuestion()
+		u := features.NewUser()
+		a := features.NewAnswer()
+
+		u.Info.Uid = c.Param("uid")
+		data, err := features.GetDataByTime()
+		basic.CheckError(err, "获取用户动态失败!")
+
+		for _, v := range data {
+			if features.IsQuestion(v) {
+				q.Id = string(v["question_id"].([]uint8))
+				q.GetQuestion()
+				statusData = append(statusData, gin.H{
+					"type":         "question",
+					"author_uid":   q.Uid,
+					"question_id":  q.Id,
+					"created_time": q.Time,
+					"title":        q.Title,
+					"complement":   q.Complement,
+				})
+			} else {
+				a.Uid = string(v["uid"].([]uint8))
+				a.QuestionId = string(v["question_id"].([]uint8))
+				answerData, err := database.G_DB.Table.HighFind("answer", "answer_id, time, content", "uid = "+a.Uid+" and question_id = "+a.QuestionId)
+				basic.CheckError(err, "状态中查询答案失败!")
+
+				statusData = append(statusData, gin.H{
+					"type":        "answer",
+					"uid":         a.Uid,
+					"question_id": a.QuestionId,
+					"answer_id":   string(answerData[0]["answer_id"].([]uint8)),
+					"time":        string(answerData[0]["time"].([]uint8)),
+					"content":     string(answerData[0]["content"].([]uint8)),
+				})
+			}
+		}
+
+		c.JSON(200, gin.H{
+			"status": 0,
+			"data":   statusData,
+		})
+		c.Abort()
+	}
+}
+
+//获取用户提问
+func GetAsks() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		q := features.NewQuestion()
+		u := features.NewUser()
+
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetQuestion()
+		basic.CheckError(err, "获取用户提问失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostQuestion(c, q, data)
+		} else {
+			c.JSON(200, gin.H{
+				"status": 0,
+				"data":   "获取用户提问失败!",
+			})
+		}
+	}
+}
+
+//获取用户回答
+func GetAnswers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		u := features.NewUser()
+		u.Info.Uid = c.Param("uid")
+		data, err := u.GetAnswers()
+		basic.CheckError(err, "获取用户回答失败!")
+		if basic.MethodIsOk(c, "GET") && len(data) != 0 {
+			features.PostAnswers(c, data)
+		} else {
+			c.JSON(200, gin.H{
+				"status": 0,
+				"data":   "获取用户回答失败!",
 			})
 		}
 	}

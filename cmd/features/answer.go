@@ -58,58 +58,27 @@ func (a Answer) GetContent() string {
 	return string(data[0]["content"].([]uint8))
 }
 
-/*
-//获取本问题，登录用户的回答id
-func GetAnswerId(questionId string) string {
-	data, err := database.G_DB.Table.HighFind("answer", "id", "uid = "+G_user.Info.Uid+" and question_id = "+questionId)
-	basic.CheckError(err, "获取回答id失败！")
-	return string(data[0]["id"].([]uint8))
-}
+//json返回回答详情
+func PostAnswers(c *gin.Context,data []map[string]interface{}) {
+	var answer []gin.H
 
-//查看特定回答接口
-func ViewAnswer(c *gin.Context) {
-	a := NewAnswer()
-	a.question_id = c.Param("question_id")
-	a.id = c.Param("answer_id")
-	if a.View() == nil {
-		c.JSON(http.StatusOK, gin.H{
-			"time":        a.time,
-			"question_id": a.question_id,
-			"answer_id":   a.id,
-			"content":     a.content,
-			"uid":         a.uid,
-		})
-	} else {
-		c.JSON(500, gin.H{
-			"error": "查询答案失败！",
+	for _, v := range data {
+		//获取答案相关信息,将一个答案组合为一个gin.H
+		answer = append(answer, gin.H{
+			"uid":         string(v["uid"].([]uint8)),
+			"question_id": string(v["question_id"].([]uint8)),
+			"answer_id":   string(v["answer_id"].([]uint8)),
+			"time":        string(v["time"].([]uint8)),
+			"content":     string(v["content"].([]uint8)),
 		})
 	}
-}
 
-//根据answer_id查看答案
-func (a Answer) View() error {
-	temp, err := database.G_DB.Table.HighFind("answer", "uid,time,content", "answer_id = "+a.id)
-	basic.CheckError(err, "查询答案失败！")
-	a.uid = string(temp[0]["uid"].([]uint8))
-	a.time = string(temp[0]["time"].([]uint8))
-	a.content = string(temp[0]["content"].([]uint8))
-	return err
+	//所有回答组合后,返回json
+	c.JSON(200, gin.H{
+		"status": 0,
+		"data": gin.H{
+			"answer": answer,
+		},
+	})
+	c.Abort()
 }
-
-func DeleteAnswer(c *gin.Context) {
-	a := NewAnswer()
-	a.id = GetAnswerId(G_question_id)
-	err := a.Delete()
-	basic.CheckError(err, "删除回答失败！")
-	if err == nil {
-		c.JSON(http.StatusOK, gin.H{
-			"msg": "删除回答成功！",
-		})
-	} else {
-		c.JSON(500, gin.H{
-			"error": "删除回答失败！",
-		})
-	}
-}
-
-*/

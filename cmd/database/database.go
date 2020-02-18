@@ -10,7 +10,6 @@ import (
 
 var G_DB Database
 
-//TODO:将time改为datatime格式
 //项目数据库相关准备
 func Start() {
 	db := Database{
@@ -227,7 +226,7 @@ func StrToInterface(data []string) []interface{} {
 //删除记录
 func (t *Table) Delete(tableName string, limitInfo string) error {
 	command := strings.Join([]string{"delete from ", tableName, "where ", limitInfo}, " ")
-	//fmt.Println(command)
+	fmt.Println(command)
 	stmt, err := t.Db.Prepare(command)
 	if err != nil {
 		return err
@@ -286,7 +285,75 @@ func (t *Table) Find(tableName string, limit string, targeKey string, targeValue
 //查找记录,可复杂限定条件
 func (t *Table) HighFind(tableName string, targe string, limitInfo string) ([]map[string]interface{}, error) {
 	command := strings.Join([]string{"select ", targe, " from ", tableName, " where ", limitInfo}, "")
-	//fmt.Println(command)
+	fmt.Println(command)
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return nil, err
+	}
+	columns, err := stmt.Columns()
+	if err != nil {
+		return nil, err
+	}
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength) //临时存储每行数据
+	for index, _ := range cache {              //为每一列初始化一个指针
+		var a interface{}
+		cache[index] = &a
+	}
+	var list []map[string]interface{} //返回的切片
+	for stmt.Next() {
+		err = stmt.Scan(cache...)
+		if err != nil {
+			return nil, err
+		}
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{}) //取实际类型
+		}
+		list = append(list, item)
+	}
+	err = stmt.Close()
+
+	return list, err
+}
+
+//随机获取记录
+func (t *Table) GetByRand(tableName string, targe string, Number string) ([]map[string]interface{}, error) {
+	command := strings.Join([]string{"select ", targe, " from ", tableName, " order by rand() limit  ", Number}, "")
+	fmt.Println(command)
+	stmt, err := t.Db.Query(command)
+	if err != nil {
+		return nil, err
+	}
+	columns, err := stmt.Columns()
+	if err != nil {
+		return nil, err
+	}
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength) //临时存储每行数据
+	for index, _ := range cache {              //为每一列初始化一个指针
+		var a interface{}
+		cache[index] = &a
+	}
+	var list []map[string]interface{} //返回的切片
+	for stmt.Next() {
+		err = stmt.Scan(cache...)
+		if err != nil {
+			return nil, err
+		}
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{}) //取实际类型
+		}
+		list = append(list, item)
+	}
+	err = stmt.Close()
+
+	return list, err
+}
+
+//自行输入sql语句获取记录
+func (t *Table) GetByOneself(command string) ([]map[string]interface{}, error) {
 	stmt, err := t.Db.Query(command)
 	if err != nil {
 		return nil, err
