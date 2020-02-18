@@ -64,4 +64,5 @@
     border: none;
     margin-top: 30px;
     outline: none;
+    resize: none;
 }
