@@ -5,8 +5,10 @@
     position:fixed;
     height: 52px;
     width: 3000px;
-    border-bottom: #f6f6f6 solid;
+    border-bottom: #f6f6f6 solid 0.5px;
     z-index:1000;
+    background-color: white;
+    top: -3.5px;
 }
 .content{
     padding-left: 16px; 
