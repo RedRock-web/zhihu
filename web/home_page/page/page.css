@@ -390,7 +390,7 @@
     font-size: 20px;
     position: relative;
     left: 20px;
-    top: 15px;
+    top: -120px;
 }
 #add{
     font-size: 14px;
@@ -492,4 +492,25 @@
     width: 24px;
     height: 24px;
     margin-left: 60px;
+}
+.buttom{
+    width: 296px;
+    margin-bottom: 10px;
+    margin-left: 925px;
+}
+.line_1>a{
+    color: #859085;
+    font-size: 13px;
+    margin-left: 2px;
+}
+.line_1{
+    margin-bottom: 5px;
+}
+.line_2{
+    margin-top: 5px;
+}
+.line_2>a{
+    color: #859085;
+    font-size: 13px;
+    margin-left: 2px;
 }
