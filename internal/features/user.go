@@ -2,8 +2,8 @@ package features
 
 import (
 	"github.com/gin-gonic/gin"
-	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
+	"zhihu/internal/basic"
+	"zhihu/internal/database"
 )
 
 //User 表示一个用户

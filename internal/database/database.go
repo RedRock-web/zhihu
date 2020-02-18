@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"zhihu/cmd/basic"
+	"zhihu/internal/basic"
 )
 
 var G_DB Database

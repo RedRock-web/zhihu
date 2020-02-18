@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
+	"zhihu/internal/basic"
+	"zhihu/internal/database"
 )
 
 // Question表示一个问题

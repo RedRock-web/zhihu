@@ -2,7 +2,7 @@ package features
 
 import (
 	"github.com/gin-gonic/gin"
-	"zhihu/cmd/database"
+	"zhihu/internal/database"
 )
 
 //Info 表示用户信息
