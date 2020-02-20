@@ -45,10 +45,21 @@
     <div class="buttom">
         <div id="input_box">
             <textarea type="text" name="import" class="import" placeholder="请回答..."></textarea>
-            <button type="submit" class="sum">提交回答</button>
+            <button type="submit" class="sum" onclick="sub()">提交回答</button>
         </div>
         <div class="left_top">
             <span>查看全部回答</span>
+        </div>
+        <div class="left_an">
+            <img src="../image/da8e974dc_xl.jpg" class="pic1">
+            <span class="nicname">Dai</span>
+            <p class="matter">会上瘾</p>
+            <p class="time" style="margin-top: 30px;">发布于 2019-05-29</p>
+            <input type="button" value="赞同" class="agree">
+            <span class="word">评论</span>
+            <span class="word">分享</span>
+            <span class="word">收藏</span>
+            <span class="word">喜欢</span>
         </div>
         <div class="left">
             <img src="https://pic4.zhimg.com/d881cdefb939fbaab64677134adbea12_xs.jpg" class="pic1">
@@ -262,6 +273,25 @@
             } else {
                 dis[2].style.backgroundColor = 'rgba(0,132,255,.1)'
                 dis[2].style.color = '#0084ff'
+            }
+        }
+            var follow = document.getElementsByClassName('follow')[0];
+        function sub(){
+            var me = document.getElementsByClassName('left_an')[0];
+            var inputBox = document.getElementById('input_box');
+            var leftTop = document.getElementsByClassName('left_top')[0];
+            me.style.display = 'block';
+            inputBox.style.display = 'none';
+            leftTop.style.marginTop = '60px'
+            follow.style.backgroundColor = '#8590a6';
+            follow.style.color = '#fff';
+            follow.innerHTML = '已关注';
+            follow.onmouseover = function(){
+                follow.innerHTML = '取消关注';
+                
+            }
+            follow.onmouseout = function(){
+                follow.innerHTML = '已关注';
             }
         }
     </script>
