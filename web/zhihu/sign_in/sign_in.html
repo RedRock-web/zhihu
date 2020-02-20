@@ -64,10 +64,13 @@
         <div class="method">
             <span class="login">社交账号登陆</span>
             <div class="other_mothod">
+                <img src="../image/1.jpg" class="pic">
                 <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx268fcfe924dcb171&redirect_uri=https%3A%2F%2Fwww.zhihu.com%2Foauth%2Fcallback%2Fwechat%3Faction%3Dlogin%26from%3D&response_type=code&scope=snsapi_login&state=636f646d32765348436158496a764c4368766a394b78657a43344a536d646e54#wechat"
                     class="h1">微信</a>
+                <img src="../image/2.png" class="pic">
                 <a href="https://graph.qq.com/oauth2.0/show?which=Login&display=pc&scope=get_user_info%2Cget_info%2Cadd_t%2Cadd_pic_t%2Cget_other_info%2Cget_fanslist%2Cget_idollist%2Cadd_idol%2Cadd_share&state=636f646d32765348436158496a764c4368766a394b78657a43344a536d646e54&redirect_uri=https%3A%2F%2Fwww.zhihu.com%2Foauth%2Fcallback%2Fqqconn%3Faction%3Dlogin%26from%3D&response_type=code&client_id=100490701"
                     class="h1">QQ</a>
+                <img src="../image/3.png" class="pic">
                 <a href="636f646d32765348436158496a764c4368766a394b78657a43344a536d646e54" class="h1">微博</a>
             </div>
         </div>
@@ -136,7 +139,7 @@
         var passWord = document.getElementById('note');
         var btn = document.getElementById('button')
         btn.onclick = function () {
-            window.location.href = 'file:///D:/GIT2/RedRock-web/web/home_page/page/page.html'
+            // window.location.href = 'file:///D:/GIT2/RedRock-web/web/home_page/page/page.html'
             function ajax(options) {
                 var defaults = {
                     type: 'post',
@@ -194,7 +197,7 @@
             }
             ajax({
                 type: 'post',
-                url: 'http://47.98.57.152:8080/sign_in',
+                url: 'https://www.fastmock.site/mock/9fa1e83651cbcd2cfcadf6e8b848adde/study/test',
                 async: true,
                 data: {
                     username: userName.value,
