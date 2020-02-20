@@ -3,9 +3,9 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
-	"zhihu/cmd/features"
+	"zhihu/internal/basic"
+	"zhihu/internal/database"
+	"zhihu/internal/features"
 )
 
 // 处理跨域请求,支持options访问的全局middleWare
@@ -737,3 +737,5 @@ func GetAnswers() gin.HandlerFunc {
 		}
 	}
 }
+
+

@@ -1,8 +1,8 @@
 package features
 
 import (
-	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
+	"zhihu/internal/basic"
+	"zhihu/internal/database"
 )
 
 //AnswerVote 表示一次用户对回答的态度

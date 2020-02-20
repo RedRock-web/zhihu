@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"net/http"
-	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
+	"zhihu/internal/basic"
+	"zhihu/internal/database"
 )
 
 //Account 表示一个帐号

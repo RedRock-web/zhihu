@@ -2,8 +2,8 @@ package features
 
 import (
 	"github.com/gin-gonic/gin"
-	"zhihu/cmd/basic"
-	"zhihu/cmd/database"
+	"zhihu/internal/basic"
+	"zhihu/internal/database"
 )
 
 // QuestionComment表示一个对问题的评论
