@@ -53,7 +53,7 @@
         <div class="left_an">
             <img src="../image/da8e974dc_xl.jpg" class="pic1">
             <span class="nicname">Dai</span>
-            <p class="matter">会上瘾</p>
+            <p class="matter"></p>
             <p class="time" style="margin-top: 30px;">发布于 2019-05-29</p>
             <input type="button" value="赞同" class="agree">
             <span class="word">评论</span>
@@ -293,6 +293,9 @@
             follow.onmouseout = function(){
                 follow.innerHTML = '已关注';
             }
+            var inport = document.getElementsByClassName('import')[0];
+            var matter = document.getElementsByClassName('matter')[0];
+            matter.innerHTML = inport.value;
         }
     </script>
 </body>
