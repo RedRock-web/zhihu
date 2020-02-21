@@ -23,7 +23,11 @@
                 <input type="submit" value="提问" class="ask" onclick="Ask()">
                 <img src="../image/1.1.png" class="pic_1">
                 <img src="../image/1.2.png" class="pic_2">
-                <img src="../image/da8e974dc_xl.jpg" class="pic" onclick="change_page()">
+                <img src="../image/da8e974dc_xl.jpg" class="pic"onclick="change_page()">               
+                <div class="dropdown-content">
+                    <a href="../../personal/personal_page/personal_page.html" class="dela">个人主页</a><br>
+                    <a href="../../zhihu/sign_in/sign_in.html" class="dela" style="position: relative;top: 10px;">退出登录</a>
+                </div>
             </div>
         </div>
         <div class="middle">
@@ -481,7 +485,8 @@
     </div>
     <script>
         function change_page() {
-            window.location.href = "file:///D:/GIT2/RedRock-web/web/personal/personal_page/personal_page.html"
+            var Dela = document.getElementsByClassName('dropdown-content')[0];
+            Dela.style.display = 'block'
         }
         var add = document.getElementById('add')
         var Topic = document.getElementById('topic')

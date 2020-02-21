@@ -77,7 +77,24 @@
     margin-left: 20px;
     position: relative;
     top: 8px;
+    display: inline-block;
 }
+.dropdown-content{
+    display: none;
+    position: absolute;
+    left: 950px;
+    top: 55px;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+}
+.dela{
+    color: #859085;
+}
+.pic:hover .dropdown-content {
+    display: block;
+  }
 .middle{
    width: 1100px;
    margin: auto;
