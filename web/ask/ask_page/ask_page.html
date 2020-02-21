@@ -121,6 +121,34 @@
             <p style="position: relative;top: 15px;">查看全部3,804个回答</p>
         </div>
         <div class="right_head">
+            <div class="rightIn">
+                <p class="relative">关于作者</p>
+                <hr>
+                <img src="https://pic4.zhimg.com/d881cdefb939fbaab64677134adbea12_xs.jpg" class="pic2">
+                <span class="nicname_1">殒身</span>
+                <span class="intro_1">痴人说梦，叶公好龙。</span>
+                <hr style="border: solid 0.25px #ebebeb;">
+                <div>
+                    <span
+                        style="margin-left: 30px;position: relative;top: 10px; font-size: 14px;color: #8590a6;">回答</span>
+                    <span
+                        style="margin-left: 40px;position: relative;top: 10px; font-size: 14px;color: #8590a6;">文章</span>
+                    <span
+                        style="margin-left: 40px;position: relative;top: 10px; font-size: 14px;color: #8590a6;">关注者</span>
+                </div>
+            </div>
+                <div>
+                    <span
+                        style="margin-left: 52px;position: relative;top: 15px; font-size: 18px;color: #1a1a1a; font-weight: 600;">33</span>
+                    <span
+                        style="margin-left: 50px;position: relative;top: 15px; font-size: 18px;color: #1a1a1a;font-weight: 600;">0</span>
+                    <span
+                        style="margin-left: 50px;position: relative;top: 15px; font-size: 18px;color: #1a1a1a;font-weight: 600;">1482</span>
+                </div>
+                <input value="+ 关注他" class="attn" type="button">
+                <input value="发私信" class="attn1" type="button">
+        </div>
+        <div class="right_middle">
             <div class="right_in">
                 <p class="relative">相关问题</p>
                 <hr>
@@ -144,7 +172,7 @@
             <div class="line2">
                 <a>应用</a> .
                 <a>工作</a> .
-                <a>申请开通知乎机构号</a> 
+                <a>申请开通知乎机构号</a>
             </div>
             <div class="line2">
                 <a>侵权举报</a> .
@@ -275,8 +303,8 @@
                 dis[2].style.color = '#0084ff'
             }
         }
-            var follow = document.getElementsByClassName('follow')[0];
-        function sub(){
+        var follow = document.getElementsByClassName('follow')[0];
+        function sub() {
             var me = document.getElementsByClassName('left_an')[0];
             var inputBox = document.getElementById('input_box');
             var leftTop = document.getElementsByClassName('left_top')[0];
@@ -286,11 +314,11 @@
             follow.style.backgroundColor = '#8590a6';
             follow.style.color = '#fff';
             follow.innerHTML = '已关注';
-            follow.onmouseover = function(){
+            follow.onmouseover = function () {
                 follow.innerHTML = '取消关注';
-                
+
             }
-            follow.onmouseout = function(){
+            follow.onmouseout = function () {
                 follow.innerHTML = '已关注';
             }
             var inport = document.getElementsByClassName('import')[0];
