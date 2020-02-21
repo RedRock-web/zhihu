@@ -65,6 +65,7 @@ body{
 }
 #box1{
     display: block;
+    margin-top: 50px;
 }
 .number1{
     
@@ -146,6 +147,7 @@ body{
 }
 #box2{
     display: none;
+    margin-top: 50px;
 }
 .conutry{
     width: 92px;
